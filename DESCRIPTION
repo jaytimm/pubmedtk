@@ -1,0 +1,28 @@
+Package: pubmedr
+Type: Package
+Title: PubMed Mining Toolkit
+Version: 0.1.0
+Author: Jason Timm [aut, cre]
+Maintainer: Jason Timm <JaTimm@salud.unm.edu>
+Description: An R package for querying the PubMed database & parsing retrieved records. 
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: false
+LazyDataCompression: true
+Depends: 
+    R (>= 3.5)
+Imports: 
+    rentrez,
+    textshape,
+    xml2,
+    data.table,
+    Matrix,
+    httr,
+    pbapply,
+    tidytext,
+    stringdist
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 7.2.0

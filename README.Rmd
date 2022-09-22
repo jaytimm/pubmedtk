@@ -1,0 +1,174 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- badges: start -->
+[![Travis build status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.travis-ci.com/github/jaytimm/pubmedr)
+[![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
+<!-- badges: end -->
+
+
+# pubmedr
+
+An R package for querying the PubMed database & parsing retrieved records.  Toolkit facilitates batch API requests & the creation of custom corpora for NLP. 
+
+
+## Installation
+
+You can download the development version from GitHub with:
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+```
+
+
+```{r eval=FALSE}
+devtools::install_github("jaytimm/pubmedr")
+```
+
+
+## Usage
+
+## PubMed search
+
+The `pmtk_search_pubmed()` function is meant for record-matching searches typically performed using the [PubMed online interface](https://pubmed.ncbi.nlm.nih.gov/).  The `search_term` parameter specifies the query term; the `fields` parameter can be used to specify which fields to query. 
+
+
+```{r}
+s0 <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana', 
+                                  fields = c('TIAB','MH'))
+```
+
+
+> Sample output:
+
+```{r}
+head(s0)
+```
+
+
+
+## Multiple search terms
+
+```{r}
+ps <- pubmedr::pmed_search_pubmed(
+  search_term = c('political ideology',
+                  'marijuana legalization',
+                  'political theory',
+                  'medical marijuana'),
+  fields = c('TIAB','MH'))
+```
+
+
+The `pmtk_crosstab_query` can be used to build a cross-tab of PubMed search results for multiple search terms.
+
+```{r}
+ps0 <- pubmedr::pmed_crosstab_query(x = ps) 
+
+ps0 %>% knitr::kable()
+```
+
+
+
+
+## Retrieve and parse abstract data 
+
+For quicker abstract retrieval, be sure to get an [API key](https://support.nlm.nih.gov/knowledgebase/article/KA-03521/en-us).    
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Set NCBI API key
+key <- '4f47f85a9cc03c4031b3dc274c2840b06108'
+#rentrez::set_entrez_key(key)
+
+## LIST of xml elements -- 
+# https://www.nlm.nih.gov/bsd/licensee/elements_alphabetical.html
+``` 
+
+
+
+```{r warning=FALSE}
+sen_df <- pubmedr::pmed_get_records2(pmids = unique(s0$pmid), 
+                                      with_annotations = T,
+                                      cores = 5, 
+                                      ncbi_key = key) 
+```
+
+
+> Sample record from output:
+
+```{r}
+sen_df <- data.table::rbindlist(sen_df)
+
+n <- 10
+list(pmid = sen_df$pmid[n],
+     year = sen_df$year[n],
+     journal = sen_df$journal[n],
+     articletitle = strwrap(sen_df$articletitle[n], width = 60),
+     abstract = strwrap(sen_df$abstract[n], width = 60)[1:10])
+```
+
+
+## Annotations
+
+> Annotations are included as a list-column, and can be easily extracted:
+
+```{r}
+annotations <- data.table::rbindlist(sen_df$annotations)
+```
+
+
+
+```{r}
+annotations |>
+  filter(!is.na(FORM)) |>
+  slice(1:10) |>
+  knitr::kable()
+```
+
+
+
+
+## Citation data
+
+The `pmtk_get_icites` function can be used to obtain citation data per PMID using NIH's Open Citation Collection and [iCite](https://icite.od.nih.gov/).  
+
+> Hutchins BI, Baker KL, Davis MT, Diwersy MA, Haque E, Harriman RM, et al. (2019) The NIH Open Citation Collection: A public access, broad coverage resource. PLoS Biol 17(10): e3000385. https://doi.org/10.1371/journal.pbio.3000385
+
+
+The iCite API returns a host of descriptive/derived citation details per record.  
+
+```{r}
+citations <- pubmedr::pmed_get_icites(pmids = ps$pmid, 
+                                      cores = 6,
+                                      ncbi_key = key)
+
+citations %>% select(-citation_net) %>%
+  slice(4) %>%
+  t() %>% data.frame() %>%
+  knitr::kable()
+```
+
+
+> Referenced and cited-by PMIDs are returned by the function as a column-list of network edges. 
+
+```{r}
+citations$citation_net[[4]]
+```
+
+
+
+## Affiliations
+
+The `pmtk_get_affiliations` function extracts author and author affiliation information from PubMed records. 
+
+```{r}
+afffs <- pubmedr::pmed_get_affiliations(pmids = s0$pmid)
+
+afffs |>
+  bind_rows() |>
+  slice(1:10) |>
+  knitr::kable()
+```
+
