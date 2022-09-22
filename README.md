@@ -8,8 +8,7 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 # pubmedr
 
 An R package for querying the PubMed database & parsing retrieved
-records. Toolkit facilitates batch API requests & the creation of custom
-corpora for NLP.
+records.
 
 ## Installation
 
@@ -23,7 +22,7 @@ devtools::install_github("jaytimm/pubmedr")
 
 ## PubMed search
 
-The `pmtk_search_pubmed()` function is meant for record-matching
+The `pmed_search_pubmed()` function is meant for record-matching
 searches typically performed using the [PubMed online
 interface](https://pubmed.ncbi.nlm.nih.gov/). The `search_term`
 parameter specifies the query term; the `fields` parameter can be used
@@ -66,7 +65,7 @@ ps <- pubmedr::pmed_search_pubmed(
     ## [1] "political theory[TIAB] OR political theory[MH]: 124 records"
     ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2652 records"
 
-The `pmtk_crosstab_query` can be used to build a cross-tab of PubMed
+The `pmed_crosstab_query` can be used to build a cross-tab of PubMed
 search results for multiple search terms.
 
 ``` r
@@ -166,7 +165,7 @@ annotations |>
 
 ## Citation data
 
-The `pmtk_get_icites` function can be used to obtain citation data per
+The `pmed_get_icites` function can be used to obtain citation data per
 PMID using NIH’s Open Citation Collection and
 [iCite](https://icite.od.nih.gov/).
 
@@ -231,7 +230,7 @@ citations$citation_net[[4]]
 
 ## Affiliations
 
-The `pmtk_get_affiliations` function extracts author and author
+The `pmed_get_affiliations` function extracts author and author
 affiliation information from PubMed records.
 
 ``` r

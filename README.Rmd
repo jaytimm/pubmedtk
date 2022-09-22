@@ -12,7 +12,7 @@ output:
 
 # pubmedr
 
-An R package for querying the PubMed database & parsing retrieved records.  Toolkit facilitates batch API requests & the creation of custom corpora for NLP. 
+An R package for querying the PubMed database & parsing retrieved records.  
 
 
 ## Installation
@@ -33,7 +33,7 @@ devtools::install_github("jaytimm/pubmedr")
 
 ## PubMed search
 
-The `pmtk_search_pubmed()` function is meant for record-matching searches typically performed using the [PubMed online interface](https://pubmed.ncbi.nlm.nih.gov/).  The `search_term` parameter specifies the query term; the `fields` parameter can be used to specify which fields to query. 
+The `pmed_search_pubmed()` function is meant for record-matching searches typically performed using the [PubMed online interface](https://pubmed.ncbi.nlm.nih.gov/).  The `search_term` parameter specifies the query term; the `fields` parameter can be used to specify which fields to query. 
 
 
 ```{r}
@@ -62,7 +62,7 @@ ps <- pubmedr::pmed_search_pubmed(
 ```
 
 
-The `pmtk_crosstab_query` can be used to build a cross-tab of PubMed search results for multiple search terms.
+The `pmed_crosstab_query` can be used to build a cross-tab of PubMed search results for multiple search terms.
 
 ```{r}
 ps0 <- pubmedr::pmed_crosstab_query(x = ps) 
@@ -132,7 +132,7 @@ annotations |>
 
 ## Citation data
 
-The `pmtk_get_icites` function can be used to obtain citation data per PMID using NIH's Open Citation Collection and [iCite](https://icite.od.nih.gov/).  
+The `pmed_get_icites` function can be used to obtain citation data per PMID using NIH's Open Citation Collection and [iCite](https://icite.od.nih.gov/).  
 
 > Hutchins BI, Baker KL, Davis MT, Diwersy MA, Haque E, Harriman RM, et al. (2019) The NIH Open Citation Collection: A public access, broad coverage resource. PLoS Biol 17(10): e3000385. https://doi.org/10.1371/journal.pbio.3000385
 
@@ -161,7 +161,7 @@ citations$citation_net[[4]]
 
 ## Affiliations
 
-The `pmtk_get_affiliations` function extracts author and author affiliation information from PubMed records. 
+The `pmed_get_affiliations` function extracts author and author affiliation information from PubMed records. 
 
 ```{r}
 afffs <- pubmedr::pmed_get_affiliations(pmids = s0$pmid)
