@@ -2,8 +2,10 @@
 
 export(pmed_crosstab_query)
 export(pmed_get_affiliations)
+export(pmed_get_fulltext)
 export(pmed_get_icites)
 export(pmed_get_records2)
 export(pmed_get_synonyms)
+export(pmed_load_pmclist)
 export(pmed_search_pubmed)
 import(data.table)

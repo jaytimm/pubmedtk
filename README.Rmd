@@ -71,7 +71,7 @@ ps0 %>% knitr::kable()
 ```
 
 
-```{r fig.height=5}
+```{r fig.height=6}
 UpSetR::upset(UpSetR::fromList(split(ps$pmid,
                                      ps$search_term 
                                      )), 
