@@ -54,9 +54,9 @@ head(s0)
 
 ```{r}
 ps <- pubmedr::pmed_search_pubmed(
-  search_term = c('political ideology',
+  search_term = c('marijuana chronic pain',
                   'marijuana legalization',
-                  'political theory',
+                  'marijuana policy',
                   'medical marijuana'),
   fields = c('TIAB','MH'))
 ```
@@ -71,6 +71,12 @@ ps0 %>% knitr::kable()
 ```
 
 
+```{r fig.height=5}
+UpSetR::upset(UpSetR::fromList(split(ps$pmid,
+                                     ps$search_term 
+                                     )), 
+              nsets = 4, order.by = "freq")
+```
 
 
 ## Retrieve and parse abstract data 
@@ -154,7 +160,7 @@ citations %>% select(-citation_net) %>%
 > Referenced and cited-by PMIDs are returned by the function as a column-list of network edges. 
 
 ```{r}
-citations$citation_net[[4]]
+citations$citation_net[[4]] |> head()
 ```
 
 

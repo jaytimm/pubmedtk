@@ -33,7 +33,7 @@ s0 <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana',
                                   fields = c('TIAB','MH'))
 ```
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2652 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2653 records"
 
 > Sample output:
 
@@ -43,27 +43,27 @@ head(s0)
 
     ##          search_term     pmid
     ## 1: medical marijuana 36122967
-    ## 2: medical marijuana 36076191
-    ## 3: medical marijuana 36064621
-    ## 4: medical marijuana 36055728
-    ## 5: medical marijuana 36040775
-    ## 6: medical marijuana 36036345
+    ## 2: medical marijuana 36122285
+    ## 3: medical marijuana 36076191
+    ## 4: medical marijuana 36064621
+    ## 5: medical marijuana 36055728
+    ## 6: medical marijuana 36040775
 
 ## Multiple search terms
 
 ``` r
 ps <- pubmedr::pmed_search_pubmed(
-  search_term = c('political ideology',
+  search_term = c('marijuana chronic pain',
                   'marijuana legalization',
-                  'political theory',
+                  'marijuana policy',
                   'medical marijuana'),
   fields = c('TIAB','MH'))
 ```
 
-    ## [1] "political ideology[TIAB] OR political ideology[MH]: 599 records"
+    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 821 records"
     ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 242 records"
-    ## [1] "political theory[TIAB] OR political theory[MH]: 124 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2652 records"
+    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 692 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2653 records"
 
 The `pmed_crosstab_query` can be used to build a cross-tab of PubMed
 search results for multiple search terms.
@@ -74,14 +74,23 @@ ps0 <- pubmedr::pmed_crosstab_query(x = ps)
 ps0 %>% knitr::kable()
 ```
 
-| term1                  | term2              |   n1 |   n2 | n1n2 |
-|:-----------------------|:-------------------|-----:|-----:|-----:|
-| marijuana legalization | medical marijuana  |  242 | 2652 |   91 |
-| marijuana legalization | political ideology |  242 |  599 |    1 |
-| marijuana legalization | political theory   |  242 |  124 |    0 |
-| medical marijuana      | political ideology | 2652 |  599 |    2 |
-| medical marijuana      | political theory   | 2652 |  124 |    1 |
-| political ideology     | political theory   |  599 |  124 |    2 |
+| term1                  | term2                  |  n1 |   n2 | n1n2 |
+|:-----------------------|:-----------------------|----:|-----:|-----:|
+| marijuana chronic pain | marijuana legalization | 821 |  242 |    4 |
+| marijuana chronic pain | marijuana policy       | 821 |  692 |    7 |
+| marijuana chronic pain | medical marijuana      | 821 | 2653 |  339 |
+| marijuana legalization | marijuana policy       | 242 |  692 |   33 |
+| marijuana legalization | medical marijuana      | 242 | 2653 |   91 |
+| marijuana policy       | medical marijuana      | 692 | 2653 |  201 |
+
+``` r
+UpSetR::upset(UpSetR::fromList(split(ps$pmid,
+                                     ps$search_term 
+                                     )), 
+              nsets = 4, order.by = "freq")
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ## Retrieve and parse abstract data
 
@@ -109,30 +118,29 @@ list(pmid = sen_df$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "35254218"
+    ## [1] "35258504"
     ## 
     ## $year
     ## [1] "2022"
     ## 
     ## $journal
-    ## [1] "Substance abuse"
+    ## [1] "Journal of clinical gastroenterology"
     ## 
     ## $articletitle
-    ## [1] "Clinical documentation of patient-reported medical cannabis"
-    ## [2] "use in primary care: Toward scalable extraction using"      
-    ## [3] "natural language processing methods."                       
+    ## [1] "The Effectiveness of Common Cannabis Products for Treatment"
+    ## [2] "of Nausea."                                                 
     ## 
     ## $abstract
-    ##  [1] "Background: Most states have legalized medical cannabis,"  
-    ##  [2] "yet little is known about how medical cannabis use is"     
-    ##  [3] "documented in patients' electronic health records (EHRs)." 
-    ##  [4] "We used natural language processing (NLP) to calculate the"
-    ##  [5] "prevalence of clinician-documented medical cannabis use"   
-    ##  [6] "among adults in an integrated health system in Washington" 
-    ##  [7] "State where medical and recreational use are legal."       
-    ##  [8] "Methods: We analyzed EHRs of patients ≥18 years old"       
-    ##  [9] "screened for past-year cannabis use (November 1,"          
-    ## [10] "2017-October 31, 2018), to identify clinician-documented"
+    ##  [1] "We measure for the first time how a wide range of cannabis" 
+    ##  [2] "products affect nausea intensity in actual time. Even"      
+    ##  [3] "though the Cannabis plant has been used to treat nausea for"
+    ##  [4] "millennia, few studies have measured real-time effects of"  
+    ##  [5] "common and commercially available cannabis-based products." 
+    ##  [6] "Using the Releaf App, 886 people completed 2220 cannabis"   
+    ##  [7] "self-administration sessions intended to treat nausea"      
+    ##  [8] "between June 6, 2016 and July 8, 2019. They recorded the"   
+    ##  [9] "characteristics of self-administered cannabis products and" 
+    ## [10] "baseline symptom intensity levels before tracking real-time"
 
 ## Annotations
 
@@ -150,18 +158,18 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE    | FORM                         |
-|:---------|:--------|:-----------------------------|
-| 36122967 | Keyword | Adolescent                   |
-| 36122967 | Keyword | Alcohol                      |
-| 36122967 | Keyword | Chronic medical conditions   |
-| 36122967 | Keyword | Marijuana                    |
-| 36122967 | Keyword | Screening                    |
-| 36122967 | Keyword | Subspecialty care            |
-| 36122967 | Keyword | Substance use                |
-| 36076191 | MeSH    | Attitude of Health Personnel |
-| 36076191 | MeSH    | COVID-19                     |
-| 36076191 | MeSH    | Canada                       |
+| ID       | TYPE      | FORM                        |
+|:---------|:----------|:----------------------------|
+| 36122967 | MeSH      | Adolescent                  |
+| 36122967 | MeSH      | Cannabis                    |
+| 36122967 | MeSH      | Child                       |
+| 36122967 | MeSH      | Ethanol                     |
+| 36122967 | MeSH      | Humans                      |
+| 36122967 | MeSH      | Marijuana Smoking           |
+| 36122967 | MeSH      | Marijuana Use               |
+| 36122967 | MeSH      | Medical Marijuana           |
+| 36122967 | MeSH      | Substance-Related Disorders |
+| 36122967 | Chemistry | Medical Marijuana           |
 
 ## Citation data
 
@@ -188,45 +196,46 @@ citations %>% select(-citation_net) %>%
   knitr::kable()
 ```
 
-|                             | .                                                                                                         |
-|:---------------|:-------------------------------------------------------|
-| pmid                        | 33143508                                                                                                  |
-| year                        | 2021                                                                                                      |
-| title                       | A First Step, a Second Chance: Public Support for Restoring Rights of Individuals with Prior Convictions. |
-| authors                     | Christina Mancini, Robyn McDougle, Brittany Keegan                                                        |
-| journal                     | Int J Offender Ther Comp Criminol                                                                         |
-| is_research_article         | Yes                                                                                                       |
-| relative_citation_ratio     | NA                                                                                                        |
-| nih_percentile              | NA                                                                                                        |
-| human                       | 1                                                                                                         |
-| animal                      | 0                                                                                                         |
-| molecular_cellular          | 0                                                                                                         |
-| apt                         | 0.05                                                                                                      |
-| is_clinical                 | No                                                                                                        |
-| citation_count              | 1                                                                                                         |
-| citations_per_year          | 1                                                                                                         |
-| expected_citations_per_year | NA                                                                                                        |
-| field_citation_rate         | 2.209809                                                                                                  |
-| provisional                 | No                                                                                                        |
-| x_coord                     | 0                                                                                                         |
-| y_coord                     | 1                                                                                                         |
-| cited_by_clin               | NA                                                                                                        |
-| doi                         | 10.1177/0306624X20969948                                                                                  |
-| ref_count                   | 4                                                                                                         |
+|                             | .                                                                                                                                                                                                                                             |
+|:--------|:--------------------------------------------------------------|
+| pmid                        | 33998895                                                                                                                                                                                                                                      |
+| year                        | 2022                                                                                                                                                                                                                                          |
+| title                       | A Multicriteria Decision Analysis Comparing Pharmacotherapy for Chronic Neuropathic Pain, Including Cannabinoids and Cannabis-Based Medical Products.                                                                                         |
+| authors                     | David J Nutt, Lawrence D Phillips, Michael P Barnes, Brigitta Brander, Helen Valerie Curran, Alan Fayaz, David P Finn, Tina Horsted, Julie Moltke, Chloe Sakal, Haggai Sharon, Saoirse E O’Sullivan, Tim Williams, Gregor Zorn, Anne K Schlag |
+| journal                     | Cannabis Cannabinoid Res                                                                                                                                                                                                                      |
+| is_research_article         | Yes                                                                                                                                                                                                                                           |
+| relative_citation_ratio     | NA                                                                                                                                                                                                                                            |
+| nih_percentile              | NA                                                                                                                                                                                                                                            |
+| human                       | 0.67                                                                                                                                                                                                                                          |
+| animal                      | 0.33                                                                                                                                                                                                                                          |
+| molecular_cellular          | 0                                                                                                                                                                                                                                             |
+| apt                         | 0.75                                                                                                                                                                                                                                          |
+| is_clinical                 | No                                                                                                                                                                                                                                            |
+| citation_count              | 7                                                                                                                                                                                                                                             |
+| citations_per_year          | 7                                                                                                                                                                                                                                             |
+| expected_citations_per_year | 1.161836                                                                                                                                                                                                                                      |
+| field_citation_rate         | 3.738451                                                                                                                                                                                                                                      |
+| provisional                 | No                                                                                                                                                                                                                                            |
+| x_coord                     | 0.2886751                                                                                                                                                                                                                                     |
+| y_coord                     | 0.5                                                                                                                                                                                                                                           |
+| cited_by_clin               | NA                                                                                                                                                                                                                                            |
+| doi                         | 10.1089/can.2020.0129                                                                                                                                                                                                                         |
+| ref_count                   | 35                                                                                                                                                                                                                                            |
 
 > Referenced and cited-by PMIDs are returned by the function as a
 > column-list of network edges.
 
 ``` r
-citations$citation_net[[4]]
+citations$citation_net[[4]] |> head()
 ```
 
     ##        from       to
-    ## 1: 33143508 28402828
-    ## 2: 33143508 30767582
-    ## 3: 33143508 18268079
-    ## 4: 33143508 25816814
-    ## 5: 35473457 33143508
+    ## 1: 33998895 31356363
+    ## 2: 33998895 27025332
+    ## 3: 33998895 16095934
+    ## 4: 33998895 20805210
+    ## 5: 33998895 25635955
+    ## 6: 33998895 31529092
 
 ## Affiliations
 
@@ -242,15 +251,15 @@ afffs |>
   knitr::kable()
 ```
 
-| pmid     | Author             | Affiliation                                                                                                                                                                                                                                                           |
-|:---|:-----|:--------------------------------------------------------------|
-| 36122967 | Levy, Sharon       | Adolescent Substance Use and Addiction Program, Boston Children’s Hospital, Boston, Massachusetts; Division of Developmental Medicine, Boston Children’s Hospital, Boston, Massachusetts; Department of Pediatrics, Harvard Medical School, Boston, Massachusetts.    |
-| 36122967 | Wisk, Lauren E     | Division of General Internal Medicine & Health Services Research, David Geffen School of Medicine at the University of California, Los Angeles, California.                                                                                                           |
-| 36122967 | Minegishi, Machiko | Division of Adolescent/Young Adult Medicine, Boston Children’s Hospital, Boston, Massachusetts.                                                                                                                                                                       |
-| 36122967 | Lunstead, Julie    | Adolescent Substance Use and Addiction Program, Boston Children’s Hospital, Boston, Massachusetts; Division of Developmental Medicine, Boston Children’s Hospital, Boston, Massachusetts.                                                                             |
-| 36122967 | Weitzman, Elissa R | Department of Pediatrics, Harvard Medical School, Boston, Massachusetts; Division of Adolescent/Young Adult Medicine, Boston Children’s Hospital, Boston, Massachusetts; Computational Health Informatics Program, Boston Children’s Hospital, Boston, Massachusetts. |
-| 36076191 | Hachem, Yasmina    | Medical Cannabis Program in Oncology, Cedars Cancer Center, McGill University Health Centre, 1001 boulevard Decarie, Montreal, QC, H3A 3J1, Canada.                                                                                                                   |
-| 36076191 | Abdallah, Sara J   | Division of Infectious Diseases, Department of Medicine, The Ottawa Hospital and Ottawa Hospital Research Institute, 501 Smyth Road, Ottawa, ON, K1H 8L6, Canada.                                                                                                     |
-| 36076191 | Rueda, Sergio      | Centre for Addiction and Mental Health, Institute for Mental Health Policy Research, 33 Ursula Franklin St, Toronto, ON, M5S 2S1, Canada.                                                                                                                             |
-| 36076191 | Rueda, Sergio      | Campbell Family Mental Health Research Institute, Centre for Addiction and Mental Health, 250 College Street, Toronto, ON, M5T 1R8, Canada.                                                                                                                           |
-| 36076191 | Rueda, Sergio      | Department of Psychiatry, University of Toronto, 250 College Street, Toronto, ON, M5T 1R8, Canada.                                                                                                                                                                    |
+| pmid     | Author                        | Affiliation                                                                                                                                                                                                                                                           |
+|:---|:-------|:------------------------------------------------------------|
+| 36122967 | Levy, Sharon                  | Adolescent Substance Use and Addiction Program, Boston Children’s Hospital, Boston, Massachusetts; Division of Developmental Medicine, Boston Children’s Hospital, Boston, Massachusetts; Department of Pediatrics, Harvard Medical School, Boston, Massachusetts.    |
+| 36122967 | Wisk, Lauren E                | Division of General Internal Medicine & Health Services Research, David Geffen School of Medicine at the University of California, Los Angeles, California.                                                                                                           |
+| 36122967 | Minegishi, Machiko            | Division of Adolescent/Young Adult Medicine, Boston Children’s Hospital, Boston, Massachusetts.                                                                                                                                                                       |
+| 36122967 | Lunstead, Julie               | Adolescent Substance Use and Addiction Program, Boston Children’s Hospital, Boston, Massachusetts; Division of Developmental Medicine, Boston Children’s Hospital, Boston, Massachusetts.                                                                             |
+| 36122967 | Weitzman, Elissa R            | Department of Pediatrics, Harvard Medical School, Boston, Massachusetts; Division of Adolescent/Young Adult Medicine, Boston Children’s Hospital, Boston, Massachusetts; Computational Health Informatics Program, Boston Children’s Hospital, Boston, Massachusetts. |
+| 36122285 | Gómez-García, Diego Mauricio  | Departamento de Medicina Familiar, Escuela de Medicina, Universidad del Valle, Cali, Colombia. diego.mauricio.                                                                                                                                                        |
+| 36122285 | García-Perdomo, Herney Andrés | Unidad de Urología/Urooncología, Grupo de Investigación UROGIV, Departamento de Cirugía, Escuela de Medicina, Universidad del Valle, Cali, Colombia. herney.                                                                                                          |
+| 36076191 | Hachem, Yasmina               | Medical Cannabis Program in Oncology, Cedars Cancer Center, McGill University Health Centre, 1001 boulevard Decarie, Montreal, QC, H3A 3J1, Canada.                                                                                                                   |
+| 36076191 | Abdallah, Sara J              | Division of Infectious Diseases, Department of Medicine, The Ottawa Hospital and Ottawa Hospital Research Institute, 501 Smyth Road, Ottawa, ON, K1H 8L6, Canada.                                                                                                     |
+| 36076191 | Rueda, Sergio                 | Centre for Addiction and Mental Health, Institute for Mental Health Policy Research, 33 Ursula Franklin St, Toronto, ON, M5S 2S1, Canada.                                                                                                                             |
