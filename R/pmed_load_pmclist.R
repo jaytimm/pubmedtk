@@ -22,7 +22,7 @@ pmed_load_pmclist <- function(){
   # pmc0 <- subset(pmc, nchar(PMID) > 2) 
   
   pmc[, PMID := gsub('^PMID:', '', PMID)]
-  pmc[, PMCID := gsub('^PMC:', '', PMCID)]
+  pmc[, PMCID := gsub('^PMC', '', PMCID)]
   pmc[pmc==''] <- NA
   return(pmc)
 }

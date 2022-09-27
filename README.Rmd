@@ -12,7 +12,7 @@ output:
 
 # pubmedr
 
-An R package for querying the PubMed database & parsing retrieved records.  
+An R package for (1) querying the PubMed database & parsing retrieved records; (2) extracting full text articles from the Open Access subset of the PMC via ftp; and (3) obtaianing citation data from NIH's Open Citation Collection.
 
 
 ## Installation
@@ -37,15 +37,14 @@ The `pmed_search_pubmed()` function is meant for record-matching searches typica
 
 
 ```{r}
-s0 <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana', 
-                                  fields = c('TIAB','MH'))
+med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana', 
+                                            fields = c('TIAB','MH'))
 ```
 
 
-> Sample output:
 
 ```{r}
-head(s0)
+head(med_cannabis)
 ```
 
 
@@ -53,7 +52,7 @@ head(s0)
 ## Multiple search terms
 
 ```{r}
-ps <- pubmedr::pmed_search_pubmed(
+cannabis_etc <- pubmedr::pmed_search_pubmed(
   search_term = c('marijuana chronic pain',
                   'marijuana legalization',
                   'marijuana policy',
@@ -62,18 +61,9 @@ ps <- pubmedr::pmed_search_pubmed(
 ```
 
 
-The `pmed_crosstab_query` can be used to build a cross-tab of PubMed search results for multiple search terms.
-
-```{r}
-ps0 <- pubmedr::pmed_crosstab_query(x = ps) 
-
-ps0 %>% knitr::kable()
-```
-
-
 ```{r fig.height=6}
-UpSetR::upset(UpSetR::fromList(split(ps$pmid,
-                                     ps$search_term 
+UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
+                                     cannabis_etc$search_term 
                                      )), 
               nsets = 4, order.by = "freq")
 ```
@@ -95,25 +85,45 @@ key <- '4f47f85a9cc03c4031b3dc274c2840b06108'
 
 
 ```{r warning=FALSE}
-sen_df <- pubmedr::pmed_get_records2(pmids = unique(s0$pmid), 
-                                      with_annotations = T,
-                                      cores = 5, 
-                                      ncbi_key = key) 
+med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid), 
+                                              with_annotations = T,
+                                              cores = 5, 
+                                              ncbi_key = key) 
 ```
 
 
-> Sample record from output:
 
 ```{r}
-sen_df <- data.table::rbindlist(sen_df)
+med_cannabis_df0 <- data.table::rbindlist(med_cannabis_df)
 
 n <- 10
-list(pmid = sen_df$pmid[n],
-     year = sen_df$year[n],
-     journal = sen_df$journal[n],
-     articletitle = strwrap(sen_df$articletitle[n], width = 60),
-     abstract = strwrap(sen_df$abstract[n], width = 60)[1:10])
+list(pmid = med_cannabis_df0$pmid[n],
+     year = med_cannabis_df0$year[n],
+     journal = med_cannabis_df0$journal[n],
+     articletitle = strwrap(med_cannabis_df0$articletitle[n], width = 60),
+     abstract = strwrap(med_cannabis_df0$abstract[n], width = 60)[1:10])
 ```
+
+
+## Full text from Open Acess PMC
+
+```{r}
+pmclist <- pubmedr::pmed_load_pmclist()
+pmc_med_cannabis <- pmclist |> filter(PMID %in% unique(med_cannabis$pmid))
+pmc_med_cannabis |> head() |> knitr::kable()
+```
+
+
+```{r}
+med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |> 
+  pmed_get_fulltext99()
+  #pubmedr::pmed_get_fulltext()
+
+samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[6])
+
+lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
+```
+
 
 
 ## Annotations
@@ -121,7 +131,7 @@ list(pmid = sen_df$pmid[n],
 > Annotations are included as a list-column, and can be easily extracted:
 
 ```{r}
-annotations <- data.table::rbindlist(sen_df$annotations)
+annotations <- data.table::rbindlist(med_cannabis_df0$annotations)
 ```
 
 
@@ -135,6 +145,18 @@ annotations |>
 
 
 
+## Affiliations
+
+The `pmed_get_affiliations` function extracts author and author affiliation information from PubMed records. 
+
+```{r}
+pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
+  bind_rows() |>
+  slice(1:10) |>
+  knitr::kable()
+```
+
+
 
 ## Citation data
 
@@ -146,13 +168,13 @@ The `pmed_get_icites` function can be used to obtain citation data per PMID usin
 The iCite API returns a host of descriptive/derived citation details per record.  
 
 ```{r}
-citations <- pubmedr::pmed_get_icites(pmids = ps$pmid, 
+citations <- pubmedr::pmed_get_icites(pmids = med_cannabis_df0$pmid, 
                                       cores = 6,
                                       ncbi_key = key)
 
-citations %>% select(-citation_net) %>%
-  slice(4) %>%
-  t() %>% data.frame() %>%
+citations |> select(-citation_net) |>
+  slice(4) |>
+  t() |> data.frame() |>
   knitr::kable()
 ```
 
@@ -164,17 +186,4 @@ citations$citation_net[[4]] |> head()
 ```
 
 
-
-## Affiliations
-
-The `pmed_get_affiliations` function extracts author and author affiliation information from PubMed records. 
-
-```{r}
-afffs <- pubmedr::pmed_get_affiliations(pmids = s0$pmid)
-
-afffs |>
-  bind_rows() |>
-  slice(1:10) |>
-  knitr::kable()
-```
 
