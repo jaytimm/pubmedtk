@@ -12,7 +12,7 @@ output:
 
 # pubmedr
 
-An R package for (1) querying the PubMed database & parsing retrieved records; (2) extracting full text articles from the Open Access subset of the PMC via ftp; and (3) obtaianing citation data from NIH's Open Citation Collection.
+An R package for (1) querying the PubMed database & parsing retrieved records; (2) extracting full text articles from the Open Access subset of the PMC via ftp; (3) obtaining citation data from NIH's Open Citation Collection/[iCite](https://icite.od.nih.gov/); and (4) accessing annotations of biomedical concepts from [PubTator Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
 
 
 ## Installation
@@ -107,6 +107,8 @@ list(pmid = med_cannabis_df0$pmid[n],
 
 ## Full text from Open Acess PMC
 
+### Load list of Open Access PMC articles 
+
 ```{r}
 pmclist <- pubmedr::pmed_load_pmclist()
 pmc_med_cannabis <- pmclist |> filter(PMID %in% unique(med_cannabis$pmid))
@@ -116,7 +118,7 @@ pmc_med_cannabis |> head() |> knitr::kable()
 
 ```{r}
 med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |> 
-  pmed_get_fulltext99()
+  pubmedr::pmed_get_fulltext()
   #pubmedr::pmed_get_fulltext()
 
 samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[6])
@@ -126,7 +128,7 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 
 
 
-## Annotations
+## MeSH Annotations
 
 > Annotations are included as a list-column, and can be easily extracted:
 
@@ -185,5 +187,18 @@ citations |> select(-citation_net) |>
 citations$citation_net[[4]] |> head()
 ```
 
+
+
+## Biomedical concepts via the Pubtator Central API
+
+> Wei, C. H., Allot, A., Leaman, R., & Lu, Z. (2019). PubTator central: automated concept annotation for biomedical full text articles. Nucleic acids research, 47(W1), W587-W593.
+
+```{r}
+pubtations <- unique(med_cannabis$pmid) |>
+  pubmedr::pmed_get_entities(cores = 6) |>
+  data.table::rbindlist()
+
+pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
+```
 
 

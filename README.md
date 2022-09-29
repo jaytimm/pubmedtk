@@ -9,8 +9,10 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 
 An R package for (1) querying the PubMed database & parsing retrieved
 records; (2) extracting full text articles from the Open Access subset
-of the PMC via ftp; and (3) obtaianing citation data from NIH’s Open
-Citation Collection.
+of the PMC via ftp; (3) obtaining citation data from NIH’s Open Citation
+Collection/[iCite](https://icite.od.nih.gov/); and (4) accessing
+annotations of biomedical concepts from [PubTator
+Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
 
 ## Installation
 
@@ -35,19 +37,19 @@ med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana',
                                             fields = c('TIAB','MH'))
 ```
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2654 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2657 records"
 
 ``` r
 head(med_cannabis)
 ```
 
     ##          search_term     pmid
-    ## 1: medical marijuana 36147312
-    ## 2: medical marijuana 36122967
-    ## 3: medical marijuana 36122285
-    ## 4: medical marijuana 36076191
-    ## 5: medical marijuana 36064621
-    ## 6: medical marijuana 36055728
+    ## 1: medical marijuana 36168342
+    ## 2: medical marijuana 36147312
+    ## 3: medical marijuana 36136010
+    ## 4: medical marijuana 36122967
+    ## 5: medical marijuana 36122285
+    ## 6: medical marijuana 36076191
 
 ## Multiple search terms
 
@@ -63,24 +65,7 @@ cannabis_etc <- pubmedr::pmed_search_pubmed(
     ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 821 records"
     ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 242 records"
     ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 692 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2654 records"
-
-The `pmed_crosstab_query` can be used to build a cross-tab of PubMed
-search results for multiple search terms.
-
-``` r
-cross <- pubmedr::pmed_crosstab_query(x = cannabis_etc) 
-cross %>% knitr::kable()
-```
-
-| term1                  | term2                  |  n1 |   n2 | n1n2 |
-|:-----------------------|:-----------------------|----:|-----:|-----:|
-| marijuana chronic pain | marijuana legalization | 821 |  242 |    4 |
-| marijuana chronic pain | marijuana policy       | 821 |  692 |    7 |
-| marijuana chronic pain | medical marijuana      | 821 | 2654 |  339 |
-| marijuana legalization | marijuana policy       | 242 |  692 |   33 |
-| marijuana legalization | medical marijuana      | 242 | 2654 |   91 |
-| marijuana policy       | medical marijuana      | 692 | 2654 |  201 |
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2657 records"
 
 ``` r
 UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
@@ -89,7 +74,7 @@ UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
               nsets = 4, order.by = "freq")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ## Retrieve and parse abstract data
 
@@ -115,31 +100,25 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "35267245"
+    ## [1] "35289010"
     ## 
     ## $year
     ## [1] "2022"
     ## 
     ## $journal
-    ## [1] "Annals of clinical and translational neurology"
+    ## [1] "Addiction (Abingdon, England)"
     ## 
     ## $articletitle
-    ## [1] "Observational study of medical marijuana as a treatment for"
-    ## [2] "treatment-resistant epilepsies."                            
+    ## [1] "The iCannToolkit: a tool to embrace measurement of"    
+    ## [2] "medicinal and non-medicinal cannabis use across licit,"
+    ## [3] "illicit and cross-cultural settings."                  
     ## 
     ## $abstract
-    ##  [1] "Medical cannabis formulations with cannabidiol (CBD) and"   
-    ##  [2] "delta-9-tetrahydrocannabinol (THC) are widely used to treat"
-    ##  [3] "epilepsy. We studied the safety and efficacy of two"        
-    ##  [4] "formulations. We prospectively observed 29 subjects (12 to" 
-    ##  [5] "46 years old) with treatment-resistant epilepsies (11"      
-    ##  [6] "Lennox-Gastaut syndrome; 15 with focal or multifocal"       
-    ##  [7] "epilepsy; three generalized epilepsy) were treated with"    
-    ##  [8] "medical cannabis (1THC:20CBD and/or 1THC:50CBD; maximum of" 
-    ##  [9] "6 mg THC/day) for ≥24 weeks. The primary outcome was change"
-    ## [10] "in convulsive seizure frequency from the pre-treatment"
+    ##  [1] "NA" NA   NA   NA   NA   NA   NA   NA   NA   NA
 
 ## Full text from Open Acess PMC
+
+### Load list of Open Access PMC articles
 
 ``` r
 pmclist <- pubmedr::pmed_load_pmclist()
@@ -157,80 +136,18 @@ pmc_med_cannabis |> head() |> knitr::kable()
 | oa_package/cb/ad/PMC3628147.tar.gz | Med Sci Monit. 2011 Dec 1; 17(12):RA249-RA261    | 3628147 | 22129912 | NO-CC CODE   |
 
 ``` r
-med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1:10] |> 
+med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |> 
   pubmedr::pmed_get_fulltext()
+  #pubmedr::pmed_get_fulltext()
 
 samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[6])
 
 lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ```
 
-    ## [[1]]
-    ## [1] "Debate about medical marijuana is challenging the basic"   
-    ## [2] "foundations of the accepted practice in the medical, legal"
-    ## [3] "and ethical communities. A major criticism of alternative" 
-    ## 
-    ## [[2]]
-    ## [1] "The history of marijuana use for medicinal purposes extends"
-    ## [2] "back through millennia. The medical use of marijuana can be"
-    ## [3] "traced back to 2737 B.C., when Emperor Shen Neng was"       
-    ## 
-    ## [[3]]
-    ## [1] "While the subject of medical marijuana is becoming an"      
-    ## [2] "increasingly heated medical issue, it also continues to"    
-    ## [3] "stir the embers of legal arguments. Advocates on both sides"
-    ## 
-    ## [[4]]
-    ## [1] "As certain states seem to be backtracking, other states"    
-    ## [2] "like Delaware, Pennsylvania, and nine others (Alabama,"     
-    ## [3] "Connecticut, Idaho, Illinois, Massachusetts, New Hampshire,"
-    ## 
-    ## [[5]]
-    ## [1] "The ethical dilemma at the core of this debate is whether"
-    ## [2] "the federal ban on the use of medical marijuana violates" 
-    ## [3] "the physician-patient relationship. The argument can be"  
-    ## 
-    ## [[6]]
-    ## [1] "The main objection to the medical use of marijuana by the"
-    ## [2] "federal government is largely attributable today to a"    
-    ## [3] "national policy of zero-tolerance toward illicit drugs."  
-    ## 
-    ## [[7]]
-    ## [1] "With regard to documenting the effectiveness of medical"    
-    ## [2] "marijuana, the most comprehensive analysis to date in"      
-    ## [3] "medical literature was issued on March 17, 1999, by a White"
-    ## 
-    ## [[8]]
-    ## [1] "Attempts to reassign marijuana to a Schedule II drug"     
-    ## [2] "classification have been rejected by the Drug Enforcement"
-    ## [3] "Administration (DEA). The basis for rejection is the"     
-    ## 
-    ## [[9]]
-    ## [1] "The purpose of this article, therefore, is fourfold: first,"
-    ## [2] "to explore the medical aspect of marijuana by examining"    
-    ## [3] "pertinent scientific research; second, to study the legal"  
-    ## 
-    ## [[10]]
-    ## [1] "Medical Perspective Marijuana is taken from the leaves and" 
-    ## [2] "flowering tops of the hemp plant, Cannabis sativa, which"   
-    ## [3] "grows in most regions of the world. C. sativa contains over"
-    ## 
-    ## [[11]]
-    ## [1] "Legal Perspective While a strong case may be made for the"  
-    ## [2] "medical and ethical bases in support of the legalization of"
-    ## [3] "medical marijuana, the United States’ strong anti-drug"     
-    ## 
-    ## [[12]]
-    ## [1] "Ethical Perspective Society, in general, has always"       
-    ## [2] "recognized that in our complex world there is the"         
-    ## [3] "possibility that we may be faced with a situation that has"
-    ## 
-    ## [[13]]
-    ## [1] "Conclusions After reviewing pertinent scientific data, it"
-    ## [2] "is evident that there is ample evidence to warrant the"   
-    ## [3] "Obama Administration to authorize the DEA to reclassify"
+    ## list()
 
-## Annotations
+## MeSH Annotations
 
 > Annotations are included as a list-column, and can be easily
 > extracted:
@@ -246,18 +163,18 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE    | FORM                     |
-|:---------|:--------|:-------------------------|
-| 36147312 | Keyword | CBD-cannabidiol          |
-| 36147312 | Keyword | THC-tetrahydrocannabinol |
-| 36147312 | Keyword | cannabis (marijuana)     |
-| 36147312 | Keyword | medical marijuana        |
-| 36147312 | Keyword | qualitative              |
-| 36122967 | MeSH    | Adolescent               |
-| 36122967 | MeSH    | Cannabis                 |
-| 36122967 | MeSH    | Child                    |
-| 36122967 | MeSH    | Ethanol                  |
-| 36122967 | MeSH    | Humans                   |
+| ID       | TYPE    | FORM                         |
+|:---------|:--------|:-----------------------------|
+| 36168342 | Keyword | attitudes                    |
+| 36168342 | Keyword | beliefs                      |
+| 36168342 | Keyword | education                    |
+| 36168342 | Keyword | focus groups                 |
+| 36168342 | Keyword | medical cannabis             |
+| 36168342 | Keyword | medical education curriculum |
+| 36168342 | Keyword | medical marijuana            |
+| 36168342 | Keyword | medical students             |
+| 36168342 | Keyword | qualitative                  |
+| 36147312 | Keyword | CBD-cannabidiol              |
 
 ## Affiliations
 
@@ -271,18 +188,18 @@ pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
   knitr::kable()
 ```
 
-| pmid     | Author                   | Affiliation                                                                                                                                                            |
-|:----|:---------|:---------------------------------------------------------|
-| 36147312 | Garcia-Romeu, Albert     | Johns Hopkins University School of Medicine, Baltimore, MD, United States.                                                                                             |
-| 36147312 | Elmore, Joshua           | University of Colorado Boulder, Boulder, CO, United States.                                                                                                            |
-| 36147312 | Mayhugh, Rhiannon E      | Johns Hopkins University School of Medicine, Baltimore, MD, United States.                                                                                             |
-| 36147312 | Schlienz, Nicolas J      | Roswell Park Comprehensive Cancer Center, Buffalo, NY, United States.                                                                                                  |
-| 36147312 | Martin, Erin L           | Medical University of South Carolina, Charleston, SC, United States.                                                                                                   |
-| 36147312 | Strickland, Justin C     | Johns Hopkins University School of Medicine, Baltimore, MD, United States.                                                                                             |
-| 36147312 | Bonn-Miller, Marcel      | Canopy Growth Corporation, Smiths Falls, ON, Canada.                                                                                                                   |
-| 36147312 | Jackson, Heather         | Realm of Caring Foundation, Colorado Springs, Colorado, CO, United States.                                                                                             |
-| 36147312 | Vandrey, Ryan            | Johns Hopkins University School of Medicine, Baltimore, MD, United States.                                                                                             |
-| 36011488 | Hallinan, Christine Mary | Department of General Practice, Faculty of Medicine, Dentistry and Health Sciences, Melbourne Medical School, University of Melbourne, Parkville, VIC 3010, Australia. |
+| pmid     | Author            | Affiliation                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|:--|:---|:-----------------------------------------------------------------|
+| 36168342 | Jacobs, Robin J   | Medical and Behavioral Research, Health Informatics, and Medical Education, Nova Southeastern University, Fort Lauderdale, USA.                                                                                                                                                                                                                                                                                                                                                     |
+| 36168342 | Colon, Jessica    | Medical School, Nova Southeastern University Dr. Kiran C. Patel College of Osteopathic Medicine, Fort Lauderdale, USA.                                                                                                                                                                                                                                                                                                                                                              |
+| 36168342 | Kane, Michael N   | Social Work, Florida Atlantic University, Boca Raton, USA.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| 36038457 | Kluger, Benzi M   | Departments of Neurology and Medicine, University of Rochester Medical Center, Rochester, NY, USA.                                                                                                                                                                                                                                                                                                                                                                                  |
+| 36038457 | Huang, Andrew P   | Departments of Neurology and Medicine, University of Rochester Medical Center, Rochester, NY, USA.                                                                                                                                                                                                                                                                                                                                                                                  |
+| 36038457 | Miyasaki, Janis M | Division of Neurology, Department of Medicine, University of Alberta, Edmonton, Alberta, Canada.                                                                                                                                                                                                                                                                                                                                                                                    |
+| 35316689 | Montebello, Mark  | Drug and Alcohol Services, Northern Sydney Local Health District, Level 1, 2c Herbert Street, St Leonards, NSW 2065, Australia; Specialty of Addiction Medicine, Faculty of Medicine and Health, University of Sydney, City Road, Camperdown, NSW 2006, Australia; National Drug and Alcohol Research Centre, University of New South Wales, 22-32 King St, Randwick, NSW 2031, Australia; NSW Drug and Alcohol Clinical Research and Improvement Network (DACRIN), NSW, Australia. |
+| 35316689 | Jefferies, Meryem | Drug Health, Western Sydney Local Health District, 5 Fleet St, North Parramatta, NSW 2151, Australia.                                                                                                                                                                                                                                                                                                                                                                               |
+| 35316689 | Mills, Llewellyn  | Specialty of Addiction Medicine, Faculty of Medicine and Health, University of Sydney, City Road, Camperdown, NSW 2006, Australia; NSW Drug and Alcohol Clinical Research and Improvement Network (DACRIN), NSW, Australia; Drug and Alcohol Services, South Eastern Sydney Local Health District, The Langton Centre, 591 South Dowling St, Surry Hills, NSW 2010, Australia.                                                                                                      |
+| 35316689 | Bruno, Raimondo   | National Drug and Alcohol Research Centre, University of New South Wales, 22-32 King St, Randwick, NSW 2031, Australia; School of Psychological Sciences, University of Tasmania, Private Bag 30, Hobart, Tasmania 7001, Australia.                                                                                                                                                                                                                                                 |
 
 ## Citation data
 
@@ -309,31 +226,31 @@ citations |> select(-citation_net) |>
   knitr::kable()
 ```
 
-|                             | t.slice.select.citations…citation_net…4..                                                                |
-|:---------------|:-------------------------------------------------------|
-| pmid                        | 34792923                                                                                                 |
-| year                        | 2021                                                                                                     |
-| title                       | Knowledge, Perception, and Use of Cannabis Therapy in Patients with Inflammatory Bowel Disease.          |
-| authors                     | Luis A Muñiz-Camacho, Frances I Negrón-Quintana, Luis A Ramos-Burgos, Jorge J Cruz-Cruz, Esther A Torres |
-| journal                     | P R Health Sci J                                                                                         |
-| is_research_article         | Yes                                                                                                      |
-| relative_citation_ratio     | NA                                                                                                       |
-| nih_percentile              | NA                                                                                                       |
-| human                       | 0.8                                                                                                      |
-| animal                      | 0.2                                                                                                      |
-| molecular_cellular          | 0                                                                                                        |
-| apt                         | 0.05                                                                                                     |
-| is_clinical                 | No                                                                                                       |
-| citation_count              | 0                                                                                                        |
-| citations_per_year          | 0                                                                                                        |
-| expected_citations_per_year | NA                                                                                                       |
-| field_citation_rate         | NA                                                                                                       |
-| provisional                 | No                                                                                                       |
-| x_coord                     | 0.1732051                                                                                                |
-| y_coord                     | 0.7                                                                                                      |
-| cited_by_clin               | NA                                                                                                       |
-| doi                         |                                                                                                          |
-| ref_count                   | 0                                                                                                        |
+|                             | t.slice.select.citations…citation_net…4..    |
+|:---------------------------|:-------------------------------------------|
+| pmid                        | 34798780                                     |
+| year                        | 2022                                         |
+| title                       | A Survey of Topical Cannabis Use in Canada.  |
+| authors                     | Farhan Mahmood, Megan M Lim, Mark G Kirchhof |
+| journal                     | J Cutan Med Surg                             |
+| is_research_article         | Yes                                          |
+| relative_citation_ratio     | NA                                           |
+| nih_percentile              | NA                                           |
+| human                       | 0.67                                         |
+| animal                      | 0.33                                         |
+| molecular_cellular          | 0                                            |
+| apt                         | 0.05                                         |
+| is_clinical                 | No                                           |
+| citation_count              | 1                                            |
+| citations_per_year          | 1                                            |
+| expected_citations_per_year | 1.379355                                     |
+| field_citation_rate         | 6.295272                                     |
+| provisional                 | No                                           |
+| x_coord                     | 0.2886751                                    |
+| y_coord                     | 0.5                                          |
+| cited_by_clin               | NA                                           |
+| doi                         | 10.1177/12034754211059025                    |
+| ref_count                   | 25                                           |
 
 > Referenced and cited-by PMIDs are returned by the function as a
 > column-list of network edges.
@@ -343,5 +260,46 @@ citations$citation_net[[4]] |> head()
 ```
 
     ##        from       to
-    ## 1: 34792923     <NA>
-    ## 2:     <NA> 34792923
+    ## 1: 34798780 33220620
+    ## 2: 34798780 32148986
+    ## 3: 34798780 31960125
+    ## 4: 34798780  6620158
+    ## 5: 34798780 32914659
+    ## 6: 34798780 29356658
+
+## Biomedical concepts via the Pubtator Central API
+
+> Wei, C. H., Allot, A., Leaman, R., & Lu, Z. (2019). PubTator central:
+> automated concept annotation for biomedical full text articles.
+> Nucleic acids research, 47(W1), W587-W593.
+
+``` r
+pubtations <- unique(med_cannabis$pmid) |>
+  pubmedr::pmed_get_entities(cores = 6) |>
+  data.table::rbindlist()
+
+pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
+```
+
+| pmid     | tiab     | id  | text                   | identifier   | type     | offset | length |
+|:--------|:--------|:---|:-------------------|:-----------|:--------|:------|:------|
+| 36168342 | abstract | 2   | patients               | 9606         | Species  | 579    | 8      |
+| 36168342 | abstract | 3   | patients               | 9606         | Species  | 2141   | 8      |
+| 36147312 | title    | 1   | patient                | 9606         | Species  | 67     | 7      |
+| 36147312 | abstract | 13  | child                  | 9606         | Species  | 646    | 5      |
+| 36147312 | abstract | 14  | cannabidiol            | MESH:D002185 | Chemical | 685    | 11     |
+| 36147312 | abstract | 15  | CBD                    | MESH:D002185 | Chemical | 698    | 3      |
+| 36147312 | abstract | 16  | neurological disorders | MESH:D009422 | Disease  | 742    | 22     |
+| 36147312 | abstract | 17  | pain                   | MESH:D010146 | Disease  | 774    | 4      |
+| 36147312 | abstract | 18  | cannabinoids           | MESH:D002186 | Chemical | 1202   | 12     |
+| 36147312 | abstract | 19  | pain                   | MESH:D010146 | Disease  | 1277   | 4      |
+| 36147312 | abstract | 20  | seizure reduction      | MESH:D007022 | Disease  | 1315   | 17     |
+| 36147312 | abstract | 21  | anxiety                | MESH:D001007 | Disease  | 1389   | 7      |
+| 36147312 | abstract | 22  | participants           | 9606         | Species  | 1774   | 12     |
+| 36147312 | abstract | 23  | cannabinoid            | MESH:D002186 | Chemical | 2103   | 11     |
+| 36136010 | title    | 1   | Marijuana              | 3483         | Species  | 7      | 9      |
+| 36122967 | title    | 3   | Alcohol                | MESH:D000438 | Chemical | 24     | 7      |
+| 36122967 | title    | 4   | Alcohol                | MESH:D000438 | Chemical | 67     | 7      |
+| 36122967 | title    | 5   | Patients               | 9606         | Species  | 115    | 8      |
+| 36122967 | abstract | 27  | patient                | 9606         | Species  | 209    | 7      |
+| 36122967 | abstract | 28  | marijuana              | 3483         | Species  | 354    | 9      |
