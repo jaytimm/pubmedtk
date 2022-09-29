@@ -91,7 +91,7 @@ med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid),
 ``` r
 med_cannabis_df0 <- data.table::rbindlist(med_cannabis_df)
 
-n <- 10
+n <- 1
 list(pmid = med_cannabis_df0$pmid[n],
      year = med_cannabis_df0$year[n],
      journal = med_cannabis_df0$journal[n],
@@ -100,21 +100,29 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "35289010"
+    ## [1] "36168342"
     ## 
     ## $year
     ## [1] "2022"
     ## 
     ## $journal
-    ## [1] "Addiction (Abingdon, England)"
+    ## [1] "Cureus"
     ## 
     ## $articletitle
-    ## [1] "The iCannToolkit: a tool to embrace measurement of"    
-    ## [2] "medicinal and non-medicinal cannabis use across licit,"
-    ## [3] "illicit and cross-cultural settings."                  
+    ## [1] "Medical Students' Attitudes, Knowledge, and Beliefs about"
+    ## [2] "Medical Cannabis: A Qualitative Descriptive Study."       
     ## 
     ## $abstract
-    ##  [1] "NA" NA   NA   NA   NA   NA   NA   NA   NA   NA
+    ##  [1] "Background There has been increased attention given to"     
+    ##  [2] "understanding the uses of medical cannabis (MC) for symptom"
+    ##  [3] "management of various medical conditions. Physicians"       
+    ##  [4] "receive minimal training in medical school and rely mostly" 
+    ##  [5] "on anecdotal evidence; by proxy, medical students generally"
+    ##  [6] "do receive formal training in MC. It is unknown how medical"
+    ##  [7] "students perceive MC, including its efficacy,"              
+    ##  [8] "appropriateness in medicine, its possible adverse effects," 
+    ##  [9] "and its value for patients. This study investigated medical"
+    ## [10] "students' perceived knowledge, beliefs, and attitudes"
 
 ## Full text from Open Acess PMC
 
@@ -247,6 +255,8 @@ PMID using NIH’s Open Citation Collection and
 > coverage resource. PLoS Biol 17(10): e3000385.
 > <https://doi.org/10.1371/journal.pbio.3000385>
 
+### Summary data
+
 The iCite API returns a host of descriptive/derived citation details per
 record.
 
@@ -255,15 +265,12 @@ citations <- pubmedr::pmed_get_icites(pmids = med_cannabis_df0$pmid,
                                       cores = 6,
                                       ncbi_key = key)
 
-citations |> select(-citation_net) |>
-  slice(4) |>
-  t() |> data.frame() |>
-  knitr::kable()
+c0 <- citations |> select(-citation_net) |> slice(4)
+setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
-|                             | t.slice.select.citations…citation_net…4..    |
+|                             | 34798780                                     |
 |:---------------------------|:-------------------------------------------|
-| pmid                        | 34798780                                     |
 | year                        | 2022                                         |
 | title                       | A Survey of Topical Cannabis Use in Canada.  |
 | authors                     | Farhan Mahmood, Megan M Lim, Mark G Kirchhof |
@@ -286,6 +293,8 @@ citations |> select(-citation_net) |>
 | cited_by_clin               | NA                                           |
 | doi                         | 10.1177/12034754211059025                    |
 | ref_count                   | 25                                           |
+
+### Network data
 
 > Referenced and cited-by PMIDs are returned by the function as a
 > column-list of network edges.

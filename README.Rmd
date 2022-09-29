@@ -96,7 +96,7 @@ med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid),
 ```{r}
 med_cannabis_df0 <- data.table::rbindlist(med_cannabis_df)
 
-n <- 10
+n <- 1
 list(pmid = med_cannabis_df0$pmid[n],
      year = med_cannabis_df0$year[n],
      journal = med_cannabis_df0$journal[n],
@@ -170,6 +170,9 @@ The `pmed_get_icites` function can be used to obtain citation data per PMID usin
 > Hutchins BI, Baker KL, Davis MT, Diwersy MA, Haque E, Harriman RM, et al. (2019) The NIH Open Citation Collection: A public access, broad coverage resource. PLoS Biol 17(10): e3000385. https://doi.org/10.1371/journal.pbio.3000385
 
 
+
+### Summary data
+
 The iCite API returns a host of descriptive/derived citation details per record.  
 
 ```{r}
@@ -177,12 +180,12 @@ citations <- pubmedr::pmed_get_icites(pmids = med_cannabis_df0$pmid,
                                       cores = 6,
                                       ncbi_key = key)
 
-citations |> select(-citation_net) |>
-  slice(4) |>
-  t() |> data.frame() |>
-  knitr::kable()
+c0 <- citations |> select(-citation_net) |> slice(4)
+setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
+
+### Network data
 
 > Referenced and cited-by PMIDs are returned by the function as a column-list of network edges. 
 
