@@ -135,17 +135,52 @@ pmc_med_cannabis |> head() |> knitr::kable()
 | oa_package/38/6d/PMC3507655.tar.gz | Addict Sci Clin Pract. 2012 Apr 19; 7(1):5       | 3507655 | 23186143 | CC BY        |
 | oa_package/cb/ad/PMC3628147.tar.gz | Med Sci Monit. 2011 Dec 1; 17(12):RA249-RA261    | 3628147 | 22129912 | NO-CC CODE   |
 
+### Extract full text articles
+
 ``` r
 med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |> 
   pubmedr::pmed_get_fulltext()
   #pubmedr::pmed_get_fulltext()
 
-samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[6])
+samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[1])
 
 lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ```
 
-    ## list()
+    ## [[1]]
+    ## [1] "1. Introduction Although modern medicine has only recently"
+    ## [2] "begun to rediscover the therapeutic potential of cannabis,"
+    ## [3] "written records of medical use date back thousands of"     
+    ## 
+    ## [[2]]
+    ## [1] "2. Health Canada's Marihuana Medical Access Division The"   
+    ## [2] "federal government's own polling and research suggests that"
+    ## [3] "there are currently over 290,000 medical users in the"      
+    ## 
+    ## [[3]]
+    ## [1] "3. The Canadian Institute of Health Research and the"      
+    ## [2] "Medical Marihuana Research Program Since the court-ordered"
+    ## [3] "implementation of a federal medical cannabis policy in"    
+    ## 
+    ## [[4]]
+    ## [1] "4. Health Canada's Production and Supply Policy and"     
+    ## [2] "Practice In December 2000 Health Canada awarded a"       
+    ## [3] "five-year, $5.7 million contract for the production of a"
+    ## 
+    ## [[5]]
+    ## [1] "5. Community-Based Alternatives to a Centralized Medical"    
+    ## [2] "Cannabis Program\"As far as the distribution of marijuana to"
+    ## [3] "qualified users is concerned, the government might consider" 
+    ## 
+    ## [[6]]
+    ## [1] "6. Discussion and Conclusion Since 1999 the Canadian"       
+    ## [2] "government has spent over $30 million in funding for the"   
+    ## [3] "research, production and distribution of medicinal cannabis"
+    ## 
+    ## [[7]]
+    ## [1] "Competing interests The author is the founder and director"
+    ## [2] "of the Vancouver Island Compassion Society, and receives a"
+    ## [3] "salary from this organization for research, communications"
 
 ## MeSH Annotations
 

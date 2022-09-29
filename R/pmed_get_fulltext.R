@@ -11,12 +11,14 @@ pmed_get_fulltext <- function(x) {
   
   flist <- lapply(1:length(x), function(q){
     
+    ## still downloads to working directory -- !! -- 
     fn <- paste0('https://ftp.ncbi.nlm.nih.gov/pub/pmc/', x[q])
-    download.file(fn, destfile = "tmp.tar.gz")
-    xmls <- grep('xml$', untar("tmp.tar.gz", list = TRUE), value = T)
-    untar("tmp.tar.gz", files = xmls)
-    
-    x0 <- xml2::read_xml(xmls)
+    tmp <- tempfile()
+    download.file(fn, destfile = tmp)
+    xmls <- grep('xml$', untar(tmp, list = TRUE), value = T)
+    untar(tmp, files = xmls, exdir = tempdir())
+ 
+    x0 <- xml2::read_xml(paste0(tempdir(), '/', xmls))
     
     if(length(xml2::xml_children(x0)) == 1){} else{
       

@@ -116,12 +116,15 @@ pmc_med_cannabis |> head() |> knitr::kable()
 ```
 
 
+
+### Extract full text articles
+
 ```{r}
 med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |> 
   pubmedr::pmed_get_fulltext()
   #pubmedr::pmed_get_fulltext()
 
-samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[6])
+samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[1])
 
 lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ```
