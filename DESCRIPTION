@@ -16,11 +16,10 @@ Imports:
     textshape,
     xml2,
     data.table,
-    Matrix,
     httr,
     pbapply,
     jsonlite,
-    stringdist
+    rappdirs
 Suggests: 
     knitr,
     rmarkdown
