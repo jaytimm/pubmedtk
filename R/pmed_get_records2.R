@@ -71,6 +71,9 @@ pmed_get_records1 <- function (x,
     a2 <- xml2::xml_text(
       xml2::xml_find_all(g, ".//ArticleTitle"))
 
+    doi <- xml2::xml_text(
+      xml2::xml_find_all(g, ".//ELocationID"))
+    
     year <- xml2::xml_text(
       xml2::xml_find_all(g, ".//PubDate/Year"))
 
@@ -88,6 +91,7 @@ pmed_get_records1 <- function (x,
     if(length(abstract) == 0){abstract <- NA}
 
     out <- c('pmid' = pm,
+             'doi' = doi,
              'journal' = a1a,
              'articletitle' = a2,
              'year' = year,
@@ -136,6 +140,7 @@ pmed_get_records1 <- function (x,
                             value.var = 'varx')
 
   sum1 <- sum1[, c('pmid',
+                   'doi',
                    'year',
                    'journal',
                    'articletitle',
