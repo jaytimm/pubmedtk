@@ -10,9 +10,23 @@ output:
 <!-- badges: end -->
 
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("/home/jtimm/pCloudDrive/GitHub/packages/render_toc.R")
+```
+
+
+
+`r paste0('*Updated: ', Sys.Date(),'*')` 
+
 # pubmedr
 
 An R package for (1) querying the PubMed database & parsing retrieved records; (2) extracting full text articles from the Open Access subset of the PMC via ftp; (3) obtaining citation data from NIH's Open Citation Collection/[iCite](https://icite.od.nih.gov/); and (4) accessing annotations of biomedical concepts from [PubTator Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
+
+
+```{r echo=FALSE}
+render_toc("/home/jtimm/pCloudDrive/GitHub/packages/pubmedr/README.Rmd")
+```
 
 
 ## Installation
@@ -85,9 +99,9 @@ key <- '4f47f85a9cc03c4031b3dc274c2840b06108'
 
 
 ```{r warning=FALSE}
-med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid), 
+med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid)[1:10], 
                                               with_annotations = T,
-                                              cores = 5, 
+                                              #cores = 5, 
                                               ncbi_key = key) 
 ```
 
@@ -166,7 +180,7 @@ setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 > Referenced and cited-by PMIDs are returned by the function as a column-list of network edges. 
 
 ```{r}
-citations$citation_net[[4]] |> head()
+citations$citation_net[[1]] |> head()
 ```
 
 
@@ -176,8 +190,8 @@ citations$citation_net[[4]] |> head()
 > Wei, C. H., Allot, A., Leaman, R., & Lu, Z. (2019). PubTator central: automated concept annotation for biomedical full text articles. Nucleic acids research, 47(W1), W587-W593.
 
 ```{r}
-pubtations <- unique(med_cannabis$pmid) |>
-  pubmedr::pmed_get_entities(cores = 6) |>
+pubtations <- unique(med_cannabis$pmid)[1:10] |>
+  pubmedr::pmed_get_entities(cores = 2) |>
   data.table::rbindlist()
 
 pubtations |> na.omit() |> slice(1:20) |> knitr::kable()

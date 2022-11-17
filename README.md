@@ -5,6 +5,8 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 [![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
 <!-- badges: end -->
 
+*Updated: 2022-11-17*
+
 # pubmedr
 
 An R package for (1) querying the PubMed database & parsing retrieved
@@ -13,6 +15,25 @@ of the PMC via ftp; (3) obtaining citation data from NIH’s Open Citation
 Collection/[iCite](https://icite.od.nih.gov/); and (4) accessing
 annotations of biomedical concepts from [PubTator
 Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
+
+-   [pubmedr](#pubmedr)
+    -   [Installation](#installation)
+    -   [Usage](#usage)
+    -   [PubMed search](#pubmed-search)
+    -   [Multiple search terms](#multiple-search-terms)
+    -   [Retrieve and parse abstract
+        data](#retrieve-and-parse-abstract-data)
+    -   [MeSH Annotations](#mesh-annotations)
+    -   [Affiliations](#affiliations)
+    -   [Citation data](#citation-data)
+        -   [Summary data](#summary-data)
+        -   [Network data](#network-data)
+    -   [Biomedical concepts via the Pubtator Central
+        API](#biomedical-concepts-via-the-pubtator-central-api)
+    -   [Full text from Open Acess PMC](#full-text-from-open-acess-pmc)
+        -   [Load list of Open Access PMC
+            articles](#load-list-of-open-access-pmc-articles)
+        -   [Extract full text articles](#extract-full-text-articles)
 
 ## Installation
 
@@ -37,19 +58,19 @@ med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana',
                                             fields = c('TIAB','MH'))
 ```
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2680 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2694 records"
 
 ``` r
 head(med_cannabis)
 ```
 
     ##          search_term     pmid
-    ## 1: medical marijuana 36259301
-    ## 2: medical marijuana 36226444
-    ## 3: medical marijuana 36219744
-    ## 4: medical marijuana 36219190
-    ## 5: medical marijuana 36209703
-    ## 6: medical marijuana 36195801
+    ## 1: medical marijuana 36367871
+    ## 2: medical marijuana 36367574
+    ## 3: medical marijuana 36342719
+    ## 4: medical marijuana 36335085
+    ## 5: medical marijuana 36305815
+    ## 6: medical marijuana 36296511
 
 ## Multiple search terms
 
@@ -62,10 +83,10 @@ cannabis_etc <- pubmedr::pmed_search_pubmed(
   fields = c('TIAB','MH'))
 ```
 
-    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 829 records"
-    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 244 records"
-    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 695 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2680 records"
+    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 839 records"
+    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 245 records"
+    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 700 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2694 records"
 
 ``` r
 UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
@@ -74,7 +95,7 @@ UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
               nsets = 4, order.by = "freq")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ## Retrieve and parse abstract data
 
@@ -82,9 +103,9 @@ For quicker abstract retrieval, be sure to get an [API
 key](https://support.nlm.nih.gov/knowledgebase/article/KA-03521/en-us).
 
 ``` r
-med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid), 
+med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid)[1:10], 
                                               with_annotations = T,
-                                              cores = 5, 
+                                              #cores = 5, 
                                               ncbi_key = key) 
 ```
 
@@ -100,29 +121,29 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "36259301"
+    ## [1] "36367871"
     ## 
     ## $year
     ## [1] "2022"
     ## 
     ## $journal
-    ## [1] "The journal of contemporary dental practice"
+    ## [1] "PloS one"
     ## 
     ## $articletitle
-    ## [1] "Post-legalization Consumption of Cannabis at Massachusetts"
-    ## [2] "General Hospital Dental Group."                            
+    ## [1] "From growers to patients: Multi-stakeholder views on the"
+    ## [2] "use of, and access to medicinal cannabis in Australia."  
     ## 
     ## $abstract
-    ##  [1] "The aim of this study was to evaluate the profile of"       
-    ##  [2] "patients undergoing dental treatment in relation to"        
-    ##  [3] "cannabis use. A comprehensive questionnaire was used to"    
-    ##  [4] "address the type of cannabis preparations, route of intake,"
-    ##  [5] "frequency of usage, and potential reasoning for use"        
-    ##  [6] "(recreational vs medical use) of patients from the MGH"     
-    ##  [7] "Dental Group. Seventy-six adult patients completed the"     
-    ##  [8] "survey. Sixty-one percent of the participants were female," 
-    ##  [9] "with the majority (59%) of the participants being ≥51 years"
-    ## [10] "or older. Twelve of the 76 participants (16%) were 18-30"
+    ##  [1] "Patient interest in the use of cannabis-based medicines"    
+    ##  [2] "(CBMs) has increased in Australia. While recent policy and" 
+    ##  [3] "legislative changes have enabled health practitioners to"   
+    ##  [4] "prescribe CBMs for their patients, many patients still"     
+    ##  [5] "struggle to access CBMs. This paper employed a thematic"    
+    ##  [6] "analysis to submissions made to a 2019 Australian"          
+    ##  [7] "government inquiry into current barriers of patient access" 
+    ##  [8] "to medical cannabis. We identified 121 submissions from"    
+    ##  [9] "patients or family members (n = 63), government bodies (n ="
+    ## [10] "5), non-government organisations (i.e., professional health"
 
 ## MeSH Annotations
 
@@ -140,18 +161,18 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE | FORM              |
-|:---------|:-----|:------------------|
-| 36259301 | MeSH | Adult             |
-| 36259301 | MeSH | Humans            |
-| 36259301 | MeSH | Female            |
-| 36259301 | MeSH | Male              |
-| 36259301 | MeSH | Adolescent        |
-| 36259301 | MeSH | Young Adult       |
-| 36259301 | MeSH | Middle Aged       |
-| 36259301 | MeSH | Cannabis          |
-| 36259301 | MeSH | Medical Marijuana |
-| 36259301 | MeSH | Cannabidiol       |
+| ID       | TYPE      | FORM                     |
+|:---------|:----------|:-------------------------|
+| 36367871 | MeSH      | Humans                   |
+| 36367871 | MeSH      | Medical Marijuana        |
+| 36367871 | MeSH      | Australia                |
+| 36367871 | MeSH      | Cannabis                 |
+| 36367871 | MeSH      | Family                   |
+| 36367871 | MeSH      | Drug Industry            |
+| 36367871 | Chemistry | Medical Marijuana        |
+| 36367574 | Keyword   | diffusion tensor imaging |
+| 36367574 | Keyword   | fractional anisotropy    |
+| 36367574 | Keyword   | mean diffusivity         |
 
 ## Affiliations
 
@@ -165,18 +186,18 @@ pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
   knitr::kable()
 ```
 
-| pmid     | Author                 | Affiliation                                                                                                                                                                                                                      |
-|:---|:-------|:------------------------------------------------------------|
-| 36259301 | Parad, Samantha        | Skeletal Biology Research Center, Department of Oral and Maxillofacial Surgery, Massachusetts General Hospital, Harvard School of Dental Medicine, Boston, Massachusetts, United States of America.                              |
-| 36259301 | Hadad, Henrique        | Skeletal Biology Research Center, Department of Oral and Maxillofacial Surgery, Massachusetts General Hospital, Harvard School of Dental Medicine, Boston, Massachusetts, United States of America.                              |
-| 36259301 | Matheus, Henrique R    | Skeletal Biology Research Center, Department of Oral and Maxillofacial Surgery, Massachusetts General Hospital, Harvard School of Dental Medicine, Boston, Massachusetts, United States of America.                              |
-| 36259301 | Klein, Katherine P     | Skeletal Biology Research Center, Department of Oral and Maxillofacial Surgery, Massachusetts General Hospital, Harvard School of Dental Medicine, Boston, Massachusetts, United States of America.                              |
-| 36259301 | Guastaldi, Fernando Ps | Skeletal Biology Research Center, Department of Oral and Maxillofacial Surgery, Massachusetts General Hospital, Harvard School of Dental Medicine, Boston, Massachusetts, United States of America, Phone: +16177265205, e-mail: |
-| 36195790 | Grotenhermen, Franjo   | Zentrum für Cannabismedizin, Bahnhofsallee 9, 32839, Steinheim, Germany.                                                                                                                                                         |
-| 35467781 | Bialas, Patric         | Department of Anesthesiology, Universitätskliniken des Saarlandes, Homburg/Saar, Germany.                                                                                                                                        |
-| 35467781 | Fitzcharles, Mary-Ann  | Alan Edwards Pain Management Unit, McGill University Health Centre, Quebec, Canada.                                                                                                                                              |
-| 35467781 | Fitzcharles, Mary-Ann  | Division of Rheumatology, McGill University Health Centre, Quebec, Canada.                                                                                                                                                       |
-| 35467781 | Klose, Petra           | Department Internal and Integrative Medicine, Kliniken Essen-Mitte, Faculty of Medicine, University of Duisburg-Essen, Essen, Germany.                                                                                           |
+| pmid     | Author                   | Affiliation                                                                                                                            |
+|:----|:----------|:-------------------------------------------------------|
+| 36367871 | Erku, Daniel             | Centre for Applied Health Economics, School of Medicine, Griffith University, Brisbane, Australia.                                     |
+| 36367871 | Erku, Daniel             | Menzies Health Institute Queensland, Griffith University, Gold Coast, Australia.                                                       |
+| 36367871 | Greenwood, Lisa-Marie    | Research School of Psychology, The Australian National University, Canberra, ACT, Australia.                                           |
+| 36367871 | Graham, Myfanwy          | Australian Centre for Cannabinoid Clinical and Research Excellence, University of Newcastle, Newcastle, Australia.                     |
+| 36367871 | Graham, Myfanwy          | Centre for Drug Repurposing & Medicines Research, School of Medicine and Public Health, University of Newcastle, Newcastle, Australia. |
+| 36367871 | Hallinan, Christine Mary | Department of General Practice, Faculty Dentistry Medicine and Health Science, University of Melbourne, Melbourne, Australia.          |
+| 36367871 | Bartschi, Jessica G      | Australian Centre for Cannabinoid Clinical and Research Excellence, University of Newcastle, Newcastle, Australia.                     |
+| 36367871 | Bartschi, Jessica G      | School of Psychology, Faculty of the Arts, Social Sciences and Humanities, University of Wollongong, Wollongong, Australia.            |
+| 36367871 | Bartschi, Jessica G      | Illawarra Health and Medical Research Institute, University of Wollongong, Wollongong, Australia.                                      |
+| 36367871 | Renaud, Elianne          | Australian Centre for Cannabinoid Clinical and Research Excellence, University of Newcastle, Newcastle, Australia.                     |
 
 ## Citation data
 
@@ -203,30 +224,30 @@ c0 <- citations |> select(-citation_net) |> slice(4)
 setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
-|                             | 34888981                                                             |
-|:--------------------|:--------------------------------------------------|
-| year                        | 2022                                                                 |
-| title                       | Coordinating cannabis data collection globally: Policy implications. |
-| authors                     | Susan R B Weiss, Nora D Volkow                                       |
-| journal                     | Addiction                                                            |
-| is_research_article         | Yes                                                                  |
-| relative_citation_ratio     | NA                                                                   |
-| nih_percentile              | NA                                                                   |
-| human                       | 0.5                                                                  |
-| animal                      | 0.5                                                                  |
-| molecular_cellular          | 0                                                                    |
-| apt                         | 0.05                                                                 |
-| is_clinical                 | No                                                                   |
-| citation_count              | 2                                                                    |
-| citations_per_year          | 2                                                                    |
-| expected_citations_per_year | 1.992031                                                             |
-| field_citation_rate         | 3.346756                                                             |
-| provisional                 | No                                                                   |
-| x_coord                     | 0.4330127                                                            |
-| y_coord                     | 0.25                                                                 |
-| cited_by_clin               | NA                                                                   |
-| doi                         | 10.1111/add.15751                                                    |
-| ref_count                   | 8                                                                    |
+|                             | 36292471                                                                                                                                                                 |
+|:----------|:------------------------------------------------------------|
+| year                        | 2022                                                                                                                                                                     |
+| title                       | Paroxysmal Sustained Ventricular Tachycardia with Cardiac Arrest and Myocardial Infarction in 29-Year-Old Man Addicted to Medical Marijuana-It Never Rains but It Pours. |
+| authors                     | Jerzy Wiliński, Anna Skwarek, Iwona Chrzan, Aleksander Zeliaś, Radosław Borek, Dominika Elżbieta Dykla, Maria Bober-Fotopoulos, Dariusz Dudek                            |
+| journal                     | Healthcare (Basel)                                                                                                                                                       |
+| is_research_article         | Yes                                                                                                                                                                      |
+| relative_citation_ratio     | NA                                                                                                                                                                       |
+| nih_percentile              | NA                                                                                                                                                                       |
+| human                       | 0.67                                                                                                                                                                     |
+| animal                      | 0.33                                                                                                                                                                     |
+| molecular_cellular          | 0                                                                                                                                                                        |
+| apt                         | 0.05                                                                                                                                                                     |
+| is_clinical                 | No                                                                                                                                                                       |
+| citation_count              | 0                                                                                                                                                                        |
+| citations_per_year          | 0                                                                                                                                                                        |
+| expected_citations_per_year | NA                                                                                                                                                                       |
+| field_citation_rate         | NA                                                                                                                                                                       |
+| provisional                 | No                                                                                                                                                                       |
+| x_coord                     | 0.2886751                                                                                                                                                                |
+| y_coord                     | 0.5                                                                                                                                                                      |
+| cited_by_clin               | NA                                                                                                                                                                       |
+| doi                         | 10.3390/healthcare10102024                                                                                                                                               |
+| ref_count                   | 0                                                                                                                                                                        |
 
 ### Network data
 
@@ -234,16 +255,16 @@ setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 > column-list of network edges.
 
 ``` r
-citations$citation_net[[4]] |> head()
+citations$citation_net[[1]] |> head()
 ```
 
     ##        from       to
-    ## 1: 34888981 34590359
-    ## 2: 34888981 34156452
-    ## 3: 34888981 28953512
-    ## 4: 34888981 29742676
-    ## 5: 34888981 34888981
-    ## 6: 34888981 32214334
+    ## 1: 36226444 12648025
+    ## 2: 36226444 33008420
+    ## 3: 36226444 27001005
+    ## 4: 36226444 31207470
+    ## 5: 36226444 34676347
+    ## 6: 36226444 21858958
 
 ## Biomedical concepts via the Pubtator Central API
 
@@ -252,35 +273,35 @@ citations$citation_net[[4]] |> head()
 > Nucleic acids research, 47(W1), W587-W593.
 
 ``` r
-pubtations <- unique(med_cannabis$pmid) |>
-  pubmedr::pmed_get_entities(cores = 6) |>
+pubtations <- unique(med_cannabis$pmid)[1:10] |>
+  pubmedr::pmed_get_entities(cores = 2) |>
   data.table::rbindlist()
 
 pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
 ```
 
-| pmid     | tiab     | id  | text         | identifier   | type     | offset | length |
-|:---------|:---------|:----|:-------------|:-------------|:---------|:-------|:-------|
-| 36259301 | abstract | 19  | patients     | 9606         | Species  | 148    | 8      |
-| 36259301 | abstract | 20  | patients     | 9606         | Species  | 424    | 8      |
-| 36259301 | abstract | 21  | patients     | 9606         | Species  | 487    | 8      |
-| 36259301 | abstract | 22  | participants | 9606         | Species  | 543    | 12     |
-| 36259301 | abstract | 23  | participants | 9606         | Species  | 600    | 12     |
-| 36259301 | abstract | 24  | participants | 9606         | Species  | 657    | 12     |
-| 36259301 | abstract | 25  | patients     | 9606         | Species  | 715    | 8      |
-| 36259301 | abstract | 26  | participants | 9606         | Species  | 802    | 12     |
-| 36259301 | abstract | 27  | patients     | 9606         | Species  | 855    | 8      |
-| 36259301 | abstract | 28  | patients     | 9606         | Species  | 884    | 8      |
-| 36259301 | abstract | 29  | patients     | 9606         | Species  | 916    | 8      |
-| 36259301 | abstract | 30  | participants | 9606         | Species  | 1183   | 12     |
-| 36259301 | abstract | 31  | cannabidiol  | MESH:D002185 | Chemical | 1238   | 11     |
-| 36259301 | abstract | 32  | CBD          | MESH:D002185 | Chemical | 1251   | 3      |
-| 36259301 | abstract | 33  | participants | 9606         | Species  | 1337   | 12     |
-| 36259301 | abstract | 34  | participants | 9606         | Species  | 1360   | 12     |
-| 36259301 | abstract | 35  | patients     | 9606         | Species  | 1483   | 8      |
-| 36259301 | abstract | 36  | marijuana    | 3483         | Species  | 1535   | 9      |
-| 36259301 | abstract | 37  | patient      | 9606         | Species  | 1751   | 7      |
-| 36226444 | title    | 2   | Marijuana    | 3483         | Species  | 95     | 9      |
+| pmid     | tiab     | id  | text                         | identifier   | type     | offset | length |
+|:-------|:-------|:---|:----------------------|:----------|:-------|:------|:------|
+| 36367871 | title    | 1   | patients                     | 9606         | Species  | 16     | 8      |
+| 36367871 | abstract | 11  | Patient                      | 9606         | Species  | 124    | 7      |
+| 36367871 | abstract | 12  | patients                     | 9606         | Species  | 321    | 8      |
+| 36367871 | abstract | 13  | patients                     | 9606         | Species  | 336    | 8      |
+| 36367871 | abstract | 14  | patient                      | 9606         | Species  | 501    | 7      |
+| 36367871 | abstract | 15  | patients                     | 9606         | Species  | 581    | 8      |
+| 36367871 | abstract | 16  | patient                      | 9606         | Species  | 1040   | 7      |
+| 36367871 | abstract | 17  | patients                     | 9606         | Species  | 1410   | 8      |
+| 36367871 | abstract | 18  | patients                     | 9606         | Species  | 1693   | 8      |
+| 36367871 | abstract | 19  | patient                      | 9606         | Species  | 2086   | 7      |
+| 36367574 | abstract | 13  | abnormal white matter        | MESH:D056784 | Disease  | 142    | 21     |
+| 36367574 | abstract | 14  | patients                     | 9606         | Species  | 626    | 8      |
+| 36367574 | abstract | 15  | anterior corona radiata      | MESH:C537775 | Disease  | 1078   | 23     |
+| 36367574 | abstract | 16  | patients                     | 9606         | Species  | 1191   | 8      |
+| 36367574 | abstract | 17  | patients                     | 9606         | Species  | 1558   | 8      |
+| 36367574 | abstract | 18  | patients                     | 9606         | Species  | 1638   | 8      |
+| 36367574 | abstract | 19  | cannabidiol                  | MESH:D002185 | Chemical | 1790   | 11     |
+| 36367574 | abstract | 20  | CBD                          | MESH:C546797 | Chemical | 1803   | 3      |
+| 36367574 | abstract | 21  | Delta-9-tetrahydrocannabinol | MESH:D013759 | Chemical | 1825   | 28     |
+| 36367574 | abstract | 22  | patients                     | 9606         | Species  | 2099   | 8      |
 
 ## Full text from Open Acess PMC
 

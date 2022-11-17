@@ -55,6 +55,7 @@ get_annotations <- function(x){
   
   for(i in 1:nrow(mydata)){
     
+    ## q <- mydata$passages[[i]]
     pb1 <- mydata$passages[[i]]$annotations
     names(pb1) <- c('title', 'abstract')
     
@@ -97,7 +98,12 @@ get_annotations <- function(x){
   jj0 <- jj |> data.table::rbindlist(idcol = 'pmid')
   jj0$locations <- jj0$locations |> as.character()
   jj0$locations <- gsub("[^[:digit:],]", "", jj0$locations)
-  jj0[, c('offset', 'length') := data.table::tstrsplit(locations, ",", fixed=TRUE)]
+  
+  jj0[, c('start', 'length') := data.table::tstrsplit(locations, ",", fixed=TRUE)]
+  jj0[, start := as.integer(start)]
+  jj0[, end := start + as.integer(length)]
+
+  jj0[, length := NULL]
   jj0[, locations := NULL]
   return(jj0)
 }
