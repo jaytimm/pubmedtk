@@ -18,7 +18,6 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
 
 -   [pubmedr](#pubmedr)
     -   [Installation](#installation)
-    -   [Usage](#usage)
     -   [PubMed search](#pubmed-search)
     -   [Multiple search terms](#multiple-search-terms)
     -   [Retrieve and parse abstract
@@ -42,8 +41,6 @@ You can download the development version from GitHub with:
 ``` r
 devtools::install_github("jaytimm/pubmedr")
 ```
-
-## Usage
 
 ## PubMed search
 

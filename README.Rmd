@@ -25,7 +25,9 @@ An R package for (1) querying the PubMed database & parsing retrieved records; (
 
 
 ```{r echo=FALSE}
-render_toc("/home/jtimm/pCloudDrive/GitHub/packages/pubmedr/README.Rmd")
+render_toc(filename = "/home/jtimm/pCloudDrive/GitHub/packages/pubmedr/README.Rmd",
+           toc_depth = 3,
+           base_level = 2)
 ```
 
 
@@ -42,8 +44,6 @@ library(dplyr)
 devtools::install_github("jaytimm/pubmedr")
 ```
 
-
-## Usage
 
 ## PubMed search
 
