@@ -35,6 +35,9 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
             articles](#load-list-of-open-access-pmc-articles)
         -   [Extract full text articles](#extract-full-text-articles)
     -   [MeSH extensions](#mesh-extensions)
+        -   [Thesauri](#thesauri)
+        -   [Trees](#trees)
+        -   [Embeddings](#embeddings)
 
 ## Installation
 
@@ -372,3 +375,23 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
     ## [3] "salary from this organization for research, communications"
 
 ## MeSH extensions
+
+### Thesauri
+
+### Trees
+
+### Embeddings
+
+> Noh, J., & Kavuluru, R. (2021). Improved biomedical word embeddings in
+> the transformer era. Journal of Biomedical Informatics, 120, 103867.
+
+<https://www.sciencedirect.com/science/article/pii/S1532046421001969>
+
+> @article{noh2020improved, title={Improved Biomedical Word Embeddings
+> in the Transformer Era}, author={Noh, Jiho and Kavuluru, Ramakanth},
+> journal={arXiv preprint arXiv:2012.11808}, year={2020} }
+
+<https://zenodo.org/record/4383195>
+
+Includes embeddings for the \~30K MeSH descriptors, as well as \~15K
+embeddings for Supplementary Concept Records (SCR).
