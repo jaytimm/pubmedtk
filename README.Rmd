@@ -25,9 +25,9 @@ An R package for (1) querying the PubMed database & parsing retrieved records; (
 
 
 ```{r echo=FALSE}
-render_toc(filename = "/home/jtimm/pCloudDrive/GitHub/packages/pubmedr/README.Rmd",
-           toc_depth = 3,
-           base_level = 2)
+render_toc(filename = "/home/jtimm/pCloudDrive/GitHub/packages/pubmedr/README.Rmd")#,
+           # toc_depth = 3,
+           # base_level = 2)
 ```
 
 
@@ -47,6 +47,8 @@ devtools::install_github("jaytimm/pubmedr")
 
 ## PubMed search
 
+### Basic search
+
 The `pmed_search_pubmed()` function is meant for record-matching searches typically performed using the [PubMed online interface](https://pubmed.ncbi.nlm.nih.gov/).  The `search_term` parameter specifies the query term; the `fields` parameter can be used to specify which fields to query. 
 
 
@@ -63,7 +65,7 @@ head(med_cannabis)
 
 
 
-## Multiple search terms
+### Multiple search terms
 
 ```{r}
 cannabis_etc <- pubmedr::pmed_search_pubmed(
@@ -99,9 +101,9 @@ key <- '4f47f85a9cc03c4031b3dc274c2840b06108'
 
 
 ```{r warning=FALSE}
-med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid)[1:10], 
+med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid)[1:100], 
                                               with_annotations = T,
-                                              #cores = 5, 
+                                              # cores = 5, 
                                               ncbi_key = key) 
 ```
 
@@ -121,7 +123,7 @@ list(pmid = med_cannabis_df0$pmid[n],
 
 
 
-## MeSH Annotations
+### MeSH Annotations
 
 > Annotations are included as a list-column, and can be easily extracted:
 
@@ -140,7 +142,7 @@ annotations |>
 
 
 
-## Affiliations
+### Affiliations
 
 The `pmed_get_affiliations` function extracts author and author affiliation information from PubMed records. 
 
@@ -167,7 +169,7 @@ The iCite API returns a host of descriptive/derived citation details per record.
 
 ```{r}
 citations <- pubmedr::pmed_get_icites(pmids = med_cannabis_df0$pmid, 
-                                      cores = 6,
+                                      #cores = 6,
                                       ncbi_key = key)
 
 c0 <- citations |> select(-citation_net) |> slice(4)
@@ -218,7 +220,12 @@ med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |>
   pubmedr::pmed_get_fulltext()
   #pubmedr::pmed_get_fulltext()
 
-samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[1])
+samp <- med_cannabis_fulltexts |> 
+  filter(pmcid %in% pmc_med_cannabis$PMCID[1])
 
 lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ```
+
+
+
+## MeSH extensions

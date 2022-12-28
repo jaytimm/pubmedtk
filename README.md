@@ -5,7 +5,7 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 [![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
 <!-- badges: end -->
 
-*Updated: 2022-11-17*
+*Updated: 2022-12-28*
 
 # pubmedr
 
@@ -19,11 +19,12 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
 -   [pubmedr](#pubmedr)
     -   [Installation](#installation)
     -   [PubMed search](#pubmed-search)
-    -   [Multiple search terms](#multiple-search-terms)
+        -   [Basic search](#basic-search)
+        -   [Multiple search terms](#multiple-search-terms)
     -   [Retrieve and parse abstract
         data](#retrieve-and-parse-abstract-data)
-    -   [MeSH Annotations](#mesh-annotations)
-    -   [Affiliations](#affiliations)
+        -   [MeSH Annotations](#mesh-annotations)
+        -   [Affiliations](#affiliations)
     -   [Citation data](#citation-data)
         -   [Summary data](#summary-data)
         -   [Network data](#network-data)
@@ -33,6 +34,7 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
         -   [Load list of Open Access PMC
             articles](#load-list-of-open-access-pmc-articles)
         -   [Extract full text articles](#extract-full-text-articles)
+    -   [MeSH extensions](#mesh-extensions)
 
 ## Installation
 
@@ -43,6 +45,8 @@ devtools::install_github("jaytimm/pubmedr")
 ```
 
 ## PubMed search
+
+### Basic search
 
 The `pmed_search_pubmed()` function is meant for record-matching
 searches typically performed using the [PubMed online
@@ -55,21 +59,21 @@ med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana',
                                             fields = c('TIAB','MH'))
 ```
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2694 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2733 records"
 
 ``` r
 head(med_cannabis)
 ```
 
     ##          search_term     pmid
-    ## 1: medical marijuana 36367871
-    ## 2: medical marijuana 36367574
-    ## 3: medical marijuana 36342719
-    ## 4: medical marijuana 36335085
-    ## 5: medical marijuana 36305815
-    ## 6: medical marijuana 36296511
+    ## 1: medical marijuana 36555842
+    ## 2: medical marijuana 36535680
+    ## 3: medical marijuana 36529730
+    ## 4: medical marijuana 36514481
+    ## 5: medical marijuana 36484587
+    ## 6: medical marijuana 36484580
 
-## Multiple search terms
+### Multiple search terms
 
 ``` r
 cannabis_etc <- pubmedr::pmed_search_pubmed(
@@ -80,10 +84,10 @@ cannabis_etc <- pubmedr::pmed_search_pubmed(
   fields = c('TIAB','MH'))
 ```
 
-    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 839 records"
-    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 245 records"
-    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 700 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2694 records"
+    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 857 records"
+    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 252 records"
+    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 927 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2733 records"
 
 ``` r
 UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
@@ -100,9 +104,9 @@ For quicker abstract retrieval, be sure to get an [API
 key](https://support.nlm.nih.gov/knowledgebase/article/KA-03521/en-us).
 
 ``` r
-med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid)[1:10], 
+med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid)[1:100], 
                                               with_annotations = T,
-                                              #cores = 5, 
+                                              # cores = 5, 
                                               ncbi_key = key) 
 ```
 
@@ -118,31 +122,31 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "36367871"
+    ## [1] "36555842"
     ## 
     ## $year
     ## [1] "2022"
     ## 
     ## $journal
-    ## [1] "PloS one"
+    ## [1] "International journal of molecular sciences"
     ## 
     ## $articletitle
-    ## [1] "From growers to patients: Multi-stakeholder views on the"
-    ## [2] "use of, and access to medicinal cannabis in Australia."  
+    ## [1] "Dysmenorrhoea: Can Medicinal Cannabis Bring New Hope for a"
+    ## [2] "Collective Group of Women Suffering in Pain, Globally?"    
     ## 
     ## $abstract
-    ##  [1] "Patient interest in the use of cannabis-based medicines"    
-    ##  [2] "(CBMs) has increased in Australia. While recent policy and" 
-    ##  [3] "legislative changes have enabled health practitioners to"   
-    ##  [4] "prescribe CBMs for their patients, many patients still"     
-    ##  [5] "struggle to access CBMs. This paper employed a thematic"    
-    ##  [6] "analysis to submissions made to a 2019 Australian"          
-    ##  [7] "government inquiry into current barriers of patient access" 
-    ##  [8] "to medical cannabis. We identified 121 submissions from"    
-    ##  [9] "patients or family members (n = 63), government bodies (n ="
-    ## [10] "5), non-government organisations (i.e., professional health"
+    ##  [1] "Dysmenorrhoea effects up to 90% of women of reproductive"   
+    ##  [2] "age, with medical management options including"             
+    ##  [3] "over-the-counter analgesia or hormonal contraception. There"
+    ##  [4] "has been a recent surge in medicinal cannabis research and" 
+    ##  [5] "its analgesic properties. This paper aims to critically"    
+    ##  [6] "investigate the current research of medicinal cannabis for" 
+    ##  [7] "pain relief and to discuss its potential application to"    
+    ##  [8] "treat dysmenorrhoea. Relevant keywords, including medicinal"
+    ##  [9] "cannabis, pain, cannabinoids, tetrahydrocannabinol,"        
+    ## [10] "dysmenorrhoea, and clinical trial, have been searched in"
 
-## MeSH Annotations
+### MeSH Annotations
 
 > Annotations are included as a list-column, and can be easily
 > extracted:
@@ -158,20 +162,20 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE      | FORM                     |
-|:---------|:----------|:-------------------------|
-| 36367871 | MeSH      | Humans                   |
-| 36367871 | MeSH      | Medical Marijuana        |
-| 36367871 | MeSH      | Australia                |
-| 36367871 | MeSH      | Cannabis                 |
-| 36367871 | MeSH      | Family                   |
-| 36367871 | MeSH      | Drug Industry            |
-| 36367871 | Chemistry | Medical Marijuana        |
-| 36367574 | Keyword   | diffusion tensor imaging |
-| 36367574 | Keyword   | fractional anisotropy    |
-| 36367574 | Keyword   | mean diffusivity         |
+| ID       | TYPE      | FORM              |
+|:---------|:----------|:------------------|
+| 36555842 | MeSH      | Female            |
+| 36555842 | MeSH      | Humans            |
+| 36555842 | MeSH      | Dysmenorrhea      |
+| 36555842 | MeSH      | Medical Marijuana |
+| 36555842 | MeSH      | Cannabinoids      |
+| 36555842 | MeSH      | Dronabinol        |
+| 36555842 | MeSH      | Analgesics        |
+| 36555842 | MeSH      | Cannabis          |
+| 36555842 | Chemistry | Medical Marijuana |
+| 36555842 | Chemistry | Cannabinoids      |
 
-## Affiliations
+### Affiliations
 
 The `pmed_get_affiliations` function extracts author and author
 affiliation information from PubMed records.
@@ -183,18 +187,18 @@ pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
   knitr::kable()
 ```
 
-| pmid     | Author                   | Affiliation                                                                                                                            |
-|:----|:----------|:-------------------------------------------------------|
-| 36367871 | Erku, Daniel             | Centre for Applied Health Economics, School of Medicine, Griffith University, Brisbane, Australia.                                     |
-| 36367871 | Erku, Daniel             | Menzies Health Institute Queensland, Griffith University, Gold Coast, Australia.                                                       |
-| 36367871 | Greenwood, Lisa-Marie    | Research School of Psychology, The Australian National University, Canberra, ACT, Australia.                                           |
-| 36367871 | Graham, Myfanwy          | Australian Centre for Cannabinoid Clinical and Research Excellence, University of Newcastle, Newcastle, Australia.                     |
-| 36367871 | Graham, Myfanwy          | Centre for Drug Repurposing & Medicines Research, School of Medicine and Public Health, University of Newcastle, Newcastle, Australia. |
-| 36367871 | Hallinan, Christine Mary | Department of General Practice, Faculty Dentistry Medicine and Health Science, University of Melbourne, Melbourne, Australia.          |
-| 36367871 | Bartschi, Jessica G      | Australian Centre for Cannabinoid Clinical and Research Excellence, University of Newcastle, Newcastle, Australia.                     |
-| 36367871 | Bartschi, Jessica G      | School of Psychology, Faculty of the Arts, Social Sciences and Humanities, University of Wollongong, Wollongong, Australia.            |
-| 36367871 | Bartschi, Jessica G      | Illawarra Health and Medical Research Institute, University of Wollongong, Wollongong, Australia.                                      |
-| 36367871 | Renaud, Elianne          | Australian Centre for Cannabinoid Clinical and Research Excellence, University of Newcastle, Newcastle, Australia.                     |
+| pmid     | Author              | Affiliation                                                                                                                            |
+|:----|:---------|:--------------------------------------------------------|
+| 36555842 | Seifalian, Amelia   | Department of Urogynaecology, St. Mary’s Hospital, Imperial College London, London W2 1NY, UK.                                         |
+| 36555842 | Kenyon, Julian      | The Dove Clinic for Integrated Medicine, Winchester SO21 1RG, UK.                                                                      |
+| 36555842 | Khullar, Vik        | Department of Urogynaecology, St. Mary’s Hospital, Imperial College London, London W2 1NY, UK.                                         |
+| 36455395 | Smart, Rosanna      | AND Corporation, United States of America.                                                                                             |
+| 36455395 | Doremus, Jacqueline | California Polytechnic State University, San Luis Obispo, United States of America.                                                    |
+| 36454553 | Bao, Yuhua          | Department of Population Health Sciences, Weill Cornell Medicine, New York, New York.                                                  |
+| 36454553 | Bao, Yuhua          | Department of Psychiatry, Weill Cornell Medicine, New York, New York.                                                                  |
+| 36454553 | Zhang, Hao          | Department of Population Health Sciences, Weill Cornell Medicine, New York, New York.                                                  |
+| 36454553 | Bruera, Eduardo     | Department of Palliative, Rehabilitation, and Integrative Medicine, The University of Texas MD Anderson Cancer Center, Houston, Texas. |
+| 36454553 | Portenoy, Russell   | JHS Institute for Innovation in Palliative Care, New York, New York.                                                                   |
 
 ## Citation data
 
@@ -214,37 +218,37 @@ record.
 
 ``` r
 citations <- pubmedr::pmed_get_icites(pmids = med_cannabis_df0$pmid, 
-                                      cores = 6,
+                                      #cores = 6,
                                       ncbi_key = key)
 
 c0 <- citations |> select(-citation_net) |> slice(4)
 setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
-|                             | 36292471                                                                                                                                                                 |
-|:----------|:------------------------------------------------------------|
-| year                        | 2022                                                                                                                                                                     |
-| title                       | Paroxysmal Sustained Ventricular Tachycardia with Cardiac Arrest and Myocardial Infarction in 29-Year-Old Man Addicted to Medical Marijuana-It Never Rains but It Pours. |
-| authors                     | Jerzy Wiliński, Anna Skwarek, Iwona Chrzan, Aleksander Zeliaś, Radosław Borek, Dominika Elżbieta Dykla, Maria Bober-Fotopoulos, Dariusz Dudek                            |
-| journal                     | Healthcare (Basel)                                                                                                                                                       |
-| is_research_article         | Yes                                                                                                                                                                      |
-| relative_citation_ratio     | NA                                                                                                                                                                       |
-| nih_percentile              | NA                                                                                                                                                                       |
-| human                       | 0.67                                                                                                                                                                     |
-| animal                      | 0.33                                                                                                                                                                     |
-| molecular_cellular          | 0                                                                                                                                                                        |
-| apt                         | 0.05                                                                                                                                                                     |
-| is_clinical                 | No                                                                                                                                                                       |
-| citation_count              | 0                                                                                                                                                                        |
-| citations_per_year          | 0                                                                                                                                                                        |
-| expected_citations_per_year | NA                                                                                                                                                                       |
-| field_citation_rate         | NA                                                                                                                                                                       |
-| provisional                 | No                                                                                                                                                                       |
-| x_coord                     | 0.2886751                                                                                                                                                                |
-| y_coord                     | 0.5                                                                                                                                                                      |
-| cited_by_clin               | NA                                                                                                                                                                       |
-| doi                         | 10.3390/healthcare10102024                                                                                                                                               |
-| ref_count                   | 0                                                                                                                                                                        |
+|                             | 35866679                                                                                                                                                       |
+|:-----------|:-----------------------------------------------------------|
+| year                        | 2022                                                                                                                                                           |
+| title                       | Incidence and Predictors of Cannabis-Related Poisoning and Mental and Behavioral Disorders among Patients with Medical Cannabis Authorization: A Cohort Study. |
+| authors                     | Arsene Zongo, Cerina Lee, Jason R B Dyck, Jihane El-Mourad, Elaine Hyshka, John G Hanlon, Dean T Eurich                                                        |
+| journal                     | Subst Use Misuse                                                                                                                                               |
+| is_research_article         | Yes                                                                                                                                                            |
+| relative_citation_ratio     | NA                                                                                                                                                             |
+| nih_percentile              | NA                                                                                                                                                             |
+| human                       | 0.5                                                                                                                                                            |
+| animal                      | 0.5                                                                                                                                                            |
+| molecular_cellular          | 0                                                                                                                                                              |
+| apt                         | 0.05                                                                                                                                                           |
+| is_clinical                 | No                                                                                                                                                             |
+| citation_count              | 0                                                                                                                                                              |
+| citations_per_year          | 0                                                                                                                                                              |
+| expected_citations_per_year | NA                                                                                                                                                             |
+| field_citation_rate         | NA                                                                                                                                                             |
+| provisional                 | No                                                                                                                                                             |
+| x_coord                     | 0.4330127                                                                                                                                                      |
+| y_coord                     | 0.25                                                                                                                                                           |
+| cited_by_clin               | NA                                                                                                                                                             |
+| doi                         | 10.1080/10826084.2022.2102193                                                                                                                                  |
+| ref_count                   | 27                                                                                                                                                             |
 
 ### Network data
 
@@ -256,12 +260,12 @@ citations$citation_net[[1]] |> head()
 ```
 
     ##        from       to
-    ## 1: 36226444 12648025
-    ## 2: 36226444 33008420
-    ## 3: 36226444 27001005
-    ## 4: 36226444 31207470
-    ## 5: 36226444 34676347
-    ## 6: 36226444 21858958
+    ## 1: 35821596 30010351
+    ## 2: 35821596 29349253
+    ## 3: 35821596 35196883
+    ## 4: 35821596 35618659
+    ## 5: 35821596 31786435
+    ## 6: 35821596 31296507
 
 ## Biomedical concepts via the Pubtator Central API
 
@@ -277,28 +281,28 @@ pubtations <- unique(med_cannabis$pmid)[1:10] |>
 pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
 ```
 
-| pmid     | tiab     | id  | text                         | identifier   | type     | offset | length |
-|:-------|:-------|:---|:----------------------|:----------|:-------|:------|:------|
-| 36367871 | title    | 1   | patients                     | 9606         | Species  | 16     | 8      |
-| 36367871 | abstract | 11  | Patient                      | 9606         | Species  | 124    | 7      |
-| 36367871 | abstract | 12  | patients                     | 9606         | Species  | 321    | 8      |
-| 36367871 | abstract | 13  | patients                     | 9606         | Species  | 336    | 8      |
-| 36367871 | abstract | 14  | patient                      | 9606         | Species  | 501    | 7      |
-| 36367871 | abstract | 15  | patients                     | 9606         | Species  | 581    | 8      |
-| 36367871 | abstract | 16  | patient                      | 9606         | Species  | 1040   | 7      |
-| 36367871 | abstract | 17  | patients                     | 9606         | Species  | 1410   | 8      |
-| 36367871 | abstract | 18  | patients                     | 9606         | Species  | 1693   | 8      |
-| 36367871 | abstract | 19  | patient                      | 9606         | Species  | 2086   | 7      |
-| 36367574 | abstract | 13  | abnormal white matter        | MESH:D056784 | Disease  | 142    | 21     |
-| 36367574 | abstract | 14  | patients                     | 9606         | Species  | 626    | 8      |
-| 36367574 | abstract | 15  | anterior corona radiata      | MESH:C537775 | Disease  | 1078   | 23     |
-| 36367574 | abstract | 16  | patients                     | 9606         | Species  | 1191   | 8      |
-| 36367574 | abstract | 17  | patients                     | 9606         | Species  | 1558   | 8      |
-| 36367574 | abstract | 18  | patients                     | 9606         | Species  | 1638   | 8      |
-| 36367574 | abstract | 19  | cannabidiol                  | MESH:D002185 | Chemical | 1790   | 11     |
-| 36367574 | abstract | 20  | CBD                          | MESH:C546797 | Chemical | 1803   | 3      |
-| 36367574 | abstract | 21  | Delta-9-tetrahydrocannabinol | MESH:D013759 | Chemical | 1825   | 28     |
-| 36367574 | abstract | 22  | patients                     | 9606         | Species  | 2099   | 8      |
+| pmid     | tiab     | id  | text                 | identifier      | type     | start |  end |
+|:--------|:--------|:---|:-----------------|:-------------|:--------|-----:|-----:|
+| 36555842 | title    | 4   | Women                | 9606            | Species  |    79 |   84 |
+| 36555842 | title    | 5   | Pain                 | MESH:D010146    | Disease  |    98 |  102 |
+| 36555842 | abstract | 21  | women                | 9606            | Species  |   149 |  154 |
+| 36555842 | abstract | 22  | analgesia            | MESH:D000699    | Disease  |   235 |  244 |
+| 36555842 | abstract | 23  | pain                 | MESH:D010146    | Disease  |   452 |  456 |
+| 36555842 | abstract | 25  | pain                 | MESH:D010146    | Disease  |   578 |  582 |
+| 36555842 | abstract | 26  | tetrahydrocannabinol | MESH:D013759    | Chemical |   598 |  618 |
+| 36555842 | abstract | 28  | pain                 | MESH:D010146    | Disease  |  1026 | 1030 |
+| 36555842 | abstract | 29  | pain                 | MESH:D010146    | Disease  |  1126 | 1130 |
+| 36555842 | abstract | 30  | nausea               | MESH:D009325    | Disease  |  1390 | 1396 |
+| 36555842 | abstract | 31  | drowsiness           | MESH:D006970    | Disease  |  1398 | 1408 |
+| 36555842 | abstract | 32  | dry mouth            | MESH:D014987    | Disease  |  1414 | 1423 |
+| 36529730 | abstract | 12  | patient              | 9606            | Species  |  1042 | 1049 |
+| 36529730 | abstract | 13  | patients             | 9606            | Species  |  1153 | 1161 |
+| 36529730 | abstract | 14  | cancer pain          | MESH:D000072716 | Disease  |  1276 | 1287 |
+| 36529730 | abstract | 15  | nausea               | MESH:D009325    | Disease  |  1310 | 1316 |
+| 36529730 | abstract | 16  | vomiting             | MESH:D014839    | Disease  |  1321 | 1329 |
+| 36529730 | abstract | 17  | epilepsy             | MESH:D004827    | Disease  |  1335 | 1343 |
+| 36529730 | abstract | 18  | depression           | MESH:D000275    | Disease  |  1426 | 1436 |
+| 36529730 | abstract | 19  | anxiety              | MESH:D001007    | Disease  |  1438 | 1445 |
 
 ## Full text from Open Acess PMC
 
@@ -326,7 +330,8 @@ med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |>
   pubmedr::pmed_get_fulltext()
   #pubmedr::pmed_get_fulltext()
 
-samp <- med_cannabis_fulltexts |> filter(pmcid %in% pmc_med_cannabis$PMCID[1])
+samp <- med_cannabis_fulltexts |> 
+  filter(pmcid %in% pmc_med_cannabis$PMCID[1])
 
 lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ```
@@ -365,3 +370,5 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
     ## [1] "Competing interests The author is the founder and director"
     ## [2] "of the Vancouver Island Compassion Society, and receives a"
     ## [3] "salary from this organization for research, communications"
+
+## MeSH extensions
