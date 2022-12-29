@@ -5,7 +5,7 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 [![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
 <!-- badges: end -->
 
-*Updated: 2022-12-28*
+*Updated: 2022-12-29*
 
 # pubmedr
 
@@ -23,6 +23,7 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
         -   [Multiple search terms](#multiple-search-terms)
     -   [Retrieve and parse abstract
         data](#retrieve-and-parse-abstract-data)
+        -   [Record details](#record-details)
         -   [MeSH Annotations](#mesh-annotations)
         -   [Affiliations](#affiliations)
     -   [Citation data](#citation-data)
@@ -38,6 +39,9 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
         -   [Thesauri](#thesauri)
         -   [Trees](#trees)
         -   [Embeddings](#embeddings)
+    -   [Utility functions](#utility-functions)
+        -   [Navigating the MeSH
+            ontology](#navigating-the-mesh-ontology)
 
 ## Installation
 
@@ -62,19 +66,19 @@ med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana',
                                             fields = c('TIAB','MH'))
 ```
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2733 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2735 records"
 
 ``` r
 head(med_cannabis)
 ```
 
     ##          search_term     pmid
-    ## 1: medical marijuana 36555842
-    ## 2: medical marijuana 36535680
-    ## 3: medical marijuana 36529730
-    ## 4: medical marijuana 36514481
-    ## 5: medical marijuana 36484587
-    ## 6: medical marijuana 36484580
+    ## 1: medical marijuana 36576970
+    ## 2: medical marijuana 36576904
+    ## 3: medical marijuana 36555842
+    ## 4: medical marijuana 36535680
+    ## 5: medical marijuana 36529730
+    ## 6: medical marijuana 36514481
 
 ### Multiple search terms
 
@@ -90,7 +94,7 @@ cannabis_etc <- pubmedr::pmed_search_pubmed(
     ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 857 records"
     ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 252 records"
     ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 927 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2733 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2735 records"
 
 ``` r
 UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
@@ -102,6 +106,8 @@ UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
 ![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ## Retrieve and parse abstract data
+
+### Record details
 
 For quicker abstract retrieval, be sure to get an [API
 key](https://support.nlm.nih.gov/knowledgebase/article/KA-03521/en-us).
@@ -125,29 +131,30 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "36555842"
+    ## [1] "36576970"
     ## 
     ## $year
     ## [1] "2022"
     ## 
     ## $journal
-    ## [1] "International journal of molecular sciences"
+    ## [1] "Journal of palliative medicine"
     ## 
     ## $articletitle
-    ## [1] "Dysmenorrhoea: Can Medicinal Cannabis Bring New Hope for a"
-    ## [2] "Collective Group of Women Suffering in Pain, Globally?"    
+    ## [1] "A Case Report of Treatment-Resistant Agitation in Dementia"
+    ## [2] "with Lewy Bodies: Medical Marijuana as an Alternative to"  
+    ## [3] "Antipsychotics."                                           
     ## 
     ## $abstract
-    ##  [1] "Dysmenorrhoea effects up to 90% of women of reproductive"   
-    ##  [2] "age, with medical management options including"             
-    ##  [3] "over-the-counter analgesia or hormonal contraception. There"
-    ##  [4] "has been a recent surge in medicinal cannabis research and" 
-    ##  [5] "its analgesic properties. This paper aims to critically"    
-    ##  [6] "investigate the current research of medicinal cannabis for" 
-    ##  [7] "pain relief and to discuss its potential application to"    
-    ##  [8] "treat dysmenorrhoea. Relevant keywords, including medicinal"
-    ##  [9] "cannabis, pain, cannabinoids, tetrahydrocannabinol,"        
-    ## [10] "dysmenorrhoea, and clinical trial, have been searched in"
+    ##  [1] "Palliative care teams are often consulted to assist in"     
+    ##  [2] "treating persistent dementia-related behavioral issues."    
+    ##  [3] "Delta-9-tetrahydrocannabinol (THC) offers an alternative to"
+    ##  [4] "traditional antipsychotic drugs in the long-term management"
+    ##  [5] "of dementia with behavioral change. We present the case of" 
+    ##  [6] "an 85-year-old man with dementia with Lewy bodies with"     
+    ##  [7] "worsening aggression refractory to antipsychotic"           
+    ##  [8] "management. Multiple regimens of antipsychotics failed both"
+    ##  [9] "in the outpatient and inpatient settings. After exhausting" 
+    ## [10] "other options and in the setting of worsening agitation, a"
 
 ### MeSH Annotations
 
@@ -165,18 +172,18 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE      | FORM              |
-|:---------|:----------|:------------------|
-| 36555842 | MeSH      | Female            |
-| 36555842 | MeSH      | Humans            |
-| 36555842 | MeSH      | Dysmenorrhea      |
-| 36555842 | MeSH      | Medical Marijuana |
-| 36555842 | MeSH      | Cannabinoids      |
-| 36555842 | MeSH      | Dronabinol        |
-| 36555842 | MeSH      | Analgesics        |
-| 36555842 | MeSH      | Cannabis          |
-| 36555842 | Chemistry | Medical Marijuana |
-| 36555842 | Chemistry | Cannabinoids      |
+| ID       | TYPE    | FORM                      |
+|:---------|:--------|:--------------------------|
+| 36576970 | Keyword | dementia                  |
+| 36576970 | Keyword | medical cannabis          |
+| 36576970 | Keyword | neurodegenerative disease |
+| 36576904 | Keyword | cannabidiol               |
+| 36576904 | Keyword | cannabis-based substances |
+| 36576904 | Keyword | medical cannabis          |
+| 36576904 | Keyword | medical marijuana         |
+| 36576904 | Keyword | pain management           |
+| 36576904 | Keyword | symptom management        |
+| 36555842 | MeSH    | Female                    |
 
 ### Affiliations
 
@@ -190,18 +197,18 @@ pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
   knitr::kable()
 ```
 
-| pmid     | Author              | Affiliation                                                                                                                            |
+| pmid     | Author                | Affiliation                                                                                                                                 |
 |:----|:---------|:--------------------------------------------------------|
-| 36555842 | Seifalian, Amelia   | Department of Urogynaecology, St. Mary’s Hospital, Imperial College London, London W2 1NY, UK.                                         |
-| 36555842 | Kenyon, Julian      | The Dove Clinic for Integrated Medicine, Winchester SO21 1RG, UK.                                                                      |
-| 36555842 | Khullar, Vik        | Department of Urogynaecology, St. Mary’s Hospital, Imperial College London, London W2 1NY, UK.                                         |
-| 36455395 | Smart, Rosanna      | AND Corporation, United States of America.                                                                                             |
-| 36455395 | Doremus, Jacqueline | California Polytechnic State University, San Luis Obispo, United States of America.                                                    |
-| 36454553 | Bao, Yuhua          | Department of Population Health Sciences, Weill Cornell Medicine, New York, New York.                                                  |
-| 36454553 | Bao, Yuhua          | Department of Psychiatry, Weill Cornell Medicine, New York, New York.                                                                  |
-| 36454553 | Zhang, Hao          | Department of Population Health Sciences, Weill Cornell Medicine, New York, New York.                                                  |
-| 36454553 | Bruera, Eduardo     | Department of Palliative, Rehabilitation, and Integrative Medicine, The University of Texas MD Anderson Cancer Center, Houston, Texas. |
-| 36454553 | Portenoy, Russell   | JHS Institute for Innovation in Palliative Care, New York, New York.                                                                   |
+| 36576970 | Ramm, Rebecca M       | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
+| 36576970 | Lerner, Zachary I     | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
+| 36576970 | Levy-Meeks, Garrett S | Division of Geriatric and Palliative Medicine, Department of Medicine, University of Texas Houston School of Medicine, Houston, Texas, USA. |
+| 36576970 | Burke, Rebecca V      | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
+| 36576970 | Raven, Mary C         | Medical Director, Palliative Medicine Program, Our Lady of the Lake Regional Medical Center, Baton Rouge, Louisiana, USA.                   |
+| 36576970 | Song, Amanda          | Department of Medicine, University of Texas Medical Branch, Galveston, Texas, USA.                                                          |
+| 36576970 | Glass, Marcia H       | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
+| 36467782 | Smolinski, Nicole E   | Pharmaceutical Outcomes and Policy, University of Florida, Gainesville, Florida, USA.                                                       |
+| 36467782 | Smolinski, Nicole E   | Center for Drug Evaluation and Safety (CoDES), University of Florida, Gainesville, Florida, USA.                                            |
+| 36467782 | Smolinski, Nicole E   | Consortium for Medical Marijuana Clinical Outcomes Research, University of Florida, Gainesville, Florida, USA.                              |
 
 ## Citation data
 
@@ -228,30 +235,30 @@ c0 <- citations |> select(-citation_net) |> slice(4)
 setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
-|                             | 35866679                                                                                                                                                       |
-|:-----------|:-----------------------------------------------------------|
-| year                        | 2022                                                                                                                                                           |
-| title                       | Incidence and Predictors of Cannabis-Related Poisoning and Mental and Behavioral Disorders among Patients with Medical Cannabis Authorization: A Cohort Study. |
-| authors                     | Arsene Zongo, Cerina Lee, Jason R B Dyck, Jihane El-Mourad, Elaine Hyshka, John G Hanlon, Dean T Eurich                                                        |
-| journal                     | Subst Use Misuse                                                                                                                                               |
-| is_research_article         | Yes                                                                                                                                                            |
-| relative_citation_ratio     | NA                                                                                                                                                             |
-| nih_percentile              | NA                                                                                                                                                             |
-| human                       | 0.5                                                                                                                                                            |
-| animal                      | 0.5                                                                                                                                                            |
-| molecular_cellular          | 0                                                                                                                                                              |
-| apt                         | 0.05                                                                                                                                                           |
-| is_clinical                 | No                                                                                                                                                             |
-| citation_count              | 0                                                                                                                                                              |
-| citations_per_year          | 0                                                                                                                                                              |
-| expected_citations_per_year | NA                                                                                                                                                             |
-| field_citation_rate         | NA                                                                                                                                                             |
-| provisional                 | No                                                                                                                                                             |
-| x_coord                     | 0.4330127                                                                                                                                                      |
-| y_coord                     | 0.25                                                                                                                                                           |
-| cited_by_clin               | NA                                                                                                                                                             |
-| doi                         | 10.1080/10826084.2022.2102193                                                                                                                                  |
-| ref_count                   | 27                                                                                                                                                             |
+|                             | 35868317                                                                           |
+|:------------------|:----------------------------------------------------|
+| year                        | 2022                                                                               |
+| title                       | \[Cannabis in oncology - much ado about nothing?\]                                 |
+| authors                     | Anton Burkhard-Meier, Constanze Rémi, Lars H Lindner, Michael von Bergwelt-Baildon |
+| journal                     | Dtsch Med Wochenschr                                                               |
+| is_research_article         | Yes                                                                                |
+| relative_citation_ratio     | NA                                                                                 |
+| nih_percentile              | NA                                                                                 |
+| human                       | 1                                                                                  |
+| animal                      | 0                                                                                  |
+| molecular_cellular          | 0                                                                                  |
+| apt                         | 0.05                                                                               |
+| is_clinical                 | No                                                                                 |
+| citation_count              | 0                                                                                  |
+| citations_per_year          | 0                                                                                  |
+| expected_citations_per_year | NA                                                                                 |
+| field_citation_rate         | NA                                                                                 |
+| provisional                 | No                                                                                 |
+| x_coord                     | 0                                                                                  |
+| y_coord                     | 1                                                                                  |
+| cited_by_clin               | NA                                                                                 |
+| doi                         | 10.1055/a-1872-2749                                                                |
+| ref_count                   | 32                                                                                 |
 
 ### Network data
 
@@ -263,12 +270,8 @@ citations$citation_net[[1]] |> head()
 ```
 
     ##        from       to
-    ## 1: 35821596 30010351
-    ## 2: 35821596 29349253
-    ## 3: 35821596 35196883
-    ## 4: 35821596 35618659
-    ## 5: 35821596 31786435
-    ## 6: 35821596 31296507
+    ## 1: 35856517     <NA>
+    ## 2:     <NA> 35856517
 
 ## Biomedical concepts via the Pubtator Central API
 
@@ -286,6 +289,19 @@ pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
 
 | pmid     | tiab     | id  | text                 | identifier      | type     | start |  end |
 |:--------|:--------|:---|:-----------------|:-------------|:--------|-----:|-----:|
+| 36576904 | title    | 5   | Marijuana            | 3483            | Species  |    76 |   85 |
+| 36576904 | title    | 6   | Cannabidiol          | MESH:D002185    | Chemical |    90 |  101 |
+| 36576904 | title    | 7   | Pain                 | MESH:D010146    | Disease  |   123 |  127 |
+| 36576904 | title    | 8   | Cancer               | MESH:D009369    | Disease  |   150 |  156 |
+| 36576904 | title    | 9   | Patients             | 9606            | Species  |   157 |  165 |
+| 36576904 | abstract | 18  | marijuana            | 3483            | Species  |   187 |  196 |
+| 36576904 | abstract | 19  | cannabidiol          | MESH:D002185    | Chemical |   206 |  217 |
+| 36576904 | abstract | 20  | pain                 | MESH:D010146    | Disease  |   269 |  273 |
+| 36576904 | abstract | 21  | cancer               | MESH:D009369    | Disease  |   461 |  467 |
+| 36576904 | abstract | 22  | pain                 | MESH:D010146    | Disease  |   479 |  483 |
+| 36576904 | abstract | 23  | cancer pain          | MESH:D000072716 | Disease  |   760 |  771 |
+| 36576904 | abstract | 24  | cancer pain          | MESH:D000072716 | Disease  |   876 |  887 |
+| 36576904 | abstract | 25  | pain                 | MESH:D010146    | Disease  |  1056 | 1060 |
 | 36555842 | title    | 4   | Women                | 9606            | Species  |    79 |   84 |
 | 36555842 | title    | 5   | Pain                 | MESH:D010146    | Disease  |    98 |  102 |
 | 36555842 | abstract | 21  | women                | 9606            | Species  |   149 |  154 |
@@ -293,19 +309,6 @@ pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
 | 36555842 | abstract | 23  | pain                 | MESH:D010146    | Disease  |   452 |  456 |
 | 36555842 | abstract | 25  | pain                 | MESH:D010146    | Disease  |   578 |  582 |
 | 36555842 | abstract | 26  | tetrahydrocannabinol | MESH:D013759    | Chemical |   598 |  618 |
-| 36555842 | abstract | 28  | pain                 | MESH:D010146    | Disease  |  1026 | 1030 |
-| 36555842 | abstract | 29  | pain                 | MESH:D010146    | Disease  |  1126 | 1130 |
-| 36555842 | abstract | 30  | nausea               | MESH:D009325    | Disease  |  1390 | 1396 |
-| 36555842 | abstract | 31  | drowsiness           | MESH:D006970    | Disease  |  1398 | 1408 |
-| 36555842 | abstract | 32  | dry mouth            | MESH:D014987    | Disease  |  1414 | 1423 |
-| 36529730 | abstract | 12  | patient              | 9606            | Species  |  1042 | 1049 |
-| 36529730 | abstract | 13  | patients             | 9606            | Species  |  1153 | 1161 |
-| 36529730 | abstract | 14  | cancer pain          | MESH:D000072716 | Disease  |  1276 | 1287 |
-| 36529730 | abstract | 15  | nausea               | MESH:D009325    | Disease  |  1310 | 1316 |
-| 36529730 | abstract | 16  | vomiting             | MESH:D014839    | Disease  |  1321 | 1329 |
-| 36529730 | abstract | 17  | epilepsy             | MESH:D004827    | Disease  |  1335 | 1343 |
-| 36529730 | abstract | 18  | depression           | MESH:D000275    | Disease  |  1426 | 1436 |
-| 36529730 | abstract | 19  | anxiety              | MESH:D001007    | Disease  |  1438 | 1445 |
 
 ## Full text from Open Acess PMC
 
@@ -395,3 +398,33 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 
 Includes embeddings for the \~30K MeSH descriptors, as well as \~15K
 embeddings for Supplementary Concept Records (SCR).
+
+``` r
+embeddings <- pubmedr::data_mesh_embeddings()
+
+pubmedr::pmed_get_neighbors(x = embeddings,
+                            target = 'Rituximab') |>
+  
+  left_join(pubmedr::data_mesh_thesuarus() |>
+              select(DescriptorName, DescriptorUI) |>
+              distinct(), 
+            by = c('term2' = 'DescriptorName'))|>
+  knitr::kable()
+```
+
+| rank | term1     | term2                | value | DescriptorUI |
+|-----:|:----------|:---------------------|------:|:-------------|
+|    1 | Rituximab | Rituximab            | 1.000 | D000069283   |
+|    2 | Rituximab | fludarabine          | 0.568 | C024352      |
+|    3 | Rituximab | Alemtuzumab          | 0.562 | D000074323   |
+|    4 | Rituximab | obinutuzumab         | 0.554 | C543332      |
+|    5 | Rituximab | Lymphoma, B-Cell     | 0.549 | D016393      |
+|    6 | Rituximab | galiximab            | 0.542 | C437823      |
+|    7 | Rituximab | tocilizumab          | 0.534 | C502936      |
+|    8 | Rituximab | ibritumomab tiuxetan | 0.530 | C422802      |
+|    9 | Rituximab | belimumab            | 0.528 | C511911      |
+|   10 | Rituximab | Prednisone           | 0.511 | D011241      |
+
+## Utility functions
+
+### Navigating the MeSH ontology

@@ -87,6 +87,8 @@ UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
 
 ## Retrieve and parse abstract data 
 
+### Record details
+
 For quicker abstract retrieval, be sure to get an [API key](https://support.nlm.nih.gov/knowledgebase/article/KA-03521/en-us).    
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
@@ -250,5 +252,28 @@ https://www.sciencedirect.com/science/article/pii/S1532046421001969
 https://zenodo.org/record/4383195
 
 Includes embeddings for the ~30K MeSH descriptors, as well as ~15K embeddings for Supplementary Concept Records (SCR).
+
+
+```{r}
+embeddings <- pubmedr::data_mesh_embeddings()
+
+pubmedr::pmed_get_neighbors(x = embeddings,
+                            target = 'Rituximab') |>
+  
+  left_join(pubmedr::data_mesh_thesuarus() |>
+              select(DescriptorName, DescriptorUI) |>
+              distinct(), 
+            by = c('term2' = 'DescriptorName'))|>
+  knitr::kable()
+```
+
+
+
+## Utility functions
+
+### Navigating the MeSH ontology
+
+
+
 
 
