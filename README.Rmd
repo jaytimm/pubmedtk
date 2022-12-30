@@ -242,13 +242,6 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 
 https://www.sciencedirect.com/science/article/pii/S1532046421001969
 
-> @article{noh2020improved,
-  title={Improved Biomedical Word Embeddings in the Transformer Era},
-  author={Noh, Jiho and Kavuluru, Ramakanth},
-  journal={arXiv preprint arXiv:2012.11808},
-  year={2020}
-}
-
 https://zenodo.org/record/4383195
 
 Includes embeddings for the ~30K MeSH descriptors, as well as ~15K embeddings for Supplementary Concept Records (SCR).
@@ -266,14 +259,3 @@ pubmedr::pmed_get_neighbors(x = embeddings,
             by = c('term2' = 'DescriptorName'))|>
   knitr::kable()
 ```
-
-
-
-## Utility functions
-
-### Navigating the MeSH ontology
-
-
-
-
-

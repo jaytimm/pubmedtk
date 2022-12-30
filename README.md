@@ -5,7 +5,7 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 [![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
 <!-- badges: end -->
 
-*Updated: 2022-12-29*
+*Updated: 2022-12-30*
 
 # pubmedr
 
@@ -39,9 +39,6 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
         -   [Thesauri](#thesauri)
         -   [Trees](#trees)
         -   [Embeddings](#embeddings)
-    -   [Utility functions](#utility-functions)
-        -   [Navigating the MeSH
-            ontology](#navigating-the-mesh-ontology)
 
 ## Installation
 
@@ -93,7 +90,7 @@ cannabis_etc <- pubmedr::pmed_search_pubmed(
 
     ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 857 records"
     ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 252 records"
-    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 927 records"
+    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 928 records"
     ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2735 records"
 
 ``` r
@@ -390,10 +387,6 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 
 <https://www.sciencedirect.com/science/article/pii/S1532046421001969>
 
-> @article{noh2020improved, title={Improved Biomedical Word Embeddings
-> in the Transformer Era}, author={Noh, Jiho and Kavuluru, Ramakanth},
-> journal={arXiv preprint arXiv:2012.11808}, year={2020} }
-
 <https://zenodo.org/record/4383195>
 
 Includes embeddings for the \~30K MeSH descriptors, as well as \~15K
@@ -424,7 +417,3 @@ pubmedr::pmed_get_neighbors(x = embeddings,
 |    8 | Rituximab | ibritumomab tiuxetan | 0.530 | C422802      |
 |    9 | Rituximab | belimumab            | 0.528 | C511911      |
 |   10 | Rituximab | Prednisone           | 0.511 | D011241      |
-
-## Utility functions
-
-### Navigating the MeSH ontology
