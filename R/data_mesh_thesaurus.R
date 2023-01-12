@@ -27,6 +27,8 @@ data_mesh_thesuarus <- function() {
   
   a1 <- readRDS(df)
   a2 <- readRDS(df2)
-  data.table::rbindlist(list(a1, a2), fill = T)
+  colnames(a2) <- colnames(a1)
+  
+  data.table::rbindlist(list(a1, a2))
   
 }

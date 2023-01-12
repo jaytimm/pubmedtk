@@ -5,7 +5,7 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 [![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
 <!-- badges: end -->
 
-*Updated: 2022-12-30*
+*Updated: 2023-01-12*
 
 # pubmedr
 
@@ -38,6 +38,7 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
     -   [MeSH extensions](#mesh-extensions)
         -   [Thesauri](#thesauri)
         -   [Trees](#trees)
+        -   [Pharmacological Actions](#pharmacological-actions)
         -   [Embeddings](#embeddings)
 
 ## Installation
@@ -63,19 +64,19 @@ med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana',
                                             fields = c('TIAB','MH'))
 ```
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2735 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2742 records"
 
 ``` r
 head(med_cannabis)
 ```
 
     ##          search_term     pmid
-    ## 1: medical marijuana 36576970
-    ## 2: medical marijuana 36576904
-    ## 3: medical marijuana 36555842
-    ## 4: medical marijuana 36535680
-    ## 5: medical marijuana 36529730
-    ## 6: medical marijuana 36514481
+    ## 1: medical marijuana 36626471
+    ## 2: medical marijuana 36623871
+    ## 3: medical marijuana 36609049
+    ## 4: medical marijuana 36607641
+    ## 5: medical marijuana 36600251
+    ## 6: medical marijuana 36576970
 
 ### Multiple search terms
 
@@ -88,10 +89,10 @@ cannabis_etc <- pubmedr::pmed_search_pubmed(
   fields = c('TIAB','MH'))
 ```
 
-    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 857 records"
-    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 252 records"
-    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 928 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2735 records"
+    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 862 records"
+    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 253 records"
+    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 929 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2742 records"
 
 ``` r
 UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
@@ -128,30 +129,29 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "36576970"
+    ## [1] "36626471"
     ## 
     ## $year
     ## [1] "2022"
     ## 
     ## $journal
-    ## [1] "Journal of palliative medicine"
+    ## [1] "Medicine"
     ## 
     ## $articletitle
-    ## [1] "A Case Report of Treatment-Resistant Agitation in Dementia"
-    ## [2] "with Lewy Bodies: Medical Marijuana as an Alternative to"  
-    ## [3] "Antipsychotics."                                           
+    ## [1] "Review of systemic and syndromic complications of cannabis"
+    ## [2] "use: A review."                                            
     ## 
     ## $abstract
-    ##  [1] "Palliative care teams are often consulted to assist in"     
-    ##  [2] "treating persistent dementia-related behavioral issues."    
-    ##  [3] "Delta-9-tetrahydrocannabinol (THC) offers an alternative to"
-    ##  [4] "traditional antipsychotic drugs in the long-term management"
-    ##  [5] "of dementia with behavioral change. We present the case of" 
-    ##  [6] "an 85-year-old man with dementia with Lewy bodies with"     
-    ##  [7] "worsening aggression refractory to antipsychotic"           
-    ##  [8] "management. Multiple regimens of antipsychotics failed both"
-    ##  [9] "in the outpatient and inpatient settings. After exhausting" 
-    ## [10] "other options and in the setting of worsening agitation, a"
+    ##  [1] "Prescribed and non-prescribed cannabis use is common."      
+    ##  [2] "Providers in specialties treating chronic pain - primary"   
+    ##  [3] "care, pain management, and neurology-will be coming across" 
+    ##  [4] "medical cannabis as a treatment for chronic pain,"          
+    ##  [5] "regardless of whether they are prescribers. It is important"
+    ##  [6] "to be aware of the systemic and syndromic complications of" 
+    ##  [7] "acute and chronic cannabis use in the differential"         
+    ##  [8] "diagnosis of cardiac, cardiovascular, cerebrovascular,"     
+    ##  [9] "gastrointestinal, and psychiatric disorders. Medical"       
+    ## [10] "cannabis is legal in 36 states. Studies have shown several"
 
 ### MeSH Annotations
 
@@ -169,18 +169,18 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE    | FORM                      |
-|:---------|:--------|:--------------------------|
-| 36576970 | Keyword | dementia                  |
-| 36576970 | Keyword | medical cannabis          |
-| 36576970 | Keyword | neurodegenerative disease |
-| 36576904 | Keyword | cannabidiol               |
-| 36576904 | Keyword | cannabis-based substances |
-| 36576904 | Keyword | medical cannabis          |
-| 36576904 | Keyword | medical marijuana         |
-| 36576904 | Keyword | pain management           |
-| 36576904 | Keyword | symptom management        |
-| 36555842 | MeSH    | Female                    |
+| ID       | TYPE      | FORM                          |
+|:---------|:----------|:------------------------------|
+| 36626471 | MeSH      | Humans                        |
+| 36626471 | MeSH      | Cannabis                      |
+| 36626471 | MeSH      | Medical Marijuana             |
+| 36626471 | MeSH      | Chronic Pain                  |
+| 36626471 | MeSH      | Hallucinogens                 |
+| 36626471 | MeSH      | Pain Management               |
+| 36626471 | MeSH      | Cannabinoid Receptor Agonists |
+| 36626471 | Chemistry | Medical Marijuana             |
+| 36626471 | Chemistry | Hallucinogens                 |
+| 36626471 | Chemistry | Cannabinoid Receptor Agonists |
 
 ### Affiliations
 
@@ -194,18 +194,18 @@ pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
   knitr::kable()
 ```
 
-| pmid     | Author                | Affiliation                                                                                                                                 |
-|:----|:---------|:--------------------------------------------------------|
-| 36576970 | Ramm, Rebecca M       | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
-| 36576970 | Lerner, Zachary I     | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
-| 36576970 | Levy-Meeks, Garrett S | Division of Geriatric and Palliative Medicine, Department of Medicine, University of Texas Houston School of Medicine, Houston, Texas, USA. |
-| 36576970 | Burke, Rebecca V      | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
-| 36576970 | Raven, Mary C         | Medical Director, Palliative Medicine Program, Our Lady of the Lake Regional Medical Center, Baton Rouge, Louisiana, USA.                   |
-| 36576970 | Song, Amanda          | Department of Medicine, University of Texas Medical Branch, Galveston, Texas, USA.                                                          |
-| 36576970 | Glass, Marcia H       | Department of Medicine, Tulane University School of Medicine, New Orleans, Louisiana, USA.                                                  |
-| 36467782 | Smolinski, Nicole E   | Pharmaceutical Outcomes and Policy, University of Florida, Gainesville, Florida, USA.                                                       |
-| 36467782 | Smolinski, Nicole E   | Center for Drug Evaluation and Safety (CoDES), University of Florida, Gainesville, Florida, USA.                                            |
-| 36467782 | Smolinski, Nicole E   | Consortium for Medical Marijuana Clinical Outcomes Research, University of Florida, Gainesville, Florida, USA.                              |
+| pmid     | Author              | Affiliation                                                                                        |
+|:-----|:-----------|:-----------------------------------------------------|
+| 36626471 | Shah, Jay           | University of Queensland/Ochsner Clinical School, Brisbane, QLD, Australia.                        |
+| 36626471 | Fermo, Olga         | Department of Neurology, Mayo Clinic Florida, Jacksonville, FL, USA.                               |
+| 36535680 | Zannese, Kevin      | Ottawa, Ont.                                                                                       |
+| 36529730 | Bawa, Zeeta         | The University of Sydney, Lambert Initiative for Cannabinoid Therapeutics, Sydney, NSW, Australia. |
+| 36529730 | Bawa, Zeeta         | Brain and Mind Centre, The University of Sydney, Sydney, NSW, Australia.                           |
+| 36529730 | Bawa, Zeeta         | Faculty of Science, School of Psychology, The University of Sydney, Sydney, NSW, Australia.        |
+| 36529730 | Bawa, Zeeta         | Sydney Pharmacy School, The University of Sydney, Sydney, NSW, Australia.                          |
+| 36529730 | McCartney, Danielle | The University of Sydney, Lambert Initiative for Cannabinoid Therapeutics, Sydney, NSW, Australia. |
+| 36529730 | McCartney, Danielle | Brain and Mind Centre, The University of Sydney, Sydney, NSW, Australia.                           |
+| 36529730 | McCartney, Danielle | Faculty of Science, School of Psychology, The University of Sydney, Sydney, NSW, Australia.        |
 
 ## Citation data
 
@@ -232,30 +232,30 @@ c0 <- citations |> select(-citation_net) |> slice(4)
 setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
-|                             | 35868317                                                                           |
-|:------------------|:----------------------------------------------------|
-| year                        | 2022                                                                               |
-| title                       | \[Cannabis in oncology - much ado about nothing?\]                                 |
-| authors                     | Anton Burkhard-Meier, Constanze Rémi, Lars H Lindner, Michael von Bergwelt-Baildon |
-| journal                     | Dtsch Med Wochenschr                                                               |
-| is_research_article         | Yes                                                                                |
-| relative_citation_ratio     | NA                                                                                 |
-| nih_percentile              | NA                                                                                 |
-| human                       | 1                                                                                  |
-| animal                      | 0                                                                                  |
-| molecular_cellular          | 0                                                                                  |
-| apt                         | 0.05                                                                               |
-| is_clinical                 | No                                                                                 |
-| citation_count              | 0                                                                                  |
-| citations_per_year          | 0                                                                                  |
-| expected_citations_per_year | NA                                                                                 |
-| field_citation_rate         | NA                                                                                 |
-| provisional                 | No                                                                                 |
-| x_coord                     | 0                                                                                  |
-| y_coord                     | 1                                                                                  |
-| cited_by_clin               | NA                                                                                 |
-| doi                         | 10.1055/a-1872-2749                                                                |
-| ref_count                   | 32                                                                                 |
+|                             | 35914740                                             |
+|:------------------------|:----------------------------------------------|
+| year                        | 2022                                                 |
+| title                       | Medical marijuana: what are we talking about?        |
+| authors                     | César Augusto Trinta Weber, Antônio Geraldo da Silva |
+| journal                     | Braz J Psychiatry                                    |
+| is_research_article         | No                                                   |
+| relative_citation_ratio     | NA                                                   |
+| nih_percentile              | NA                                                   |
+| human                       | 1                                                    |
+| animal                      | 0                                                    |
+| molecular_cellular          | 0                                                    |
+| apt                         | 0.05                                                 |
+| is_clinical                 | No                                                   |
+| citation_count              | 0                                                    |
+| citations_per_year          | 0                                                    |
+| expected_citations_per_year | NA                                                   |
+| field_citation_rate         | NA                                                   |
+| provisional                 | No                                                   |
+| x_coord                     | 0                                                    |
+| y_coord                     | -0.75                                                |
+| cited_by_clin               | NA                                                   |
+| doi                         | 10.47626/1516-4446-2022-2608                         |
+| ref_count                   | 0                                                    |
 
 ### Network data
 
@@ -267,8 +267,12 @@ citations$citation_net[[1]] |> head()
 ```
 
     ##        from       to
-    ## 1: 35856517     <NA>
-    ## 2:     <NA> 35856517
+    ## 1: 35907959 18929686
+    ## 2: 35907959 34590094
+    ## 3: 35907959 30092752
+    ## 4: 35907959 35620292
+    ## 5: 35907959 14739871
+    ## 6: 35907959 33093741
 
 ## Biomedical concepts via the Pubtator Central API
 
@@ -284,28 +288,28 @@ pubtations <- unique(med_cannabis$pmid)[1:10] |>
 pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
 ```
 
-| pmid     | tiab     | id  | text                 | identifier      | type     | start |  end |
-|:--------|:--------|:---|:-----------------|:-------------|:--------|-----:|-----:|
-| 36576904 | title    | 5   | Marijuana            | 3483            | Species  |    76 |   85 |
-| 36576904 | title    | 6   | Cannabidiol          | MESH:D002185    | Chemical |    90 |  101 |
-| 36576904 | title    | 7   | Pain                 | MESH:D010146    | Disease  |   123 |  127 |
-| 36576904 | title    | 8   | Cancer               | MESH:D009369    | Disease  |   150 |  156 |
-| 36576904 | title    | 9   | Patients             | 9606            | Species  |   157 |  165 |
-| 36576904 | abstract | 18  | marijuana            | 3483            | Species  |   187 |  196 |
-| 36576904 | abstract | 19  | cannabidiol          | MESH:D002185    | Chemical |   206 |  217 |
-| 36576904 | abstract | 20  | pain                 | MESH:D010146    | Disease  |   269 |  273 |
-| 36576904 | abstract | 21  | cancer               | MESH:D009369    | Disease  |   461 |  467 |
-| 36576904 | abstract | 22  | pain                 | MESH:D010146    | Disease  |   479 |  483 |
-| 36576904 | abstract | 23  | cancer pain          | MESH:D000072716 | Disease  |   760 |  771 |
-| 36576904 | abstract | 24  | cancer pain          | MESH:D000072716 | Disease  |   876 |  887 |
-| 36576904 | abstract | 25  | pain                 | MESH:D010146    | Disease  |  1056 | 1060 |
-| 36555842 | title    | 4   | Women                | 9606            | Species  |    79 |   84 |
-| 36555842 | title    | 5   | Pain                 | MESH:D010146    | Disease  |    98 |  102 |
-| 36555842 | abstract | 21  | women                | 9606            | Species  |   149 |  154 |
-| 36555842 | abstract | 22  | analgesia            | MESH:D000699    | Disease  |   235 |  244 |
-| 36555842 | abstract | 23  | pain                 | MESH:D010146    | Disease  |   452 |  456 |
-| 36555842 | abstract | 25  | pain                 | MESH:D010146    | Disease  |   578 |  582 |
-| 36555842 | abstract | 26  | tetrahydrocannabinol | MESH:D013759    | Chemical |   598 |  618 |
+| pmid     | tiab     | id  | text                              | identifier                       | type     | start | end |
+|:------|:------|:--|:---------------------|:--------------------|:------|----:|---:|
+| 36626471 | title    | 1   | syndromic                         | MESH:D061325                     | Disease  |    23 |  32 |
+| 36626471 | abstract | 7   | pain                              | MESH:D010146                     | Disease  |   189 | 193 |
+| 36626471 | abstract | 8   | pain                              | MESH:D010146                     | Disease  |   210 | 214 |
+| 36626471 | abstract | 9   | chronic pain                      | MESH:D059350                     | Disease  |   299 | 311 |
+| 36626471 | abstract | 10  | syndromic complications           | MESH:D005117                     | Disease  |   405 | 428 |
+| 36626471 | abstract | 11  | psychiatric disorders             | MESH:D001523                     | Disease  |   560 | 581 |
+| 36623871 | title    | 1   | autotaxin                         | 5168                             | Gene     |    30 |  39 |
+| 36623871 | abstract | 20  | Autotaxin                         | 5168                             | Gene     |    73 |  82 |
+| 36623871 | abstract | 21  | lysophosphatidic acid             | MESH:C032881                     | Chemical |   123 | 144 |
+| 36623871 | abstract | 22  | lysophosphatidylcholine           | MESH:D008244                     | Chemical |   156 | 179 |
+| 36623871 | abstract | 23  | LPA1-6                            | 1902;9170;23566;2846;57121;10161 | Gene     |   274 | 280 |
+| 36623871 | abstract | 24  | ATX                               | 5168                             | Gene     |   287 | 290 |
+| 36623871 | abstract | 25  | Delta9-trans-tetrahydrocannabinol | MESH:D013759                     | Chemical |   432 | 465 |
+| 36623871 | abstract | 26  | THC                               | MESH:D013759                     | Chemical |   467 | 470 |
+| 36623871 | abstract | 27  | ATX                               | 5168                             | Gene     |   588 | 591 |
+| 36623871 | abstract | 28  | ATX                               | 5168                             | Gene     |   679 | 682 |
+| 36623871 | abstract | 29  | THC                               | MESH:D013759                     | Chemical |   686 | 689 |
+| 36623871 | abstract | 30  | THC                               | MESH:D013759                     | Chemical |   727 | 730 |
+| 36623871 | abstract | 31  | THC                               | MESH:D013759                     | Chemical |   737 | 740 |
+| 36623871 | abstract | 32  | LPA1                              | 1902                             | Gene     |   872 | 876 |
 
 ## Full text from Open Acess PMC
 
@@ -378,7 +382,47 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 
 ### Thesauri
 
+``` r
+pubmedr::data_mesh_thesuarus() |> head() |> knitr::kable()
+```
+
+| DescriptorUI | DescriptorName | ConceptUI | TermUI  | TermName           | ConceptPreferredTermYN | IsPermutedTermYN | LexicalTag | RecordPreferredTermYN |
+|:------|:-------|:-----|:----|:---------|:-----------|:--------|:-----|:----------|
+| D000001      | Calcimycin     | M0000001  | T000002 | Calcimycin         | Y                      | N                | NON        | Y                     |
+| D000001      | Calcimycin     | M0353609  | T000001 | A-23187            | Y                      | N                | LAB        | N                     |
+| D000001      | Calcimycin     | M0353609  | T000001 | A 23187            | N                      | Y                | LAB        | N                     |
+| D000001      | Calcimycin     | M0353609  | T000004 | A23187             | N                      | N                | LAB        | N                     |
+| D000001      | Calcimycin     | M0353609  | T000003 | Antibiotic A23187  | N                      | N                | NON        | N                     |
+| D000001      | Calcimycin     | M0353609  | T000003 | A23187, Antibiotic | N                      | Y                | NON        | N                     |
+
 ### Trees
+
+``` r
+pubmedr::data_mesh_trees() |> head() |> knitr::kable()
+```
+
+| DescriptorUI | DescriptorName | tree_location           | code | cats                                  | mesh1                                     | mesh2                                   | tree1 | tree2   |
+|:-----|:-----|:--------|:--|:-------------|:--------------|:-------------|:--|:---|
+| D000001      | Calcimycin     | D03.633.100.221.173     | D    | Chemicals and Drugs                   | Heterocyclic Compounds                    | Heterocyclic Compounds, Fused-Ring      | D03   | D03.633 |
+| D000002      | Temefos        | D02.705.400.625.800     | D    | Chemicals and Drugs                   | Organic Chemicals                         | Organophosphorus Compounds              | D02   | D02.705 |
+| D000002      | Temefos        | D02.705.539.345.800     | D    | Chemicals and Drugs                   | Organic Chemicals                         | Organophosphorus Compounds              | D02   | D02.705 |
+| D000002      | Temefos        | D02.886.300.692.800     | D    | Chemicals and Drugs                   | Organic Chemicals                         | Sulfur Compounds                        | D02   | D02.886 |
+| D000003      | Abattoirs      | J01.576.423.200.700.100 | J    | Technology, Industry, and Agriculture | Technology, Industry, and Agriculture     | Industry                                | J01   | J01.576 |
+| D000003      | Abattoirs      | J03.540.020             | J    | Technology, Industry, and Agriculture | Non-Medical Public and Private Facilities | Manufacturing and Industrial Facilities | J03   | J03.540 |
+
+### Pharmacological Actions
+
+``` r
+pubmedr::data_pharm_action() |> 
+  filter(DescriptorName == 'Rituximab') |>
+  knitr::kable()
+```
+
+| DescriptorUI | DescriptorName | PharmActionUI | PharmActionName                      |
+|:------------|:-------------|:------------|:--------------------------------|
+| D000069283   | Rituximab      | D000074322    | Antineoplastic Agents, Immunological |
+| D000069283   | Rituximab      | D007155       | Immunologic Factors                  |
+| D000069283   | Rituximab      | D018501       | Antirheumatic Agents                 |
 
 ### Embeddings
 
@@ -397,23 +441,18 @@ embeddings <- pubmedr::data_mesh_embeddings()
 
 pubmedr::pmed_get_neighbors(x = embeddings,
                             target = 'Rituximab') |>
-  
-  left_join(pubmedr::data_mesh_thesuarus() |>
-              select(DescriptorName, DescriptorUI) |>
-              distinct(), 
-            by = c('term2' = 'DescriptorName'))|>
   knitr::kable()
 ```
 
-| rank | term1     | term2                | value | DescriptorUI |
-|-----:|:----------|:---------------------|------:|:-------------|
-|    1 | Rituximab | Rituximab            | 1.000 | D000069283   |
-|    2 | Rituximab | fludarabine          | 0.568 | C024352      |
-|    3 | Rituximab | Alemtuzumab          | 0.562 | D000074323   |
-|    4 | Rituximab | obinutuzumab         | 0.554 | C543332      |
-|    5 | Rituximab | Lymphoma, B-Cell     | 0.549 | D016393      |
-|    6 | Rituximab | galiximab            | 0.542 | C437823      |
-|    7 | Rituximab | tocilizumab          | 0.534 | C502936      |
-|    8 | Rituximab | ibritumomab tiuxetan | 0.530 | C422802      |
-|    9 | Rituximab | belimumab            | 0.528 | C511911      |
-|   10 | Rituximab | Prednisone           | 0.511 | D011241      |
+| rank | term1     | term2                | value |
+|-----:|:----------|:---------------------|------:|
+|    1 | Rituximab | Rituximab            | 1.000 |
+|    2 | Rituximab | fludarabine          | 0.568 |
+|    3 | Rituximab | Alemtuzumab          | 0.562 |
+|    4 | Rituximab | obinutuzumab         | 0.554 |
+|    5 | Rituximab | Lymphoma, B-Cell     | 0.549 |
+|    6 | Rituximab | galiximab            | 0.542 |
+|    7 | Rituximab | tocilizumab          | 0.534 |
+|    8 | Rituximab | ibritumomab tiuxetan | 0.530 |
+|    9 | Rituximab | belimumab            | 0.528 |
+|   10 | Rituximab | Prednisone           | 0.511 |

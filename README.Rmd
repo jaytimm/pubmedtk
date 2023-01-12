@@ -234,7 +234,27 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 
 ### Thesauri
 
+```{r message=FALSE, warning=FALSE}
+pubmedr::data_mesh_thesuarus() |> head() |> knitr::kable()
+```
+
+
 ### Trees
+
+```{r message=FALSE, warning=FALSE}
+pubmedr::data_mesh_trees() |> head() |> knitr::kable()
+```
+
+
+### Pharmacological Actions
+
+```{r message=FALSE, warning=FALSE}
+pubmedr::data_pharm_action() |> 
+  filter(DescriptorName == 'Rituximab') |>
+  knitr::kable()
+```
+
+
 
 ### Embeddings
 
@@ -247,15 +267,10 @@ https://zenodo.org/record/4383195
 Includes embeddings for the ~30K MeSH descriptors, as well as ~15K embeddings for Supplementary Concept Records (SCR).
 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 embeddings <- pubmedr::data_mesh_embeddings()
 
 pubmedr::pmed_get_neighbors(x = embeddings,
                             target = 'Rituximab') |>
-  
-  left_join(pubmedr::data_mesh_thesuarus() |>
-              select(DescriptorName, DescriptorUI) |>
-              distinct(), 
-            by = c('term2' = 'DescriptorName'))|>
   knitr::kable()
 ```
