@@ -19,7 +19,8 @@ Imports:
     httr,
     pbapply,
     jsonlite,
-    rappdirs
+    rappdirs,
+    text2vec
 Suggests: 
     knitr,
     rmarkdown
