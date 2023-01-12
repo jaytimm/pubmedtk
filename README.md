@@ -155,8 +155,8 @@ list(pmid = med_cannabis_df0$pmid[n],
 
 ### MeSH Annotations
 
-> Annotations are included as a list-column, and can be easily
-> extracted:
+> Annotations are included as a list-column (in ouput from
+> `pmed_get_records2`), and can be easily extracted:
 
 ``` r
 annotations <- data.table::rbindlist(med_cannabis_df0$annotations)
@@ -185,7 +185,9 @@ annotations |>
 ### Affiliations
 
 The `pmed_get_affiliations` function extracts author and author
-affiliation information from PubMed records.
+affiliation information from PubMed records. This is functionally the
+same call as `pmed_get_records2` – presented here as an independent
+function for simplicity in output.
 
 ``` r
 pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
@@ -383,7 +385,8 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ### Thesauri
 
 ``` r
-pubmedr::data_mesh_thesuarus() |> head() |> knitr::kable()
+mesh <- pubmedr::data_mesh_thesuarus() 
+mesh |> head() |> knitr::kable()
 ```
 
 | DescriptorUI | DescriptorName | ConceptUI | TermUI  | TermName           | ConceptPreferredTermYN | IsPermutedTermYN | LexicalTag | RecordPreferredTermYN |
