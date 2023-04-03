@@ -5,7 +5,7 @@ status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.
 [![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
 <!-- badges: end -->
 
-*Updated: 2023-01-12*
+*Updated: 2023-04-03*
 
 # pubmedr
 
@@ -40,6 +40,7 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
         -   [Trees](#trees)
         -   [Pharmacological Actions](#pharmacological-actions)
         -   [Embeddings](#embeddings)
+    -   [Odds ends NLP](#odds-ends-nlp)
 
 ## Installation
 
@@ -64,19 +65,19 @@ med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana',
                                             fields = c('TIAB','MH'))
 ```
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2742 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2808 records"
 
 ``` r
 head(med_cannabis)
 ```
 
     ##          search_term     pmid
-    ## 1: medical marijuana 36626471
-    ## 2: medical marijuana 36623871
-    ## 3: medical marijuana 36609049
-    ## 4: medical marijuana 36607641
-    ## 5: medical marijuana 36600251
-    ## 6: medical marijuana 36576970
+    ## 1: medical marijuana 36986714
+    ## 2: medical marijuana 36982049
+    ## 3: medical marijuana 36979881
+    ## 4: medical marijuana 36978185
+    ## 5: medical marijuana 36961722
+    ## 6: medical marijuana 36961701
 
 ### Multiple search terms
 
@@ -89,10 +90,10 @@ cannabis_etc <- pubmedr::pmed_search_pubmed(
   fields = c('TIAB','MH'))
 ```
 
-    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 862 records"
-    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 253 records"
-    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 929 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2742 records"
+    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 894 records"
+    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 256 records"
+    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 936 records"
+    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2808 records"
 
 ``` r
 UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
@@ -129,29 +130,30 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "36626471"
+    ## [1] "36986714"
     ## 
     ## $year
-    ## [1] "2022"
+    ## [1] "2023"
     ## 
     ## $journal
-    ## [1] "Medicine"
+    ## [1] "Pharmaceutics"
     ## 
     ## $articletitle
-    ## [1] "Review of systemic and syndromic complications of cannabis"
-    ## [2] "use: A review."                                            
+    ## [1] "Pharmacokinetics of Orally Applied Cannabinoids and Medical"
+    ## [2] "Marijuana Extracts in Mouse Nervous Tissue and Plasma:"     
+    ## [3] "Relevance for Pain Treatment."                              
     ## 
     ## $abstract
-    ##  [1] "Prescribed and non-prescribed cannabis use is common."      
-    ##  [2] "Providers in specialties treating chronic pain - primary"   
-    ##  [3] "care, pain management, and neurology-will be coming across" 
-    ##  [4] "medical cannabis as a treatment for chronic pain,"          
-    ##  [5] "regardless of whether they are prescribers. It is important"
-    ##  [6] "to be aware of the systemic and syndromic complications of" 
-    ##  [7] "acute and chronic cannabis use in the differential"         
-    ##  [8] "diagnosis of cardiac, cardiovascular, cerebrovascular,"     
-    ##  [9] "gastrointestinal, and psychiatric disorders. Medical"       
-    ## [10] "cannabis is legal in 36 states. Studies have shown several"
+    ##  [1] "Cannabis sativa plants contain a multitude of bioactive"   
+    ##  [2] "substances, which show broad variability between different"
+    ##  [3] "plant strains. Of the more than a hundred naturally"       
+    ##  [4] "occurring phytocannabinoids, Δ9-Tetrahydrocannabinol"      
+    ##  [5] "(Δ9-THC) and cannabidiol (CBD) have been the most"         
+    ##  [6] "extensively studied, but whether and how the lesser"       
+    ##  [7] "investigated compounds in plant extracts affect"           
+    ##  [8] "bioavailability or biological effects of Δ9-THC or CBD is" 
+    ##  [9] "not known. We therefore performed a first pilot study to"  
+    ## [10] "assess THC concentrations in plasma, spinal cord and brain"
 
 ### MeSH Annotations
 
@@ -169,18 +171,18 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE      | FORM                          |
-|:---------|:----------|:------------------------------|
-| 36626471 | MeSH      | Humans                        |
-| 36626471 | MeSH      | Cannabis                      |
-| 36626471 | MeSH      | Medical Marijuana             |
-| 36626471 | MeSH      | Chronic Pain                  |
-| 36626471 | MeSH      | Hallucinogens                 |
-| 36626471 | MeSH      | Pain Management               |
-| 36626471 | MeSH      | Cannabinoid Receptor Agonists |
-| 36626471 | Chemistry | Medical Marijuana             |
-| 36626471 | Chemistry | Hallucinogens                 |
-| 36626471 | Chemistry | Cannabinoid Receptor Agonists |
+| ID       | TYPE    | FORM                 |
+|:---------|:--------|:---------------------|
+| 36986714 | Keyword | CBD                  |
+| 36986714 | Keyword | THC                  |
+| 36986714 | Keyword | bioavailability      |
+| 36986714 | Keyword | cannabidiol          |
+| 36986714 | Keyword | medical marijuana    |
+| 36986714 | Keyword | neuropathic pain     |
+| 36986714 | Keyword | spared nerve injury  |
+| 36986714 | Keyword | tetrahydrocannabinol |
+| 36982049 | MeSH    | Male                 |
+| 36982049 | MeSH    | Adult                |
 
 ### Affiliations
 
@@ -196,18 +198,18 @@ pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
   knitr::kable()
 ```
 
-| pmid     | Author              | Affiliation                                                                                        |
-|:-----|:-----------|:-----------------------------------------------------|
-| 36626471 | Shah, Jay           | University of Queensland/Ochsner Clinical School, Brisbane, QLD, Australia.                        |
-| 36626471 | Fermo, Olga         | Department of Neurology, Mayo Clinic Florida, Jacksonville, FL, USA.                               |
-| 36535680 | Zannese, Kevin      | Ottawa, Ont.                                                                                       |
-| 36529730 | Bawa, Zeeta         | The University of Sydney, Lambert Initiative for Cannabinoid Therapeutics, Sydney, NSW, Australia. |
-| 36529730 | Bawa, Zeeta         | Brain and Mind Centre, The University of Sydney, Sydney, NSW, Australia.                           |
-| 36529730 | Bawa, Zeeta         | Faculty of Science, School of Psychology, The University of Sydney, Sydney, NSW, Australia.        |
-| 36529730 | Bawa, Zeeta         | Sydney Pharmacy School, The University of Sydney, Sydney, NSW, Australia.                          |
-| 36529730 | McCartney, Danielle | The University of Sydney, Lambert Initiative for Cannabinoid Therapeutics, Sydney, NSW, Australia. |
-| 36529730 | McCartney, Danielle | Brain and Mind Centre, The University of Sydney, Sydney, NSW, Australia.                           |
-| 36529730 | McCartney, Danielle | Faculty of Science, School of Psychology, The University of Sydney, Sydney, NSW, Australia.        |
+| pmid     | Author                 | Affiliation                                                                                                                                                           |
+|:----|:--------|:----------------------------------------------------------|
+| 36986714 | Dumbraveanu, Cristiana | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
+| 36986714 | Dumbraveanu, Cristiana | Bionorica Research GmbH, 6020 Innsbruck, Austria.                                                                                                                     |
+| 36986714 | Strommer, Katharina    | Bionorica Research GmbH, 6020 Innsbruck, Austria.                                                                                                                     |
+| 36986714 | Wonnemann, Meinolf     | Independent Researcher, 92318 Neumarkt, Germany.                                                                                                                      |
+| 36986714 | Choconta, Jeiny Luna   | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
+| 36986714 | Neumann, Astrid        | Bionorica Research GmbH, 6020 Innsbruck, Austria.                                                                                                                     |
+| 36986714 | Kress, Michaela        | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
+| 36986714 | Kalpachidou, Theodora  | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
+| 36986714 | Kummer, Kai K          | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
+| 36924465 | Lake, Stephanie        | CLA Center for Cannabis and Cannabinoids, Jane and Terry Semel Institute for Neuroscience and Human Behavior, University of California, Los Angeles, California, USA. |
 
 ## Citation data
 
@@ -234,30 +236,30 @@ c0 <- citations |> select(-citation_net) |> slice(4)
 setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
-|                             | 35914740                                             |
-|:------------------------|:----------------------------------------------|
-| year                        | 2022                                                 |
-| title                       | Medical marijuana: what are we talking about?        |
-| authors                     | César Augusto Trinta Weber, Antônio Geraldo da Silva |
-| journal                     | Braz J Psychiatry                                    |
-| is_research_article         | No                                                   |
-| relative_citation_ratio     | NA                                                   |
-| nih_percentile              | NA                                                   |
-| human                       | 1                                                    |
-| animal                      | 0                                                    |
-| molecular_cellular          | 0                                                    |
-| apt                         | 0.05                                                 |
-| is_clinical                 | No                                                   |
-| citation_count              | 0                                                    |
-| citations_per_year          | 0                                                    |
-| expected_citations_per_year | NA                                                   |
-| field_citation_rate         | NA                                                   |
-| provisional                 | No                                                   |
-| x_coord                     | 0                                                    |
-| y_coord                     | -0.75                                                |
-| cited_by_clin               | NA                                                   |
-| doi                         | 10.47626/1516-4446-2022-2608                         |
-| ref_count                   | 0                                                    |
+|                             | 36219744                                                                                     |
+|:----------------|:------------------------------------------------------|
+| year                        | 2022                                                                                         |
+| title                       | Assessing Increases in Cannabis-Related Diagnoses in US Hospitals by Regional Policy Status. |
+| authors                     | Michael Pottieger, Leslie Rowland, Katherine I DiSantis                                      |
+| journal                     | Popul Health Manag                                                                           |
+| is_research_article         | Yes                                                                                          |
+| relative_citation_ratio     | NA                                                                                           |
+| nih_percentile              | NA                                                                                           |
+| human                       | 0.5                                                                                          |
+| animal                      | 0.5                                                                                          |
+| molecular_cellular          | 0                                                                                            |
+| apt                         | 0.05                                                                                         |
+| is_clinical                 | No                                                                                           |
+| citation_count              | 0                                                                                            |
+| citations_per_year          | 0                                                                                            |
+| expected_citations_per_year | NA                                                                                           |
+| field_citation_rate         | NA                                                                                           |
+| provisional                 | No                                                                                           |
+| x_coord                     | 0.4330127                                                                                    |
+| y_coord                     | 0.25                                                                                         |
+| cited_by_clin               | NA                                                                                           |
+| doi                         | 10.1089/pop.2022.0122                                                                        |
+| ref_count                   | 13                                                                                           |
 
 ### Network data
 
@@ -269,12 +271,8 @@ citations$citation_net[[1]] |> head()
 ```
 
     ##        from       to
-    ## 1: 35907959 18929686
-    ## 2: 35907959 34590094
-    ## 3: 35907959 30092752
-    ## 4: 35907959 35620292
-    ## 5: 35907959 14739871
-    ## 6: 35907959 33093741
+    ## 1: 36200224     <NA>
+    ## 2:     <NA> 36200224
 
 ## Biomedical concepts via the Pubtator Central API
 
@@ -290,28 +288,28 @@ pubtations <- unique(med_cannabis$pmid)[1:10] |>
 pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
 ```
 
-| pmid     | tiab     | id  | text                              | identifier                       | type     | start | end |
-|:------|:------|:--|:---------------------|:--------------------|:------|----:|---:|
-| 36626471 | title    | 1   | syndromic                         | MESH:D061325                     | Disease  |    23 |  32 |
-| 36626471 | abstract | 7   | pain                              | MESH:D010146                     | Disease  |   189 | 193 |
-| 36626471 | abstract | 8   | pain                              | MESH:D010146                     | Disease  |   210 | 214 |
-| 36626471 | abstract | 9   | chronic pain                      | MESH:D059350                     | Disease  |   299 | 311 |
-| 36626471 | abstract | 10  | syndromic complications           | MESH:D005117                     | Disease  |   405 | 428 |
-| 36626471 | abstract | 11  | psychiatric disorders             | MESH:D001523                     | Disease  |   560 | 581 |
-| 36623871 | title    | 1   | autotaxin                         | 5168                             | Gene     |    30 |  39 |
-| 36623871 | abstract | 20  | Autotaxin                         | 5168                             | Gene     |    73 |  82 |
-| 36623871 | abstract | 21  | lysophosphatidic acid             | MESH:C032881                     | Chemical |   123 | 144 |
-| 36623871 | abstract | 22  | lysophosphatidylcholine           | MESH:D008244                     | Chemical |   156 | 179 |
-| 36623871 | abstract | 23  | LPA1-6                            | 1902;9170;23566;2846;57121;10161 | Gene     |   274 | 280 |
-| 36623871 | abstract | 24  | ATX                               | 5168                             | Gene     |   287 | 290 |
-| 36623871 | abstract | 25  | Delta9-trans-tetrahydrocannabinol | MESH:D013759                     | Chemical |   432 | 465 |
-| 36623871 | abstract | 26  | THC                               | MESH:D013759                     | Chemical |   467 | 470 |
-| 36623871 | abstract | 27  | ATX                               | 5168                             | Gene     |   588 | 591 |
-| 36623871 | abstract | 28  | ATX                               | 5168                             | Gene     |   679 | 682 |
-| 36623871 | abstract | 29  | THC                               | MESH:D013759                     | Chemical |   686 | 689 |
-| 36623871 | abstract | 30  | THC                               | MESH:D013759                     | Chemical |   727 | 730 |
-| 36623871 | abstract | 31  | THC                               | MESH:D013759                     | Chemical |   737 | 740 |
-| 36623871 | abstract | 32  | LPA1                              | 1902                             | Gene     |   872 | 876 |
+| pmid     | tiab     | id  | text                        | identifier   | type     | start | end |
+|:--------|:--------|:---|:----------------------|:-----------|:--------|-----:|----:|
+| 36986714 | title    | 3   | Marijuana                   | 3483         | Species  |    60 |  69 |
+| 36986714 | title    | 4   | Mouse                       | 10090        | Species  |    82 |  87 |
+| 36986714 | title    | 5   | Pain                        | MESH:D010146 | Disease  |   129 | 133 |
+| 36986714 | abstract | 26  | Cannabis sativa             | 3483         | Species  |   145 | 160 |
+| 36986714 | abstract | 27  | Delta9-Tetrahydrocannabinol | MESH:D013759 | Chemical |   341 | 368 |
+| 36986714 | abstract | 28  | Delta9-THC                  | MESH:D013759 | Chemical |   370 | 380 |
+| 36986714 | abstract | 29  | cannabidiol                 | MESH:D002185 | Chemical |   386 | 397 |
+| 36986714 | abstract | 30  | CBD                         | MESH:C546797 | Chemical |   399 | 402 |
+| 36986714 | abstract | 31  | Delta9-THC                  | MESH:D013759 | Chemical |   564 | 574 |
+| 36986714 | abstract | 32  | CBD                         | MESH:C546797 | Chemical |   578 | 581 |
+| 36986714 | abstract | 33  | THC                         | MESH:D013759 | Chemical |   649 | 652 |
+| 36986714 | abstract | 34  | THC                         | MESH:D013759 | Chemical |   730 | 733 |
+| 36986714 | abstract | 35  | marijuana                   | 3483         | Species  |   754 | 763 |
+| 36986714 | abstract | 36  | THC                         | MESH:D013759 | Chemical |   781 | 784 |
+| 36986714 | abstract | 37  | THC                         | MESH:D013759 | Chemical |   800 | 803 |
+| 36986714 | abstract | 38  | Delta9-THC                  | MESH:D013759 | Chemical |   805 | 815 |
+| 36986714 | abstract | 39  | mice                        | 10090        | Species  |   838 | 842 |
+| 36986714 | abstract | 40  | THC                         | MESH:D013759 | Chemical |   857 | 860 |
+| 36986714 | abstract | 41  | CBD                         | MESH:C546797 | Chemical |   909 | 912 |
+| 36986714 | abstract | 42  | THC                         | MESH:D013759 | Chemical |   921 | 924 |
 
 ## Full text from Open Acess PMC
 
@@ -459,3 +457,72 @@ pubmedr::pmed_get_neighbors(x = embeddings,
 |    8 | Rituximab | ibritumomab tiuxetan | 0.530 |
 |    9 | Rituximab | belimumab            | 0.528 |
 |   10 | Rituximab | Prednisone           | 0.511 |
+
+## Odds ends NLP
+
+``` r
+library(dplyr)
+
+multiword_dictionary <- pubmedr::data_mesh_thesuarus() |>
+  select(TermName) |>         
+  filter(grepl(' ', TermName)) |>
+  filter(!grepl(',', TermName)) |>
+  filter(grepl('^[a-zA-Z0-9 -]*$', TermName)) |>
+  pull(TermName) |> tolower()
+
+tif <- pubmedr::pmed_search_pubmed('Medical marijuana') |>
+  pull(pmid) |>
+  pubmedr::pmed_get_records2() |>
+  bind_rows()
+```
+
+``` r
+dtm_corpus <- tif |>
+  rename(doc_id = pmid, text = abstract) |>
+  text2df::tif2sentence() |>
+  text2df::tif2token() |>
+  text2df::token2mwe(mwe = multiword_dictionary) |> 
+  text2df::token2df() |>
+  mutate(TermName = gsub('_', ' ', tolower(token))) |>
+  left_join(pubmedr::data_mesh_thesuarus() |> 
+              mutate(TermName = tolower(TermName)), 
+            by = c('TermName'))
+```
+
+``` r
+dtm_mesh <- tif |>
+  pull(annotations) |>
+  bind_rows() |>
+  filter(!is.na(FORM))
+
+df <- dtm_mesh
+  
+pubtations <- pubmedr::pmed_search_pubmed('Medical marijuana') |>
+  pull(pmid) |>
+  pubmedr::pmed_get_entities(cores = 3) |>
+  data.table::rbindlist() |>
+  mutate(DescriptorUI = gsub('MESH:', '', identifier)) |>
+  
+  left_join(pubmedr::data_mesh_thesuarus() |> 
+               filter(RecordPreferredTermYN == 'Y'),
+             by = 'DescriptorUI')
+
+## aggregate pubatations and mesh -- just to see -- 
+```
+
+``` r
+##x <- topics
+topics <- dtm_mesh |>
+  text2df::df2dtm(document = 'ID', term = 'FORM') |>
+  text2df::dtm2topic(n_topics = 30, 
+            label_n = 15,
+            perplexity = 5)
+
+x1 <- topics |> topic2html(title = 'Medical Marijuana in PubMed') 
+```
+
+``` r
+knitr::include_graphics("README_files/figure-markdown_github/demo1.png") 
+```
+
+<img src="README_files/figure-markdown_github/demo1.png" width="695" />

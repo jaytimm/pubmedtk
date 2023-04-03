@@ -291,5 +291,78 @@ pmed_link_mesh(x = 'echinacea', dict = mesh)
 
 
 
+## Odds ends NLP
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+
+multiword_dictionary <- pubmedr::data_mesh_thesuarus() |>
+  select(TermName) |>         
+  filter(grepl(' ', TermName)) |>
+  filter(!grepl(',', TermName)) |>
+  filter(grepl('^[a-zA-Z0-9 -]*$', TermName)) |>
+  pull(TermName) |> tolower()
+
+tif <- pubmedr::pmed_search_pubmed('Medical marijuana') |>
+  pull(pmid) |>
+  pubmedr::pmed_get_records2() |>
+  bind_rows()
+```
+
+
+```{r eval=FALSE}
+dtm_corpus <- tif |>
+  rename(doc_id = pmid, text = abstract) |>
+  text2df::tif2sentence() |>
+  text2df::tif2token() |>
+  text2df::token2mwe(mwe = multiword_dictionary) |> 
+  text2df::token2df() |>
+  mutate(TermName = gsub('_', ' ', tolower(token))) |>
+  left_join(pubmedr::data_mesh_thesuarus() |> 
+              mutate(TermName = tolower(TermName)), 
+            by = c('TermName'))
+```
+
+
+
+```{r eval=FALSE}
+dtm_mesh <- tif |>
+  pull(annotations) |>
+  bind_rows() |>
+  filter(!is.na(FORM))
+
+df <- dtm_mesh
+  
+pubtations <- pubmedr::pmed_search_pubmed('Medical marijuana') |>
+  pull(pmid) |>
+  pubmedr::pmed_get_entities(cores = 3) |>
+  data.table::rbindlist() |>
+  mutate(DescriptorUI = gsub('MESH:', '', identifier)) |>
+  
+  left_join(pubmedr::data_mesh_thesuarus() |> 
+               filter(RecordPreferredTermYN == 'Y'),
+             by = 'DescriptorUI')
+
+## aggregate pubatations and mesh -- just to see -- 
+
+```
+
+
+```{r eval=FALSE}
+##x <- topics
+topics <- dtm_mesh |>
+  text2df::df2dtm(document = 'ID', term = 'FORM') |>
+  text2df::dtm2topic(n_topics = 30, 
+            label_n = 15,
+            perplexity = 5)
+
+x1 <- topics |> topic2html(title = 'Medical Marijuana in PubMed') 
+```
+
+
+```{r} 
+knitr::include_graphics("README_files/figure-markdown_github/demo1.png") 
+``` 
+
 
 
