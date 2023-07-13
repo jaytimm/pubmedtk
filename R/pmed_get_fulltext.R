@@ -16,7 +16,8 @@ pmed_get_fulltext <- function(x, output_dir = NULL) {
     
     
     fn <- paste0('https://ftp.ncbi.nlm.nih.gov/pub/pmc/', x[q])
-  
+    # fn <- paste0('https://ftp.ncbi.nlm.nih.gov/pub/pmc/', pmc_fulls$fpath[1])
+    
     tmp <- tempfile()
     dd <- tryCatch(download.file(fn, destfile = tmp), error = function(e) 'error')  
     
@@ -30,8 +31,8 @@ pmed_get_fulltext <- function(x, output_dir = NULL) {
 
         if(length(xml2::xml_children(x0)) == 1){} else{
           
-            x1 <- xml2::xml_child(x0, 2)
-            
+            x1 <- xml2::xml_child(x0, 2)            
+
             header_titles <- lapply(xml2::xml_children(x1),
                                     function(x) {
                                       xml2::xml_text(xml2::xml_find_first(x, ".//title"))}

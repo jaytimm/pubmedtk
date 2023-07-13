@@ -4,10 +4,12 @@
 \alias{pmed_get_fulltext}
 \title{Get full text articles from Open Access subset of PMC --}
 \usage{
-pmed_get_fulltext(x)
+pmed_get_fulltext(x, output_dir = NULL)
 }
 \arguments{
 \item{x}{A character vector, namely, a file path included in OA list file}
+
+\item{output_dir}{A file path}
 }
 \value{
 A dtaframe

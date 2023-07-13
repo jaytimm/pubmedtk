@@ -9,7 +9,8 @@ pmed_search_pubmed(
   fields = c("TIAB", "MH"),
   verbose = TRUE,
   sleep = 1,
-  retmax = 5e+06
+  retmax = 5e+06,
+  is_pubmed_syntax = F
 )
 }
 \arguments{
