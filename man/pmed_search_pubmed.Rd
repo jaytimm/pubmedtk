@@ -4,28 +4,13 @@
 \alias{pmed_search_pubmed}
 \title{Perform basic PubMed search.}
 \usage{
-pmed_search_pubmed(
-  search_term,
-  fields = c("TIAB", "MH"),
-  verbose = TRUE,
-  sleep = 1,
-  retmax = 5e+06,
-  is_pubmed_syntax = F
-)
+pmed_search_pubmed(query)
 }
 \arguments{
-\item{search_term}{Query term as character string}
-
-\item{fields}{PubMed fields to query}
-
-\item{verbose}{Boolean}
-
-\item{sleep}{In seconds.}
-
-\item{retmax}{Max records}
+\item{query}{Query term as character string}
 }
 \value{
-A data frame of PMIDs
+A vector of PMIDs
 }
 \description{
 Perform basic PubMed search.
