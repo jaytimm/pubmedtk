@@ -18,11 +18,12 @@ pmed_search_pubmed <- function(query) { # max_n
   
   if(ps$count==0) {
     
-    stop("No Pubmed search results")
+    #stop("No Pubmed search results")
+    NULL
     
   } else {
     
-    start <- seq(from=0,to=ps$count,by=90000)
+    start <- seq(from = 0, to = ps$count, by = 90000)
     end <- c(start[-1],ps$count)
     chunk <- end - start
     idlist <- list()

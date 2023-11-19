@@ -51,13 +51,28 @@ pmed_get_records2 <- function (pmids,
 #######
 pmed_get_records1 <- function (x,
                                with_annotations) {
+  
+  for (i in 1:15) {
+    message(i)
+    x1 <- try({
+      rentrez::entrez_fetch(db = "pubmed",
+                            id = x,
+                            rettype = "xml",
+                            parsed = F)
+    })
+    
+    Sys.sleep(5)
+    if (class(x1) != "try-error") {
+      break
+    }
+  }
+  
 
-  x1 <- rentrez::entrez_fetch(db = "pubmed",
-                              id = x,
-                              rettype = "xml",
-                              parsed = F)
-  Sys.sleep(0.25)
-
+  # x1 <- rentrez::entrez_fetch(db = "pubmed",
+  #                             id = x,
+  #                             rettype = "xml",
+  #                             parsed = F)
+  
   ## main
   doc <- xml2::read_xml(x1)
   records <- xml2::xml_find_all(doc, "//PubmedArticle")
