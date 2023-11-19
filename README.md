@@ -1,13 +1,13 @@
 <!-- badges: start -->
 
 [![Travis build
-status](https://app.travis-ci.com/jaytimm/pubmedr.svg?branch=main)](https://app.travis-ci.com/github/jaytimm/pubmedr)
-[![R-CMD-check](https://github.com/jaytimm/pubmedr/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedr/actions)
+status](https://app.travis-ci.com/jaytimm/pubmedtk.svg?branch=main)](https://app.travis-ci.com/github/jaytimm/pubmedtk)
+[![R-CMD-check](https://github.com/jaytimm/pubmedtk/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedtk/actions)
 <!-- badges: end -->
 
-*Updated: 2023-04-03*
+*Updated: 2023-11-19*
 
-# pubmedr
+# pubmedtk
 
 An R package for (1) querying the PubMed database & parsing retrieved
 records; (2) extracting full text articles from the Open Access subset
@@ -16,11 +16,10 @@ Collection/[iCite](https://icite.od.nih.gov/); and (4) accessing
 annotations of biomedical concepts from [PubTator
 Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
 
--   [pubmedr](#pubmedr)
+-   [pubmedtk](#pubmedtk)
     -   [Installation](#installation)
     -   [PubMed search](#pubmed-search)
         -   [Basic search](#basic-search)
-        -   [Multiple search terms](#multiple-search-terms)
     -   [Retrieve and parse abstract
         data](#retrieve-and-parse-abstract-data)
         -   [Record details](#record-details)
@@ -40,14 +39,13 @@ Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
         -   [Trees](#trees)
         -   [Pharmacological Actions](#pharmacological-actions)
         -   [Embeddings](#embeddings)
-    -   [Odds ends NLP](#odds-ends-nlp)
 
 ## Installation
 
 You can download the development version from GitHub with:
 
 ``` r
-devtools::install_github("jaytimm/pubmedr")
+devtools::install_github("jaytimm/pubmedtk")
 ```
 
 ## PubMed search
@@ -56,71 +54,37 @@ devtools::install_github("jaytimm/pubmedr")
 
 The `pmed_search_pubmed()` function is meant for record-matching
 searches typically performed using the [PubMed online
-interface](https://pubmed.ncbi.nlm.nih.gov/). The `search_term`
-parameter specifies the query term; the `fields` parameter can be used
-to specify which fields to query.
+interface](https://pubmed.ncbi.nlm.nih.gov/).
 
 ``` r
-med_cannabis <- pubmedr::pmed_search_pubmed(search_term = 'medical marijuana', 
-                                            fields = c('TIAB','MH'))
-```
+yrs <- 2010:2023
+pubmed_query <- paste0('("medical marijuana"[MeSH Terms]) AND (',
+                       yrs, ':', yrs,  
+                       '[pdat])')
 
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2808 records"
+med_cannabis <- lapply(pubmed_query, pubmedtk::pmed_search_pubmed)
+med_cannabis <- med_cannabis |> unlist() |> unique()
+```
 
 ``` r
 head(med_cannabis)
 ```
 
-    ##          search_term     pmid
-    ## 1: medical marijuana 36986714
-    ## 2: medical marijuana 36982049
-    ## 3: medical marijuana 36979881
-    ## 4: medical marijuana 36978185
-    ## 5: medical marijuana 36961722
-    ## 6: medical marijuana 36961701
-
-### Multiple search terms
-
-``` r
-cannabis_etc <- pubmedr::pmed_search_pubmed(
-  search_term = c('marijuana chronic pain',
-                  'marijuana legalization',
-                  'marijuana policy',
-                  'medical marijuana'),
-  fields = c('TIAB','MH'))
-```
-
-    ## [1] "marijuana chronic pain[TIAB] OR marijuana chronic pain[MH]: 894 records"
-    ## [1] "marijuana legalization[TIAB] OR marijuana legalization[MH]: 256 records"
-    ## [1] "marijuana policy[TIAB] OR marijuana policy[MH]: 936 records"
-    ## [1] "medical marijuana[TIAB] OR medical marijuana[MH]: 2808 records"
-
-``` r
-UpSetR::upset(UpSetR::fromList(split(cannabis_etc$pmid,
-                                     cannabis_etc$search_term 
-                                     )), 
-              nsets = 4, order.by = "freq")
-```
-
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+    ## [1] "24645219" "24564006" "24439711" "24439710" "24412475" "24329652"
 
 ## Retrieve and parse abstract data
 
 ### Record details
 
-For quicker abstract retrieval, be sure to get an [API
-key](https://support.nlm.nih.gov/knowledgebase/article/KA-03521/en-us).
-
 ``` r
-med_cannabis_df <- pubmedr::pmed_get_records2(pmids = unique(med_cannabis$pmid)[1:100], 
+med_cannabis_df0 <- pubmedtk::pmed_get_records2(pmids = med_cannabis[1:300], 
                                               with_annotations = T,
-                                              # cores = 5, 
-                                              ncbi_key = key) 
+                                              verbose = F,
+                                              cores = 3) |>
+  data.table::rbindlist() |> filter(!is.na(abstract))
 ```
 
 ``` r
-med_cannabis_df0 <- data.table::rbindlist(med_cannabis_df)
-
 n <- 1
 list(pmid = med_cannabis_df0$pmid[n],
      year = med_cannabis_df0$year[n],
@@ -130,30 +94,31 @@ list(pmid = med_cannabis_df0$pmid[n],
 ```
 
     ## $pmid
-    ## [1] "36986714"
+    ## [1] "24977967"
     ## 
     ## $year
-    ## [1] "2023"
+    ## [1] "2014"
     ## 
     ## $journal
-    ## [1] "Pharmaceutics"
+    ## [1] "Neuro endocrinology letters"
     ## 
     ## $articletitle
-    ## [1] "Pharmacokinetics of Orally Applied Cannabinoids and Medical"
-    ## [2] "Marijuana Extracts in Mouse Nervous Tissue and Plasma:"     
-    ## [3] "Relevance for Pain Treatment."                              
+    ## [1] "Clinical endocannabinoid deficiency (CECD) revisited: can"
+    ## [2] "this concept explain the therapeutic benefits of cannabis"
+    ## [3] "in migraine, fibromyalgia, irritable bowel syndrome and"  
+    ## [4] "other treatment-resistant conditions?"                    
     ## 
     ## $abstract
-    ##  [1] "Cannabis sativa plants contain a multitude of bioactive"   
-    ##  [2] "substances, which show broad variability between different"
-    ##  [3] "plant strains. Of the more than a hundred naturally"       
-    ##  [4] "occurring phytocannabinoids, Δ9-Tetrahydrocannabinol"      
-    ##  [5] "(Δ9-THC) and cannabidiol (CBD) have been the most"         
-    ##  [6] "extensively studied, but whether and how the lesser"       
-    ##  [7] "investigated compounds in plant extracts affect"           
-    ##  [8] "bioavailability or biological effects of Δ9-THC or CBD is" 
-    ##  [9] "not known. We therefore performed a first pilot study to"  
-    ## [10] "assess THC concentrations in plasma, spinal cord and brain"
+    ##  [1] "Ethan B. Russo's paper of December 1, 2003 explored the"  
+    ##  [2] "concept of a clinical endocannabinoid deficiency (CECD)"  
+    ##  [3] "underlying the pathophysiology of migraine, fibromyalgia,"
+    ##  [4] "irritable bowel syndrome and other functional conditions" 
+    ##  [5] "alleviated by clinical cannabis. Available literature was"
+    ##  [6] "reviewed, including searches via the National Library of" 
+    ##  [7] "medicine database and other sources. A review of the"     
+    ##  [8] "literature indicates that significant progress has been"  
+    ##  [9] "made since Dr. Ethan B. Russo's landmark paper, just ten" 
+    ## [10] "years ago (February 2, 2004). Investigation at that time"
 
 ### MeSH Annotations
 
@@ -171,18 +136,18 @@ annotations |>
   knitr::kable()
 ```
 
-| ID       | TYPE    | FORM                 |
-|:---------|:--------|:---------------------|
-| 36986714 | Keyword | CBD                  |
-| 36986714 | Keyword | THC                  |
-| 36986714 | Keyword | bioavailability      |
-| 36986714 | Keyword | cannabidiol          |
-| 36986714 | Keyword | medical marijuana    |
-| 36986714 | Keyword | neuropathic pain     |
-| 36986714 | Keyword | spared nerve injury  |
-| 36986714 | Keyword | tetrahydrocannabinol |
-| 36982049 | MeSH    | Male                 |
-| 36982049 | MeSH    | Adult                |
+| ID       | TYPE      | FORM                                  |
+|:---------|:----------|:--------------------------------------|
+| 24439711 | MeSH      | Canada                                |
+| 24439711 | MeSH      | Community Health Services             |
+| 24439711 | MeSH      | Health Knowledge, Attitudes, Practice |
+| 24439711 | MeSH      | Health Policy                         |
+| 24439711 | MeSH      | Holistic Health                       |
+| 24439711 | MeSH      | Humans                                |
+| 24439711 | MeSH      | Medical Marijuana                     |
+| 24439711 | Chemistry | Medical Marijuana                     |
+| 24439711 | Keyword   | Drug policy                           |
+| 24439711 | Keyword   | Embodied health movement              |
 
 ### Affiliations
 
@@ -192,24 +157,24 @@ same call as `pmed_get_records2` – presented here as an independent
 function for simplicity in output.
 
 ``` r
-pubmedr::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
+pubmedtk::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
   bind_rows() |>
   slice(1:10) |>
   knitr::kable()
 ```
 
-| pmid     | Author                 | Affiliation                                                                                                                                                           |
+| pmid     | Author               | Affiliation                                                                                                                                                     |
 |:----|:--------|:----------------------------------------------------------|
-| 36986714 | Dumbraveanu, Cristiana | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
-| 36986714 | Dumbraveanu, Cristiana | Bionorica Research GmbH, 6020 Innsbruck, Austria.                                                                                                                     |
-| 36986714 | Strommer, Katharina    | Bionorica Research GmbH, 6020 Innsbruck, Austria.                                                                                                                     |
-| 36986714 | Wonnemann, Meinolf     | Independent Researcher, 92318 Neumarkt, Germany.                                                                                                                      |
-| 36986714 | Choconta, Jeiny Luna   | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
-| 36986714 | Neumann, Astrid        | Bionorica Research GmbH, 6020 Innsbruck, Austria.                                                                                                                     |
-| 36986714 | Kress, Michaela        | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
-| 36986714 | Kalpachidou, Theodora  | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
-| 36986714 | Kummer, Kai K          | Institute of Physiology, Medical University of Innsbruck, 6020 Innsbruck, Austria.                                                                                    |
-| 36924465 | Lake, Stephanie        | CLA Center for Cannabis and Cannabinoids, Jane and Terry Semel Institute for Neuroscience and Human Behavior, University of California, Los Angeles, California, USA. |
+| 24977967 | Smith, Steele Clarke | NA                                                                                                                                                              |
+| 24977967 | Wagner, Mark S       | NA                                                                                                                                                              |
+| 24949839 | Rylander, Melanie    | Departments of Behavioral Health .                                                                                                                              |
+| 24949839 | Valdez, Carolyn      | NA                                                                                                                                                              |
+| 24949839 | Nussbaum, Abraham M  | NA                                                                                                                                                              |
+| 24947993 | Belle-Isle, Lynne    | Canadian AIDS Society, Ottawa, Ontario, Canada; Centre for Addictions Research of British Columbia, University of Victoria, Victoria, British Columbia, Canada. |
+| 24947993 | Walsh, Zach          | Department of Psychology, University of British Columbia, Kelowna, British Columbia, Canada.                                                                    |
+| 24947993 | Callaway, Robert     | Medical Cannabis Advocate, Vancouver, British Columbia, Canada.                                                                                                 |
+| 24947993 | Lucas, Philippe      | Centre for Addictions Research of British Columbia, University of Victoria, Victoria, British Columbia, Canada.                                                 |
+| 24947993 | Capler, Rielle       | Canadian Association of Medical Cannabis Dispensaries, Vancouver, British Columbia, Canada.                                                                     |
 
 ## Citation data
 
@@ -228,38 +193,37 @@ The iCite API returns a host of descriptive/derived citation details per
 record.
 
 ``` r
-citations <- pubmedr::pmed_get_icites(pmids = med_cannabis_df0$pmid, 
-                                      #cores = 6,
-                                      ncbi_key = key)
+citations <- pubmedtk::pmed_get_icites(pmids = med_cannabis_df0$pmid)
 
 c0 <- citations |> select(-citation_net) |> slice(4)
 setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
-|                             | 36219744                                                                                     |
-|:----------------|:------------------------------------------------------|
-| year                        | 2022                                                                                         |
-| title                       | Assessing Increases in Cannabis-Related Diagnoses in US Hospitals by Regional Policy Status. |
-| authors                     | Michael Pottieger, Leslie Rowland, Katherine I DiSantis                                      |
-| journal                     | Popul Health Manag                                                                           |
-| is_research_article         | Yes                                                                                          |
-| relative_citation_ratio     | NA                                                                                           |
-| nih_percentile              | NA                                                                                           |
-| human                       | 0.5                                                                                          |
-| animal                      | 0.5                                                                                          |
-| molecular_cellular          | 0                                                                                            |
-| apt                         | 0.05                                                                                         |
-| is_clinical                 | No                                                                                           |
-| citation_count              | 0                                                                                            |
-| citations_per_year          | 0                                                                                            |
-| expected_citations_per_year | NA                                                                                           |
-| field_citation_rate         | NA                                                                                           |
-| provisional                 | No                                                                                           |
-| x_coord                     | 0.4330127                                                                                    |
-| y_coord                     | 0.25                                                                                         |
-| cited_by_clin               | NA                                                                                           |
-| doi                         | 10.1089/pop.2022.0122                                                                        |
-| ref_count                   | 13                                                                                           |
+|                             | 23844955                                                                           |
+|:------------------|:----------------------------------------------------|
+| year                        | 2013                                                                               |
+| title                       | Trends in detection rates of risky marijuana use in Colorado health care settings. |
+| authors                     | Melissa K Richmond, Katie Page, Laura S Rivera, Brie Reimann, Leigh Fischer        |
+| journal                     | Subst Abus                                                                         |
+| is_research_article         | Yes                                                                                |
+| relative_citation_ratio     | 0.16                                                                               |
+| nih_percentile              | 8.2                                                                                |
+| human                       | 1                                                                                  |
+| animal                      | 0                                                                                  |
+| molecular_cellular          | 0                                                                                  |
+| apt                         | 0.25                                                                               |
+| is_clinical                 | No                                                                                 |
+| citation_count              | 3                                                                                  |
+| citations_per_year          | 0.3                                                                                |
+| expected_citations_per_year | 1.825729                                                                           |
+| field_citation_rate         | 3.145084                                                                           |
+| provisional                 | No                                                                                 |
+| x_coord                     | 0                                                                                  |
+| y_coord                     | 1                                                                                  |
+| cited_by_clin               |                                                                                    |
+| doi                         | 10.1080/08897077.2012.755146                                                       |
+| last_modified               | 10/31/2023, 06:53:47                                                               |
+| ref_count                   | 25                                                                                 |
 
 ### Network data
 
@@ -271,8 +235,12 @@ citations$citation_net[[1]] |> head()
 ```
 
     ##        from       to
-    ## 1: 36200224     <NA>
-    ## 2:     <NA> 36200224
+    ## 1: 23471521 19357281
+    ## 2: 23471521 16612464
+    ## 3: 23471521  4879547
+    ## 4: 23471521 16288682
+    ## 5: 23471521  7760148
+    ## 6: 23471521 14517981
 
 ## Biomedical concepts via the Pubtator Central API
 
@@ -281,61 +249,61 @@ citations$citation_net[[1]] |> head()
 > Nucleic acids research, 47(W1), W587-W593.
 
 ``` r
-pubtations <- unique(med_cannabis$pmid)[1:10] |>
-  pubmedr::pmed_get_entities(cores = 2) |>
+pubtations <- med_cannabis[1:10] |>
+  pubmedtk::pmed_get_entities(cores = 2) |>
   data.table::rbindlist()
 
 pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
 ```
 
-| pmid     | tiab     | id  | text                        | identifier   | type     | start | end |
-|:--------|:--------|:---|:----------------------|:-----------|:--------|-----:|----:|
-| 36986714 | title    | 3   | Marijuana                   | 3483         | Species  |    60 |  69 |
-| 36986714 | title    | 4   | Mouse                       | 10090        | Species  |    82 |  87 |
-| 36986714 | title    | 5   | Pain                        | MESH:D010146 | Disease  |   129 | 133 |
-| 36986714 | abstract | 26  | Cannabis sativa             | 3483         | Species  |   145 | 160 |
-| 36986714 | abstract | 27  | Delta9-Tetrahydrocannabinol | MESH:D013759 | Chemical |   341 | 368 |
-| 36986714 | abstract | 28  | Delta9-THC                  | MESH:D013759 | Chemical |   370 | 380 |
-| 36986714 | abstract | 29  | cannabidiol                 | MESH:D002185 | Chemical |   386 | 397 |
-| 36986714 | abstract | 30  | CBD                         | MESH:C546797 | Chemical |   399 | 402 |
-| 36986714 | abstract | 31  | Delta9-THC                  | MESH:D013759 | Chemical |   564 | 574 |
-| 36986714 | abstract | 32  | CBD                         | MESH:C546797 | Chemical |   578 | 581 |
-| 36986714 | abstract | 33  | THC                         | MESH:D013759 | Chemical |   649 | 652 |
-| 36986714 | abstract | 34  | THC                         | MESH:D013759 | Chemical |   730 | 733 |
-| 36986714 | abstract | 35  | marijuana                   | 3483         | Species  |   754 | 763 |
-| 36986714 | abstract | 36  | THC                         | MESH:D013759 | Chemical |   781 | 784 |
-| 36986714 | abstract | 37  | THC                         | MESH:D013759 | Chemical |   800 | 803 |
-| 36986714 | abstract | 38  | Delta9-THC                  | MESH:D013759 | Chemical |   805 | 815 |
-| 36986714 | abstract | 39  | mice                        | 10090        | Species  |   838 | 842 |
-| 36986714 | abstract | 40  | THC                         | MESH:D013759 | Chemical |   857 | 860 |
-| 36986714 | abstract | 41  | CBD                         | MESH:C546797 | Chemical |   909 | 912 |
-| 36986714 | abstract | 42  | THC                         | MESH:D013759 | Chemical |   921 | 924 |
+| pmid     | tiab     | id  | text                    | identifier   | type     | start |  end |
+|:--------|:--------|:---|:--------------------|:-----------|:--------|-----:|-----:|
+| 24564006 | title    | 1   | marijuana               | 3483         | Species  |    25 |   34 |
+| 24564006 | abstract | 7   | marijuana               | 3483         | Species  |   149 |  158 |
+| 24564006 | abstract | 8   | marijuana               | 3483         | Species  |   338 |  347 |
+| 24564006 | abstract | 9   | marijuana               | 3483         | Species  |   370 |  379 |
+| 24564006 | abstract | 10  | Legalizing recreational | MESH:D001766 | Disease  |   483 |  506 |
+| 24564006 | abstract | 11  | marijuana               | 3483         | Species  |   507 |  516 |
+| 24439710 | abstract | 3   | alcohol                 | MESH:D000438 | Chemical |   380 |  387 |
+| 24439710 | abstract | 4   | alcohol                 | MESH:D000438 | Chemical |  1074 | 1081 |
+| 24439710 | abstract | 5   | alcohol                 | MESH:D000438 | Chemical |  1585 | 1592 |
+| 24412475 | title    | 1   | PTSD                    | MESH:D013313 | Disease  |    96 |  100 |
+| 24412475 | abstract | 15  | PTSD                    | MESH:D013313 | Disease  |   189 |  193 |
+| 24412475 | abstract | 16  | people                  | 9606         | Species  |   303 |  309 |
+| 24412475 | abstract | 17  | PTSD                    | MESH:D013313 | Disease  |   315 |  319 |
+| 24412475 | abstract | 18  | alcohol                 | MESH:D000438 | Chemical |   662 |  669 |
+| 24412475 | abstract | 19  | patients                | 9606         | Species  |   723 |  731 |
+| 24412475 | abstract | 20  | PTSD                    | MESH:D013313 | Disease  |   813 |  817 |
+| 24412475 | abstract | 21  | PTSD                    | MESH:D013313 | Disease  |   944 |  948 |
+| 24412475 | abstract | 22  | PTSD                    | MESH:D013313 | Disease  |  1014 | 1018 |
+| 24412475 | abstract | 23  | PTSD                    | MESH:D013313 | Disease  |  1093 | 1097 |
+| 24412475 | abstract | 24  | PTSD                    | MESH:D013313 | Disease  |  1341 | 1345 |
 
 ## Full text from Open Acess PMC
 
 ### Load list of Open Access PMC articles
 
 ``` r
-pmclist <- pubmedr::pmed_load_pmclist()
-pmc_med_cannabis <- pmclist |> filter(PMID %in% unique(med_cannabis$pmid))
+pmclist <- pubmedtk::data_pmc_list()
+pmc_med_cannabis <- pmclist |> filter(PMID %in% med_cannabis)
 pmc_med_cannabis |> head() |> knitr::kable()
 ```
 
-| fpath                              | journal                                          | PMCID   | PMID     | license_type |
-|:---------------------|:-----------------------------|:-----|:------|:--------|
-| oa_package/06/f8/PMC2267789.tar.gz | Harm Reduct J. 2008 Jan 28; 5:5                  | 2267789 | 18226254 | CC BY        |
-| oa_package/b1/ba/PMC2848643.tar.gz | Harm Reduct J. 2010 Mar 5; 7:3                   | 2848643 | 20202221 | CC BY        |
-| oa_package/7c/37/PMC2990823.tar.gz | Indian J Psychiatry. 2010 Jul-Sep; 52(3):236-242 | 2990823 | 21180408 | CC BY        |
-| oa_package/6f/9a/PMC3358713.tar.gz | Open Neurol J. 2012 May 4; 6:18-25               | 3358713 | 22629287 | CC BY-NC     |
-| oa_package/38/6d/PMC3507655.tar.gz | Addict Sci Clin Pract. 2012 Apr 19; 7(1):5       | 3507655 | 23186143 | CC BY        |
-| oa_package/cb/ad/PMC3628147.tar.gz | Med Sci Monit. 2011 Dec 1; 17(12):RA249-RA261    | 3628147 | 22129912 | NO-CC CODE   |
+| fpath                              | journal                                        | PMCID   | PMID     | license_type |
+|:---------------------|:----------------------------|:-----|:------|:--------|
+| oa_package/e8/71/PMC3966811.tar.gz | PLoS One. 2014 Mar 26; 9(3):e92816             | 3966811 | 24671103 | CC BY        |
+| oa_package/73/a8/PMC3995798.tar.gz | PLoS One. 2014 Apr 22; 9(4):e95569             | 3995798 | 24755942 | CC BY        |
+| oa_package/d5/c5/PMC4374299.tar.gz | BMC Med Educ. 2015 Mar 19; 15:52               | 4374299 | 25888752 | CC BY        |
+| oa_package/c6/b5/PMC4410963.tar.gz | J Occup Environ Med. 2015 May 8; 57(5):518-525 | 4410963 | 25951421 | NO-CC CODE   |
+| oa_package/a3/13/PMC4473732.tar.gz | Neuroimage Clin. 2015 Apr 9; 8:140-147         | 4473732 | 26106538 | CC BY-NC-ND  |
+| oa_package/97/40/PMC4553645.tar.gz | Yale J Biol Med. 2015 Sep 3; 88(3):257-264     | 4553645 | 26339208 | CC BY-NC     |
 
 ### Extract full text articles
 
 ``` r
 med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |> 
-  pubmedr::pmed_get_fulltext()
-  #pubmedr::pmed_get_fulltext()
+  pubmedtk::pmed_get_fulltext()
+  #pubmedtk::pmed_get_fulltext()
 
 samp <- med_cannabis_fulltexts |> 
   filter(pmcid %in% pmc_med_cannabis$PMCID[1])
@@ -344,46 +312,31 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ```
 
     ## [[1]]
-    ## [1] "1. Introduction Although modern medicine has only recently"
-    ## [2] "begun to rediscover the therapeutic potential of cannabis,"
-    ## [3] "written records of medical use date back thousands of"     
+    ## [1] "Introduction The social ramifications of marijuana"      
+    ## [2] "legalization have been hotly debated for at least four"  
+    ## [3] "decades [1]. Despite a long history of marijuana use for"
     ## 
     ## [[2]]
-    ## [1] "2. Health Canada's Marihuana Medical Access Division The"   
-    ## [2] "federal government's own polling and research suggests that"
-    ## [3] "there are currently over 290,000 medical users in the"      
+    ## [1] "Methods Data & Measures Dependent Variables Data on all" 
+    ## [2] "seven Part I offenses—homicide, rape, robbery, assault," 
+    ## [3] "burglary, larceny, and auto theft—for each state between"
     ## 
     ## [[3]]
-    ## [1] "3. The Canadian Institute of Health Research and the"      
-    ## [2] "Medical Marihuana Research Program Since the court-ordered"
-    ## [3] "implementation of a federal medical cannabis policy in"    
+    ## [1] "Results Primary Findings Before consulting the results from"
+    ## [2] "the fixed effects regression models, a series of"           
+    ## [3] "unconditioned crime rates for each offense type were"       
     ## 
     ## [[4]]
-    ## [1] "4. Health Canada's Production and Supply Policy and"     
-    ## [2] "Practice In December 2000 Health Canada awarded a"       
-    ## [3] "five-year, $5.7 million contract for the production of a"
-    ## 
-    ## [[5]]
-    ## [1] "5. Community-Based Alternatives to a Centralized Medical"    
-    ## [2] "Cannabis Program\"As far as the distribution of marijuana to"
-    ## [3] "qualified users is concerned, the government might consider" 
-    ## 
-    ## [[6]]
-    ## [1] "6. Discussion and Conclusion Since 1999 the Canadian"       
-    ## [2] "government has spent over $30 million in funding for the"   
-    ## [3] "research, production and distribution of medicinal cannabis"
-    ## 
-    ## [[7]]
-    ## [1] "Competing interests The author is the founder and director"
-    ## [2] "of the Vancouver Island Compassion Society, and receives a"
-    ## [3] "salary from this organization for research, communications"
+    ## [1] "Discussion and Conclusion The effects of legalized medical"
+    ## [2] "marijuana have been passionately debated in recent years." 
+    ## [3] "Empirical research on the direct relationship between"
 
 ## MeSH extensions
 
 ### Thesauri
 
 ``` r
-mesh <- pubmedr::data_mesh_thesuarus() 
+mesh <- pubmedtk::data_mesh_thesuarus() 
 mesh |> head() |> knitr::kable()
 ```
 
@@ -399,7 +352,7 @@ mesh |> head() |> knitr::kable()
 ### Trees
 
 ``` r
-pubmedr::data_mesh_trees() |> head() |> knitr::kable()
+pubmedtk::data_mesh_trees() |> head() |> knitr::kable()
 ```
 
 | DescriptorUI | DescriptorName | tree_location           | code | cats                                  | mesh1                                     | mesh2                                   | tree1 | tree2   |
@@ -414,7 +367,7 @@ pubmedr::data_mesh_trees() |> head() |> knitr::kable()
 ### Pharmacological Actions
 
 ``` r
-pubmedr::data_pharm_action() |> 
+pubmedtk::data_pharm_action() |> 
   filter(DescriptorName == 'Rituximab') |>
   knitr::kable()
 ```
@@ -434,13 +387,13 @@ pubmedr::data_pharm_action() |>
 
 <https://zenodo.org/record/4383195>
 
-Includes embeddings for the \~30K MeSH descriptors, as well as \~15K
+Includes embeddings for the ~30K MeSH descriptors, as well as ~15K
 embeddings for Supplementary Concept Records (SCR).
 
 ``` r
-embeddings <- pubmedr::data_mesh_embeddings()
+embeddings <- pubmedtk::data_mesh_embeddings()
 
-pubmedr::pmed_get_neighbors(x = embeddings,
+pubmedtk::pmed_get_neighbors(x = embeddings,
                             target = 'Rituximab') |>
   knitr::kable()
 ```
@@ -457,72 +410,3 @@ pubmedr::pmed_get_neighbors(x = embeddings,
 |    8 | Rituximab | ibritumomab tiuxetan | 0.530 |
 |    9 | Rituximab | belimumab            | 0.528 |
 |   10 | Rituximab | Prednisone           | 0.511 |
-
-## Odds ends NLP
-
-``` r
-library(dplyr)
-
-multiword_dictionary <- pubmedr::data_mesh_thesuarus() |>
-  select(TermName) |>         
-  filter(grepl(' ', TermName)) |>
-  filter(!grepl(',', TermName)) |>
-  filter(grepl('^[a-zA-Z0-9 -]*$', TermName)) |>
-  pull(TermName) |> tolower()
-
-tif <- pubmedr::pmed_search_pubmed('Medical marijuana') |>
-  pull(pmid) |>
-  pubmedr::pmed_get_records2() |>
-  bind_rows()
-```
-
-``` r
-dtm_corpus <- tif |>
-  rename(doc_id = pmid, text = abstract) |>
-  text2df::tif2sentence() |>
-  text2df::tif2token() |>
-  text2df::token2mwe(mwe = multiword_dictionary) |> 
-  text2df::token2df() |>
-  mutate(TermName = gsub('_', ' ', tolower(token))) |>
-  left_join(pubmedr::data_mesh_thesuarus() |> 
-              mutate(TermName = tolower(TermName)), 
-            by = c('TermName'))
-```
-
-``` r
-dtm_mesh <- tif |>
-  pull(annotations) |>
-  bind_rows() |>
-  filter(!is.na(FORM))
-
-df <- dtm_mesh
-  
-pubtations <- pubmedr::pmed_search_pubmed('Medical marijuana') |>
-  pull(pmid) |>
-  pubmedr::pmed_get_entities(cores = 3) |>
-  data.table::rbindlist() |>
-  mutate(DescriptorUI = gsub('MESH:', '', identifier)) |>
-  
-  left_join(pubmedr::data_mesh_thesuarus() |> 
-               filter(RecordPreferredTermYN == 'Y'),
-             by = 'DescriptorUI')
-
-## aggregate pubatations and mesh -- just to see -- 
-```
-
-``` r
-##x <- topics
-topics <- dtm_mesh |>
-  text2df::df2dtm(document = 'ID', term = 'FORM') |>
-  text2df::dtm2topic(n_topics = 30, 
-            label_n = 15,
-            perplexity = 5)
-
-x1 <- topics |> topic2html(title = 'Medical Marijuana in PubMed') 
-```
-
-``` r
-knitr::include_graphics("README_files/figure-markdown_github/demo1.png") 
-```
-
-<img src="README_files/figure-markdown_github/demo1.png" width="695" />
