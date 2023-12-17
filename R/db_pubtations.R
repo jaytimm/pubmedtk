@@ -1,62 +1,30 @@
-#' Download PubTator Central NER annotations.
-#'
-#' @name pmed_get_entities
-#' @param pmids A vector of PMIDs
-#' @param cores Numeric specifying number of cores to use
-#' @param verbose Boolean
-#' @return A list of data frames
-#'
-#' @export
-#' @rdname pmed_get_entities
-
-pmed_get_entities <- function (pmids,
-                               cores = 3,
-                               # ncbi_key = NULL,
-                               verbose = T) {
-  
-  
-  if(!verbose){
-    pbo <- pbapply::pboptions(type = "none")
-    on.exit(pbapply::pboptions(pbo), add = TRUE)
-  }
-  
-  # if(is.null(ncbi_key) & cores > 3) cores <- min(parallel::detectCores() - 1, 3)
-  # if(!is.null(ncbi_key)) rentrez::set_entrez_key(ncbi_key)
-  # Sys.setenv(ENTREZ_KEY = ncbi_key)
-  
-  batches <- split(pmids, ceiling(seq_along(pmids)/100))
-  
-  clust <- parallel::makeCluster(cores)
-  parallel::clusterExport(cl = clust,
-                          varlist = c('batches'),
-                          envir = environment())
-  
-  annotations <- pbapply::pblapply(cl = clust,
-                                   X = batches,
-                                   FUN = get_annotations)
-  
-  parallel::stopCluster(clust)
-  return(annotations)
-}
 
 
-round(runif(1, min = 1, max = 3), digits = 1)
 
-# x ='28483577'
-# x = pubmed_ids[1]
-
-get_annotations <- function(x){
+#' @param x A string containing the URL of the website to be scraped.
+#' @return A data frame with columns 'url', 'type', and 'text', containing the URL,
+#'         type of HTML node, and the extracted text, respectively. Returns an empty
+#'         data frame with these columns if scraping fails.
+#' @keywords internal
+#' @import xml2
+#' @import rvest
+#' @importFrom httr GET timeout
+#' @examples
+#' get_site("http://example.com")
+#' @noRd
+#' 
+#############
+util.get_pubtations <- function(x){
   
+  ###
   con <- url(paste0("https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/biocjson?pmids=", paste(x, collapse = ',')))
   
   Sys.sleep(round(runif(1, min = 0, max = 2), digits = 1))
-  ## REQUEST
+  mydata <- tryCatch(jsonlite::stream_in(gzcon(con)),error = function(e) NA)  
   
-  mydata <- tryCatch(
-    jsonlite::stream_in(gzcon(con)),error = function(e) NA)  
   
   if(length(mydata) == 1){jj0 <- NA} else{
-  
+    
     jj <- list()
     
     for(i in 1:nrow(mydata)){
@@ -108,9 +76,9 @@ get_annotations <- function(x){
     jj0[, c('start', 'length') := data.table::tstrsplit(locations, ",", fixed=TRUE)]
     jj0[, start := as.integer(start)]
     jj0[, end := start + as.integer(length)]
-  
+    
     jj0[, length := NULL]
     jj0[, locations := NULL]
   }
-  return(jj0)
+  jj0
 }

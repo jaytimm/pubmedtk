@@ -10,6 +10,16 @@ output:
 <!-- badges: end -->
 
 
+iCite Database: A bibliometric tool provided by the NIH that offers citation metrics and the Relative Citation Ratio (RCR) for scientific publications. It's accessible at iCite.
+
+PubMed Annotations (PubTator): This feature, available through services like PubTator, provides tagged entities such as genes and diseases in article texts, useful for bioinformatics research. PubTator can be found at PubTator Central.
+
+PubMed Author Affiliations: This resource details the institutional and geographic affiliations of authors in published articles, aiding in the analysis of research networks and collaborations. Information about author affiliations is integrated within PubMed, which is accessible at PubMed.
+
+PubMed Article Records: As part of the MEDLINE database, PubMed offers comprehensive records of scientific articles, including titles, abstracts, and publication details. It serves as a primary source for researchers and is available at PubMed.
+
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("/home/jtimm/pCloudDrive/GitHub/packages/render_toc.R")
@@ -46,8 +56,6 @@ devtools::install_github("jaytimm/pubmedtk")
 
 
 ## PubMed search
-
-### Basic search
 
 The `pmed_search_pubmed()` function is meant for record-matching searches typically performed using the [PubMed online interface](https://pubmed.ncbi.nlm.nih.gov/).  
 
