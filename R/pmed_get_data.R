@@ -1,72 +1,55 @@
-#' Aggregate and Process News Articles Based on a Search Query
+#' Retrieve Data from PubMed Based on PMIDs
 #'
-#' This function serves as the primary interface for aggregating news data.
-#' It first builds an RSS feed URL based on a given search query, then parses
-#' the RSS feed to extract news articles. Each article is then scraped and processed
-#' to produce a consolidated dataset containing the article contents along with
-#' associated metadata.
-#'
-#' @param x A string containing the URL of the website to be scraped.
-#' @return A data frame with columns 'url', 'type', and 'text', containing the URL,
-#'         type of HTML node, and the extracted text, respectively. Returns an empty
-#'         data frame with these columns if scraping fails.
-#' @import xml2
-#' @import rvest
-#' @importFrom httr GET timeout
-#' @examples
-#' get_site("http://example.com")
-
-#' @export
-#'
-
- 
-# pmed_retrieve_records()
+#' This function retrieves different types of data (like PubMed records, affiliations, iCites data, etc.) from PubMed based on provided PMIDs. It supports parallel processing for efficiency.
+#' @param pmids A vector of PMIDs for which data is to be retrieved.
+#' @param endpoint A character vector specifying the type of data to retrieve ('pubtations', 'icites', 'affiliations', 'pubmed', 'pmc').
+#' @param cores Number of cores to use for parallel processing (default is 3).
+#' @param ncbi_key (Optional) NCBI API key for authenticated access.
+#' @return A data.table containing combined results from the specified endpoint.
+#' @importFrom parallel makeCluster stopCluster detectCores clusterExport
+#' @importFrom pbapply pblapply
+#' @importFrom data.table rbindlist
+#' 
+#' 
 pmed_get_data <- function(pmids, 
-                          # rename as 'endpoint' -- 
-                          task_type = c('pubtations', 
-                                        'icites',
-                                        'affiliations', 
-                                        'pubmed',
-                                        'pmc'), 
+                          endpoint = c('pubtations', 
+                                       'icites', 
+                                       'affiliations', 
+                                       'pubmed', 
+                                       'pmc'), 
                           cores = 3, 
-                          ## output_dir, 
                           ncbi_key = NULL) {
   
-  
-  # Determine the number of cores to use
+  # Determine the appropriate number of cores to use, with a maximum of 3
   cores <- ifelse(cores > 3, min(parallel::detectCores() - 1, 3), cores)
   
-  # Set the NCBI API key if provided
+  # Set the NCBI API key for authenticated access if provided
   if (!is.null(ncbi_key)) rentrez::set_entrez_key(ncbi_key)
   
-  # Define the batch size and task function based on task_type
-  batch_size <- if (task_type == "pmc") {20} else if (task_type == "pubtations") {99} else {199}
-  task_function <- switch(task_type,
+  # Define batch size and the specific task function based on the chosen endpoint
+  batch_size <- if (endpoint == "pmc") {20} else if (endpoint == "pubtations") {99} else {199}
+  task_function <- switch(endpoint,
                           "icites" = .get_icites,
                           "pubtations" = .get_pubtations,
                           "affiliations" = .get_affiliations,
                           "pubmed" = .get_records,
                           "pmc" = .get_pmc,
-                          stop("Invalid task type"))
+                          stop("Invalid endpoint"))
   
-                          ## pmc --
-  
-  # Split PMIDs into batches
+  # Split the PMIDs into batches for parallel processing
   batches <- split(pmids, ceiling(seq_along(pmids) / batch_size))
   
-  # Set up a parallel cluster
+  # Set up a parallel cluster using the specified number of cores
   clust <- parallel::makeCluster(cores)
   parallel::clusterExport(cl = clust, varlist = c("task_function"), envir = environment())
   
-  # Execute the task function in parallel
+  # Execute the task function on each batch in parallel
   results <- pbapply::pblapply(X = batches, FUN = task_function, cl = clust)
   
-  # Stop the cluster
+  # Stop the parallel cluster
   parallel::stopCluster(clust)
   
-  # Combine the results
-  ## can ouput here -- or at the end of each 
+  # Combine results from all batches into a single data.table
   combined_results <- data.table::rbindlist(results)
   return(combined_results)
 }
-

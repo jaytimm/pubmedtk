@@ -2,30 +2,27 @@
 % Please edit documentation in R/pmed_get_data.R
 \name{pmed_get_data}
 \alias{pmed_get_data}
-\title{Aggregate and Process News Articles Based on a Search Query}
+\title{Retrieve Data from PubMed Based on PMIDs}
 \usage{
 pmed_get_data(
   pmids,
-  task_type = c("pubtations", "icites", "affiliations", "pubmed", "pmc"),
+  endpoint = c("pubtations", "icites", "affiliations", "pubmed", "pmc"),
   cores = 3,
   ncbi_key = NULL
 )
 }
 \arguments{
-\item{x}{A string containing the URL of the website to be scraped.}
+\item{pmids}{A vector of PMIDs for which data is to be retrieved.}
+
+\item{endpoint}{A character vector specifying the type of data to retrieve ('pubtations', 'icites', 'affiliations', 'pubmed', 'pmc').}
+
+\item{cores}{Number of cores to use for parallel processing (default is 3).}
+
+\item{ncbi_key}{(Optional) NCBI API key for authenticated access.}
 }
 \value{
-A data frame with columns 'url', 'type', and 'text', containing the URL,
-        type of HTML node, and the extracted text, respectively. Returns an empty
-        data frame with these columns if scraping fails.
+A data.table containing combined results from the specified endpoint.
 }
 \description{
-This function serves as the primary interface for aggregating news data.
-It first builds an RSS feed URL based on a given search query, then parses
-the RSS feed to extract news articles. Each article is then scraped and processed
-to produce a consolidated dataset containing the article contents along with
-associated metadata.
-}
-\examples{
-get_site("http://example.com")
+This function retrieves different types of data (like PubMed records, affiliations, iCites data, etc.) from PubMed based on provided PMIDs. It supports parallel processing for efficiency.
 }
