@@ -10,35 +10,46 @@ output:
 <!-- badges: end -->
 
 
-iCite Database: A bibliometric tool provided by the NIH that offers citation metrics and the Relative Citation Ratio (RCR) for scientific publications. It's accessible at iCite.
-
-PubMed Annotations (PubTator): This feature, available through services like PubTator, provides tagged entities such as genes and diseases in article texts, useful for bioinformatics research. PubTator can be found at PubTator Central.
-
-PubMed Author Affiliations: This resource details the institutional and geographic affiliations of authors in published articles, aiding in the analysis of research networks and collaborations. Information about author affiliations is integrated within PubMed, which is accessible at PubMed.
-
-PubMed Article Records: As part of the MEDLINE database, PubMed offers comprehensive records of scientific articles, including titles, abstracts, and publication details. It serves as a primary source for researchers and is available at PubMed.
-
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-source("/home/jtimm/pCloudDrive/GitHub/packages/render_toc.R")
-```
-
-
-
-`r paste0('*Updated: ', Sys.Date(),'*')` 
-
 # pubmedtk
 
 An R package for (1) querying the PubMed database & parsing retrieved records; (2) extracting full text articles from the Open Access subset of the PMC via ftp; (3) obtaining citation data from NIH's Open Citation Collection/[iCite](https://icite.od.nih.gov/); and (4) accessing annotations of biomedical concepts from [PubTator Central](https://www.ncbi.nlm.nih.gov/research/pubtator/).
 
 
-```{r echo=FALSE}
-render_toc(filename = "/home/jtimm/pCloudDrive/GitHub/packages/pubmedtk/README.Rmd")#,
-           # toc_depth = 3,
-           # base_level = 2)
-```
+PubMed Article Records: Offers comprehensive records of scientific articles from the MEDLINE database, including titles, abstracts, and publication details, serving as a primary research resource.
+
+PubMed Author Affiliations: Details institutional and geographic affiliations of authors in published articles, useful for analyzing research networks and collaborations.
+
+PMC Full-Text Access: Enables direct access to full-text articles from PubMed Central, enhancing research with comprehensive content analysis and data mining capabilities.
+
+iCite Database: Offers bibliometric analysis with citation metrics and Relative Citation Ratio (RCR) for scientific publications, aiding in the assessment of research impact.
+
+PubMed Annotations (PubTator): Provides tagged entities like genes and diseases in article texts, crucial for bioinformatics research, via the PubTator service.
+
+
+
+_______
+
+Description:
+
+PubMedToolkit is an R package specifically designed for streamlined and efficient access to various PubMed-related databases and services. It caters to the needs of researchers, bioinformaticians, and data scientists in biomedical fields, providing a single interface for diverse data retrieval and analysis tasks.
+
+Key Features:
+With a vector of PMIDs ... (not quite) -- `pubmedtk` ... designed for simple, uniform access 
+uniform access to multiple text-based PubMed resources/DBs, including: PubMed abstract records, PubMed author affiliation data, PMC full-texts, iCite citation/bibliometric data, and PubTator NER annotations.  
+
+
+Efficient Data Retrieval and Processing:
+
+Facilitates batch retrieval of data using functions like pmed_get_data.
+Employs parallel processing for enhanced performance, ideal for handling large datasets and complex queries.
+
+
+Broad Application Spectrum:
+
+Suited for systematic literature reviews, meta-analyses, network analysis, text mining, and impact assessment studies.
+
+
+
 
 
 ## Installation
@@ -55,7 +66,10 @@ devtools::install_github("jaytimm/pubmedtk")
 ```
 
 
-## PubMed search
+
+## Quick start
+
+### PubMed search
 
 The `pmed_search_pubmed()` function is meant for record-matching searches typically performed using the [PubMed online interface](https://pubmed.ncbi.nlm.nih.gov/).  
 
@@ -67,20 +81,44 @@ pubmed_query <- paste0('("medical marijuana"[MeSH Terms]) AND (',
                        '[pdat])')
 
 med_cannabis <- lapply(pubmed_query, pubmedtk::pmed_search_pubmed)
-med_cannabis <- med_cannabis |> unlist() |> unique()
+med_cannabis <- med_cannabis |> unlist() |> unique() |> sort()
 ```
 
 
+
+
+### Get record-level data
 
 ```{r}
-head(med_cannabis)
+pubmed_data <- med_cannabis |> pubmedtk::pmed_get_data(task_type = 'pubmed')
+pubmed_affs <- med_cannabis |> pubmedtk::pmed_get_data(task_type = 'affiliations')
+icites_data <- med_cannabis |> pubmedtk::pmed_get_data(task_type = 'icites')
+pubtations_data <- med_cannabis |> pubmedtk::pmed_get_data(task_type = 'pubtations')
 ```
+
+
+
+
+### Extract full text articles
+
+> so this could be re-worked to be PMID-based as well -- with the download, etc happening under the hood as it were -- 
+
+```{r}
+pmclist <- pubmedtk::data_pmc_list()
+pmc_med_cannabis <- pmclist[PMID %in% med_cannabis]
+
+pubmed_data <- pmc_med_cannabis$fpath |> pubmedtk::pmed_get_data(task_type = 'pmc')
+```
+
+
 
 
 
 ## Retrieve and parse abstract data 
 
 ### Record details
+
+
 
 ```{r warning=FALSE}
 med_cannabis_df0 <- pubmedtk::pmed_get_records2(pmids = med_cannabis[1:300], 
@@ -243,26 +281,4 @@ https://www.sciencedirect.com/science/article/pii/S1532046421001969
 https://zenodo.org/record/4383195
 
 Includes embeddings for the ~30K MeSH descriptors, as well as ~15K embeddings for Supplementary Concept Records (SCR).
-
-
-```{r message=FALSE, warning=FALSE}
-embeddings <- pubmedtk::data_mesh_embeddings()
-
-pubmedtk::pmed_get_neighbors(x = embeddings,
-                            target = 'Rituximab') |>
-  knitr::kable()
-```
-
-
-```{r eval=FALSE, include=FALSE}
-terms <- c('cannabis', 
-           'rituximeb', 
-           'white patients', 
-           'community activism')
-
-lapply(terms, function(x){pmed_link_mesh(x, dict = mesh)})
-
-pmed_link_mesh(x = 'echinacea', dict = mesh)
-```
-
 

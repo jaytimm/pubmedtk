@@ -17,11 +17,19 @@
 #' get_site("http://example.com")
 
 #' @export
-#' 
-## task_params = list()
+#'
+
+ 
+# pmed_retrieve_records()
 pmed_get_data <- function(pmids, 
-                          task_type, 
+                          # rename as 'endpoint' -- 
+                          task_type = c('pubtations', 
+                                        'icites',
+                                        'affiliations', 
+                                        'pubmed',
+                                        'pmc'), 
                           cores = 3, 
+                          ## output_dir, 
                           ncbi_key = NULL) {
   
   
@@ -32,13 +40,16 @@ pmed_get_data <- function(pmids,
   if (!is.null(ncbi_key)) rentrez::set_entrez_key(ncbi_key)
   
   # Define the batch size and task function based on task_type
-  batch_size <- if (task_type == "pubtations") 100 else 199
+  batch_size <- if (task_type == "pmc") {20} else if (task_type == "pubtations") {99} else {199}
   task_function <- switch(task_type,
-                          "icites" = util.get_icites,
-                          "pubtations" = util.get_pubtations,
-                          "affiliations" = util.get_affiliations,
-                          "pubmed" = util.get_records,
+                          "icites" = .get_icites,
+                          "pubtations" = .get_pubtations,
+                          "affiliations" = .get_affiliations,
+                          "pubmed" = .get_records,
+                          "pmc" = .get_pmc,
                           stop("Invalid task type"))
+  
+                          ## pmc --
   
   # Split PMIDs into batches
   batches <- split(pmids, ceiling(seq_along(pmids) / batch_size))
@@ -54,6 +65,7 @@ pmed_get_data <- function(pmids,
   parallel::stopCluster(clust)
   
   # Combine the results
+  ## can ouput here -- or at the end of each 
   combined_results <- data.table::rbindlist(results)
   return(combined_results)
 }
