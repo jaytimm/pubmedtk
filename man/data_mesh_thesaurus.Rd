@@ -4,7 +4,7 @@
 \alias{data_mesh_thesuarus}
 \title{Load mesh thesaurus from Git}
 \usage{
-data_mesh_thesuarus()
+data_mesh_thesuarus(force_download = FALSE)
 }
 \value{
 A data frame.

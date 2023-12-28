@@ -32,7 +32,8 @@
   }
   
   # Return the fetched XML content or an error object
-  return(x1)
+  doc <- xml2::read_xml(x1)
+  xml2::xml_find_all(doc, "//PubmedArticle")
 }
 
 

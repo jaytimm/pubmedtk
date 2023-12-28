@@ -9,9 +9,10 @@
 #' @importFrom parallel makeCluster stopCluster detectCores clusterExport
 #' @importFrom pbapply pblapply
 #' @importFrom data.table rbindlist
+#' @export
+#' @rdname pmed_get_records
 #' 
-#' 
-pmed_get_data <- function(pmids, 
+pmed_get_records <- function(pmids, 
                           endpoint = c('pubtations', 
                                        'icites', 
                                        'affiliations', 

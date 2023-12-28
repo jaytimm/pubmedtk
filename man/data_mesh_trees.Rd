@@ -4,7 +4,7 @@
 \alias{data_mesh_trees}
 \title{Load mesh trees from Git}
 \usage{
-data_mesh_trees()
+data_mesh_trees(force_download = FALSE)
 }
 \value{
 A data frame.
