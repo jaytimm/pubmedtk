@@ -38,10 +38,9 @@ devtools::install_github("jaytimm/pubmedtk")
 
 ## PubMed search
 
-> The package has two basic functions: `search_pubmed` and `get_records`. The former fetches PMIDs from the PubMed API based on user search; the latter scrapes PMID records from a user-specified PubMed endpoint -- `pubmed_abstracts`, `pubmed_affiliations`, `pubtations`, `icites`, or `pmc_fulltext`.
+The package has two basic functions: `search_pubmed` and `get_records`. The former fetches PMIDs from the PubMed API based on user search; the latter scrapes PMID records from a user-specified PubMed endpoint -- `pubmed_abstracts`, `pubmed_affiliations`, `pubtations`, `icites`, or `pmc_fulltext`.
 
-
-> Search syntax is the same as that implemented in standard [PubMed search](https://pubmed.ncbi.nlm.nih.gov/advanced/). 
+Search syntax is the same as that implemented in standard [PubMed search](https://pubmed.ncbi.nlm.nih.gov/advanced/). 
 
 ```{r}
 yrs <- 2010:2023
