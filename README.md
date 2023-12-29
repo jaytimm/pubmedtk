@@ -7,27 +7,27 @@ status](https://app.travis-ci.com/jaytimm/pubmedtk.svg?branch=main)](https://app
 
 # pubmedtk
 
-> The package provides a comprehensive solution for accessing a range of
-> PubMed endpoints including [PubMed](https://pubmed.ncbi.nlm.nih.gov/)
-> abstract records, [iCite](https://icite.od.nih.gov/) bibliometric
-> data, [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/)
-> named entity annotations, and full-text entries from [PubMed
-> Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC). The package serves
-> as an interface to these endpoints, allowing users to retrieve various
-> data types that fall under the umbrella of PubMed. This unified
-> interface simplifies the process for end-users, who can interact with
-> multiple PubMed services through a single R function rather than
-> having to individually handle the different APIs and data formats of
-> each service. For enhanced performance, the package facilitates batch
-> data retrieval across each of these services.
+The package provides a comprehensive solution for accessing a range of
+PubMed endpoints including [PubMed](https://pubmed.ncbi.nlm.nih.gov/)
+abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data,
+[PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity
+annotations, and full-text entries from [PubMed
+Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC). The package serves as
+an interface to these endpoints, allowing users to retrieve various data
+types that fall under the umbrella of PubMed. This unified interface
+simplifies the process for end-users, who can interact with multiple
+PubMed services through a single R function rather than having to
+individually handle the different APIs and data formats of each service.
+For enhanced performance, the package facilitates batch data retrieval
+across each of these services.
 
-> The package also includes MeSH ontology resources as simple data
-> frames, including Descriptor Terms, Descriptor Tree Structures,
-> Supplementary Concept Terms, and Pharmacological Actions; it also
-> features descriptor-level word embeddings [(Noh & Kavuluru
-> 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969).
-> Via the [mesh-extensions](https://github.com/jaytimm/mesh-extensions)
-> Git project.
+The package also includes MeSH ontology resources as simple data frames,
+including Descriptor Terms, Descriptor Tree Structures, Supplementary
+Concept Terms, and Pharmacological Actions; it also features
+descriptor-level word embeddings [(Noh & Kavuluru
+2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969).
+Via the [mesh-extensions](https://github.com/jaytimm/mesh-extensions)
+Git project.
 
 ## Installation
 
@@ -73,10 +73,11 @@ recs_pubtations <- pmids |> pubmedtk::get_records(endpoint = 'pubtations')
 pmclist <- pubmedtk::data_pmc_list(force_install = F)
 pmc_pmids <- pmclist[PMID %in% pmids]
 
-recs_pmc <- pmc_pmids$fpath |> pubmedtk::get_records(endpoint = 'pmc_fulltext')
+recs_pmc <- pmc_pmids$fpath |> 
+  pubmedtk::get_records(endpoint = 'pmc_fulltext')
 ```
 
-### pubmed_abstracts
+### `pubmed_abstracts`
 
 ``` r
 pmid_eg <- 24781819
@@ -94,11 +95,6 @@ recs_pubmed |>
 | pmid     | year | journal  | articletitle                                                                                                  | abstract                                                                                                                                                                                                                                                                                                      |
 |:--|:-|:--|:-----------------|:----------------------------------------------|
 | 24781819 | 2014 | PloS one | Perceptions of others’ political affiliation are moderated by individual perceivers’ own political attitudes. | Previous research has shown that perceivers can accurately extract information about perceptually ambiguous group memberships from facial information alone. For example, people demonstrate above-chance accuracy in categorizing political ideology from faces. Further, they ascribe particular personali… |
-
-``` r
-x1 <- recs_pubmed |> filter(pmid %in% pmc_pmids$PMID) 
-x2 <- recs_pubtations |> filter(pmid %in% pmc_pmids$PMID) 
-```
 
 ``` r
 recs_pubmed |> 
@@ -121,7 +117,7 @@ recs_pubmed |>
   #knitr::kable()
 ```
 
-### pubmed_affiliates
+### `pubmed_affiliates`
 
 ``` r
 recs_affs |> 
@@ -134,7 +130,7 @@ recs_affs |>
 | 24781819 | Wilson, John Paul | Department of Psychology, University of Toronto, Toronto, Ontario, Canada. |
 | 24781819 | Rule, Nicholas O  | Department of Psychology, University of Toronto, Toronto, Ontario, Canada. |
 
-### icites
+### `icites`
 
 ``` r
 citations <- recs_icites |> 
@@ -179,7 +175,7 @@ citations$citation_net[[1]] |> head() |> knitr::kable()
 | 24781819 | 20090906 |
 | 24781819 | 19186926 |
 
-### pubtations
+### `pubtations`
 
 ``` r
 recs_pubtations |> 
@@ -194,7 +190,7 @@ recs_pubtations |>
 | 24781819 | abstract | 4   | participants | 9606       | Species |   732 |  744 |
 | 24781819 | abstract | 5   | participants | 9606       | Species |  1168 | 1180 |
 
-### pmc_fulltext
+### `pmc_fulltext`
 
 ``` r
 samp <- recs_pmc |> filter(pmid == pmid_eg)

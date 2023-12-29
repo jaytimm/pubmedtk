@@ -13,9 +13,9 @@ output:
 
 # pubmedtk
 
-> The package provides a comprehensive solution for accessing a range of PubMed endpoints including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data, [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity annotations, and full-text entries from [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC).  The package serves as an interface to these endpoints, allowing users to retrieve various data types that fall under the umbrella of PubMed.  This unified interface simplifies the process for end-users, who can interact with multiple PubMed services through a single R function rather than having to individually handle the different APIs and data formats of each service. For enhanced performance, the package facilitates batch data retrieval across each of these services. 
+The package provides a comprehensive solution for accessing a range of PubMed endpoints including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data, [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity annotations, and full-text entries from [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC).  The package serves as an interface to these endpoints, allowing users to retrieve various data types that fall under the umbrella of PubMed.  This unified interface simplifies the process for end-users, who can interact with multiple PubMed services through a single R function rather than having to individually handle the different APIs and data formats of each service. For enhanced performance, the package facilitates batch data retrieval across each of these services. 
 
-> The package also includes MeSH ontology resources as simple data frames, including Descriptor Terms, Descriptor Tree Structures, Supplementary Concept Terms, and Pharmacological Actions; it also features descriptor-level word embeddings [(Noh & Kavuluru 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969). Via the [mesh-extensions](https://github.com/jaytimm/mesh-extensions) Git project.
+The package also includes MeSH ontology resources as simple data frames, including Descriptor Terms, Descriptor Tree Structures, Supplementary Concept Terms, and Pharmacological Actions; it also features descriptor-level word embeddings [(Noh & Kavuluru 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969). Via the [mesh-extensions](https://github.com/jaytimm/mesh-extensions) Git project.
 
 
 
@@ -84,14 +84,15 @@ recs_pubtations <- pmids |> pubmedtk::get_records(endpoint = 'pubtations')
 pmclist <- pubmedtk::data_pmc_list(force_install = F)
 pmc_pmids <- pmclist[PMID %in% pmids]
 
-recs_pmc <- pmc_pmids$fpath |> pubmedtk::get_records(endpoint = 'pmc_fulltext')
+recs_pmc <- pmc_pmids$fpath |> 
+  pubmedtk::get_records(endpoint = 'pmc_fulltext')
 ```
 
 
 
 
 
-### pubmed_abstracts
+### `pubmed_abstracts`
 
 ```{r}
 pmid_eg <- 24781819
@@ -108,7 +109,7 @@ recs_pubmed |>
 ```
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 x1 <- recs_pubmed |> filter(pmid %in% pmc_pmids$PMID) 
 x2 <- recs_pubtations |> filter(pmid %in% pmc_pmids$PMID) 
 ```
@@ -125,7 +126,7 @@ recs_pubmed |>
 
 
 
-### pubmed_affiliates
+### `pubmed_affiliates`
 
 ```{r}
 recs_affs |> 
@@ -134,7 +135,7 @@ recs_affs |>
 ```
 
 
-### icites
+### `icites`
 
 ```{r}
 citations <- recs_icites |> 
@@ -152,7 +153,7 @@ citations$citation_net[[1]] |> head() |> knitr::kable()
 
 
 
-### pubtations
+### `pubtations`
 
 ```{r}
 recs_pubtations |> 
@@ -161,7 +162,7 @@ recs_pubtations |>
 ```
 
 
-### pmc_fulltext
+### `pmc_fulltext`
 
 ```{r}
 samp <- recs_pmc |> filter(pmid == pmid_eg)
