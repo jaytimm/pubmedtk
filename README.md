@@ -7,19 +7,17 @@ status](https://app.travis-ci.com/jaytimm/pubmedtk.svg?branch=main)](https://app
 
 # pubmedtk
 
-The package provides a comprehensive solution for accessing a range of
-PubMed endpoints including [PubMed](https://pubmed.ncbi.nlm.nih.gov/)
-abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data,
+The package provides a single interface for accessing a range of PubMed
+endpoints, including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract
+records, [iCite](https://icite.od.nih.gov/) bibliometric data,
 [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity
 annotations, and full-text entries from [PubMed
-Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC). The package serves as
-an interface to these endpoints, allowing users to retrieve various data
-types that fall under the umbrella of PubMed. This unified interface
-simplifies the process for end-users, who can interact with multiple
-PubMed services through a single R function rather than having to
-individually handle the different APIs and data formats of each service.
-For enhanced performance, the package facilitates batch data retrieval
-across each of these services.
+Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC).
+
+This unified interface simplifies the data retrieval process for
+end-users, who can interact with multiple PubMed services through a
+single R function rather than having to individually handle the
+different APIs and data formats of each service.
 
 The package also includes MeSH ontology resources as simple data frames,
 including Descriptor Terms, Descriptor Tree Structures, Supplementary
@@ -37,7 +35,7 @@ You can download the development version from GitHub with:
 devtools::install_github("jaytimm/pubmedtk")
 ```
 
-## Quick start
+## PubMed search
 
 > The package has two basic functions: `search_pubmed` and
 > `get_records`. The former fetches PMIDs from the PubMed API based on
@@ -45,16 +43,15 @@ devtools::install_github("jaytimm/pubmedtk")
 > PubMed endpoint – `pubmed_abstracts`, `pubmed_affiliations`,
 > `pubtations`, `icites`, or `pmc_fulltext`.
 
-## PubMed search
-
 > Search syntax is the same as that implemented in standard [PubMed
 > search](https://pubmed.ncbi.nlm.nih.gov/advanced/).
 
 ``` r
 yrs <- 2010:2023
-pubmed_query <- paste0('("political ideology"[TiAb]) AND (', ## [MeSH Terms]
+pubmed_query <- paste0('("political ideology"[TiAb]) AND (', 
                        yrs, ':', yrs,  
                        '[pdat])')
+## [MeSH Terms]
 
 pmids <- lapply(pubmed_query, pubmedtk::search_pubmed)
 pmids <- pmids |> unlist() |> unique() |> sort()
@@ -63,10 +60,17 @@ pmids <- pmids |> unlist() |> unique() |> sort()
 ## Get record-level data
 
 ``` r
-recs_pubmed <-pmids |> pubmedtk::get_records(endpoint = 'pubmed_abstracts') 
-recs_affs <- pmids |> pubmedtk::get_records(endpoint = 'pubmed_affiliations')
-recs_icites <- pmids |> pubmedtk::get_records(endpoint = 'icites')
-recs_pubtations <- pmids |> pubmedtk::get_records(endpoint = 'pubtations')
+recs_pubmed <- pmids |> 
+  pubmedtk::get_records(endpoint = 'pubmed_abstracts') 
+
+recs_affs <- pmids |> 
+  pubmedtk::get_records(endpoint = 'pubmed_affiliations')
+
+recs_icites <- pmids |> 
+  pubmedtk::get_records(endpoint = 'icites')
+
+recs_pubtations <- pmids |> 
+  pubmedtk::get_records(endpoint = 'pubtations')
 ```
 
 ``` r
@@ -87,35 +91,33 @@ pmid_eg <- 24781819
 recs_pubmed |> 
   select(-annotations) |>
   filter(pmid == pmid_eg) |>
-  mutate(abstract = stringr::str_sub(abstract, 1, 300) |>
+  mutate(abstract = stringr::str_sub(abstract, 1, 150) |>
                      paste0("...")) |>
   knitr::kable()
 ```
 
-| pmid     | year | journal  | articletitle                                                                                                  | abstract                                                                                                                                                                                                                                                                                                      |
-|:--|:-|:--|:-----------------|:----------------------------------------------|
-| 24781819 | 2014 | PloS one | Perceptions of others’ political affiliation are moderated by individual perceivers’ own political attitudes. | Previous research has shown that perceivers can accurately extract information about perceptually ambiguous group memberships from facial information alone. For example, people demonstrate above-chance accuracy in categorizing political ideology from faces. Further, they ascribe particular personali… |
+| pmid     | year | journal  | articletitle                                                                                                  | abstract                                                                                                                                                |
+|:---|:--|:---|:--------------------------|:------------------------------------|
+| 24781819 | 2014 | PloS one | Perceptions of others’ political affiliation are moderated by individual perceivers’ own political attitudes. | Previous research has shown that perceivers can accurately extract information about perceptually ambiguous group memberships from facial information … |
 
 ``` r
 recs_pubmed |> 
   #select(-annotations) |>
   filter(pmid == pmid_eg) |>
   pull(annotations) |>
-  bind_cols()
+  bind_cols() |>
+  knitr::kable()
 ```
 
-    ##       pmid      type              form
-    ## 1 24781819      MeSH          Attitude
-    ## 2 24781819      MeSH            Humans
-    ## 3 24781819      MeSH          Politics
-    ## 4 24781819      MeSH Social Perception
-    ## 5 24781819      MeSH      Stereotyping
-    ## 6 24781819 Chemistry              <NA>
-    ## 7 24781819   Keyword              <NA>
-
-``` r
-  #knitr::kable()
-```
+| pmid     | type      | form              |
+|:---------|:----------|:------------------|
+| 24781819 | MeSH      | Attitude          |
+| 24781819 | MeSH      | Humans            |
+| 24781819 | MeSH      | Politics          |
+| 24781819 | MeSH      | Social Perception |
+| 24781819 | MeSH      | Stereotyping      |
+| 24781819 | Chemistry | NA                |
+| 24781819 | Keyword   | NA                |
 
 ### `pubmed_affiliates`
 

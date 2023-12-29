@@ -13,7 +13,9 @@ output:
 
 # pubmedtk
 
-The package provides a comprehensive solution for accessing a range of PubMed endpoints including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data, [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity annotations, and full-text entries from [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC).  The package serves as an interface to these endpoints, allowing users to retrieve various data types that fall under the umbrella of PubMed.  This unified interface simplifies the process for end-users, who can interact with multiple PubMed services through a single R function rather than having to individually handle the different APIs and data formats of each service. For enhanced performance, the package facilitates batch data retrieval across each of these services. 
+The package provides a single interface for accessing a range of PubMed endpoints, including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data, [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity annotations, and full-text entries from [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC).  
+
+This unified interface simplifies the data retrieval process for end-users, who can interact with multiple PubMed services through a single R function rather than having to individually handle the different APIs and data formats of each service. 
 
 The package also includes MeSH ontology resources as simple data frames, including Descriptor Terms, Descriptor Tree Structures, Supplementary Concept Terms, and Pharmacological Actions; it also features descriptor-level word embeddings [(Noh & Kavuluru 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969). Via the [mesh-extensions](https://github.com/jaytimm/mesh-extensions) Git project.
 
@@ -34,21 +36,19 @@ devtools::install_github("jaytimm/pubmedtk")
 
 
 
-## Quick start
+## PubMed search
 
 > The package has two basic functions: `search_pubmed` and `get_records`. The former fetches PMIDs from the PubMed API based on user search; the latter scrapes PMID records from a user-specified PubMed endpoint -- `pubmed_abstracts`, `pubmed_affiliations`, `pubtations`, `icites`, or `pmc_fulltext`.
 
-
-
-## PubMed search
 
 > Search syntax is the same as that implemented in standard [PubMed search](https://pubmed.ncbi.nlm.nih.gov/advanced/). 
 
 ```{r}
 yrs <- 2010:2023
-pubmed_query <- paste0('("political ideology"[TiAb]) AND (', ## [MeSH Terms]
+pubmed_query <- paste0('("political ideology"[TiAb]) AND (', 
                        yrs, ':', yrs,  
                        '[pdat])')
+## [MeSH Terms]
 
 pmids <- lapply(pubmed_query, pubmedtk::search_pubmed)
 pmids <- pmids |> unlist() |> unique() |> sort()
@@ -72,10 +72,17 @@ vv <- list(lapply(parsed_records, '[[', 2))
 ## Get record-level data
 
 ```{r}
-recs_pubmed <-pmids |> pubmedtk::get_records(endpoint = 'pubmed_abstracts') 
-recs_affs <- pmids |> pubmedtk::get_records(endpoint = 'pubmed_affiliations')
-recs_icites <- pmids |> pubmedtk::get_records(endpoint = 'icites')
-recs_pubtations <- pmids |> pubmedtk::get_records(endpoint = 'pubtations')
+recs_pubmed <- pmids |> 
+  pubmedtk::get_records(endpoint = 'pubmed_abstracts') 
+
+recs_affs <- pmids |> 
+  pubmedtk::get_records(endpoint = 'pubmed_affiliations')
+
+recs_icites <- pmids |> 
+  pubmedtk::get_records(endpoint = 'icites')
+
+recs_pubtations <- pmids |> 
+  pubmedtk::get_records(endpoint = 'pubtations')
 ```
 
 
@@ -103,7 +110,7 @@ pmid_eg <- 24781819
 recs_pubmed |> 
   select(-annotations) |>
   filter(pmid == pmid_eg) |>
-  mutate(abstract = stringr::str_sub(abstract, 1, 300) |>
+  mutate(abstract = stringr::str_sub(abstract, 1, 150) |>
                      paste0("...")) |>
   knitr::kable()
 ```
@@ -120,8 +127,8 @@ recs_pubmed |>
   #select(-annotations) |>
   filter(pmid == pmid_eg) |>
   pull(annotations) |>
-  bind_cols()
-  #knitr::kable()
+  bind_cols() |>
+  knitr::kable()
 ```
 
 
