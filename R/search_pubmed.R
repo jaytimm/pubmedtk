@@ -1,17 +1,17 @@
 #' Perform basic PubMed search.
 #'
-#' @name pmed_search_pubmed
-#' @param query Query term as character string
+#' @name search_pubmed
+#' @param x Query term as character string
 #' @return A vector of PMIDs
 #'
 #' @export
-#' @rdname pmed_search_pubmed
+#' @rdname search_pubmed
 #'
 #'
-pmed_search_pubmed <- function(query) { # max_n
+search_pubmed <- function(x) { # max_n
 
   ps <- rentrez::entrez_search(db = "pubmed",
-                               term = query,
+                               term = x,
                                retmax = 0,
                                use_history = T)
   
@@ -27,7 +27,7 @@ pmed_search_pubmed <- function(query) { # max_n
       Sys.sleep(0.5)
       
       idlist[[i]] <- rentrez::entrez_search(db = "pubmed", 
-                                            term = query, retstart=start[i],
+                                            term = x, retstart=start[i],
                                             retmax = chunk[i],
                                             WebEnv = ps$web_history$WebEnv)$ids
     }

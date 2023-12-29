@@ -31,16 +31,32 @@
       
       # Process title annotations
       if(any(nrow(pb1$title) == 0, is.null(nrow(pb1$title)))) {
-        pb1$title <- data.frame(tiab = 'title', id = NA, text = NA, locations = NA, identifier = NA, type = NA)
+        pb1$title <- data.frame(tiab = 'title', 
+                                id = NA,
+                                text = NA, 
+                                locations = NA, 
+                                identifier = NA, 
+                                type = NA)
       } else{
-        pb1$title <- cbind(tiab = 'title', pb1$title[, c('id', 'text', 'locations')], identifier = pb1$title$infons$identifier, type = pb1$title$infons$type)
+        pb1$title <- cbind(tiab = 'title', 
+                           pb1$title[, c('id', 'text', 'locations')], 
+                           identifier = pb1$title$infons$identifier, 
+                           type = pb1$title$infons$type)
       }
       
       # Process abstract annotations
       if(any(nrow(pb1$abstract) == 0, is.null(nrow(pb1$abstract)))) {
-        pb1$abstract <- data.frame(tiab = 'abstract', id = NA, text = NA, locations = NA, identifier = NA, type = NA)
+        pb1$abstract <- data.frame(tiab = 'abstract', 
+                                   id = NA, 
+                                   text = NA, 
+                                   locations = NA, 
+                                   identifier = NA, 
+                                   type = NA)
       } else{
-        pb1$abstract <- cbind(tiab = 'abstract', pb1$abstract[, c('id', 'text', 'locations')], identifier = pb1$abstract$infons$identifier, type = pb1$abstract$infons$type)
+        pb1$abstract <- cbind(tiab = 'abstract', 
+                              pb1$abstract[, c('id', 'text', 'locations')], 
+                              identifier = pb1$abstract$infons$identifier, 
+                              type = pb1$abstract$infons$type)
       }
       
       # Combine title and abstract annotations
@@ -64,6 +80,8 @@
     jj0[, length := NULL]
     jj0[, locations := NULL]
   }
+  
+  data.table::setnames(jj0, "text", "entity")
   
   # Return the processed annotations data
   return(jj0)

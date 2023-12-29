@@ -35,6 +35,9 @@
       
       # Read the first XML file
       x0 <- xml2::read_xml(paste0(tempdir(), '/', xmls)[1])
+      pmid <- pmid_value <- xml2::xml_find_first(x0, ".//article-meta//article-id[@pub-id-type='pmid']") |>
+        xml2::xml_text()
+
       
       # Check if there are multiple children nodes in the XML
       if(length(xml2::xml_children(x0)) > 1){
@@ -51,15 +54,11 @@
         # Extract the text of each section
         text <- lapply(xml2::xml_children(x1), xml2::xml_text)
         
-        # Construct the PMC ID from the filename
-        pmcid <- gsub('(^.*)(PMC)([0-9]*)(\\.tar\\.gz$)', '\\3', x[q])
-        
         # Unlist the section titles
         section <- unlist(header_titles)
         
         # Combine the data into a data frame
-        df <- data.frame(doc_id = paste0(pmcid, '_', section),
-                         pmcid, 
+        df <- data.frame(pmid, 
                          section,
                          text = unlist(text),
                          row.names = NULL)

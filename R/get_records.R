@@ -10,13 +10,13 @@
 #' @importFrom pbapply pblapply
 #' @importFrom data.table rbindlist
 #' @export
-#' @rdname pmed_get_records
+#' @rdname get_records
 #' 
-pmed_get_records <- function(pmids, 
+get_records <- function(pmids, 
                           endpoint = c('pubtations', 
                                        'icites', 
-                                       'affiliations', 
-                                       'pubmed', 
+                                       'pubmed_affiliations', 
+                                       'pubmed_abstracts', 
                                        'pmc'), 
                           cores = 3, 
                           ncbi_key = NULL) {
@@ -32,9 +32,9 @@ pmed_get_records <- function(pmids,
   task_function <- switch(endpoint,
                           "icites" = .get_icites,
                           "pubtations" = .get_pubtations,
-                          "affiliations" = .get_affiliations,
-                          "pubmed" = .get_records,
-                          "pmc" = .get_pmc,
+                          "pubmed_affiliations" = .get_affiliations,
+                          "pubmed_abstracts" = .get_records,
+                          "pmc_fulltext" = .get_pmc,
                           stop("Invalid endpoint"))
   
   # Split the PMIDs into batches for parallel processing

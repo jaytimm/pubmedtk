@@ -92,6 +92,6 @@
   pmiddf[, c('cited_by', 'references') := NULL]
   
   # Return the processed data table
-  return(pmiddf)
+  pmiddf[, c(1, 6:25)]
 }
 

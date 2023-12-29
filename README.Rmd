@@ -13,21 +13,9 @@ output:
 
 # pubmedtk
 
-> The package provides a user-friendly, single-interface solution for accessing various PubMed endpoints, including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data, [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity annotations, and full-text entries from [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC). 
+> The package provides a comprehensive solution for accessing a range of PubMed endpoints including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records, [iCite](https://icite.od.nih.gov/) bibliometric data, [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity annotations, and full-text entries from [PubMed Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC).  The package serves as an interface to these endpoints, allowing users to retrieve various data types that fall under the umbrella of PubMed.  This unified interface simplifies the process for end-users, who can interact with multiple PubMed services through a single R function rather than having to individually handle the different APIs and data formats of each service. For enhanced performance, the package facilitates batch data retrieval across each of these services. 
 
-> (With two simple functions) , the package simplifies the complexities of data retrieval and processing, ensuring uniform output across a diverse set of data sources. Facilitates batch retrieval of data for enhanced performance.  Suited for systematic literature reviews, meta-analyses, network analysis, and text mining.
-
-
-> Each service you mentioned (PubMed abstract records, iCite bibliometric data, PubTator named entity annotations, and full-text entries from PubMed Central) provides different functionalities, and each of these functionalities is accessed through their respective API endpoints. 
-
-> Your package would thus serve as an interface to these endpoints, allowing users to retrieve various types of data from these distinct services under the umbrella of PubMed's offerings.
-
-> This unified interface approach greatly simplifies the process for end-users, who can interact with multiple PubMed services through a single R package rather than having to individually handle the different APIs and data formats of each service.
-
-
-Also:
-
-https://github.com/jaytimm/mesh-builds
+> The package also includes MeSH ontology resources as simple data frames, including Descriptor Terms, Descriptor Tree Structures, Supplementary Concept Terms, and Pharmacological Actions; it also features descriptor-level word embeddings [(Noh & Kavuluru 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969). Via the [mesh-extensions](https://github.com/jaytimm/mesh-extensions) Git project.
 
 
 
@@ -48,20 +36,21 @@ devtools::install_github("jaytimm/pubmedtk")
 
 ## Quick start
 
-### PubMed search
+> The package has two basic functions: `search_pubmed` and `get_records`. The former fetches PMIDs from the PubMed API based on user search; the latter scrapes PMID records from a user-specified PubMed endpoint -- `pubmed_abstracts`, `pubmed_affiliations`, `pubtations`, `icites`, or `pmc_fulltext`.
 
-The `pmed_search_pubmed()` function is meant for record-matching searches typically performed using the [PubMed online interface](https://pubmed.ncbi.nlm.nih.gov/).  
 
-> pmed_get_records()
 
+## PubMed search
+
+> Search syntax is the same as that implemented in standard [PubMed search](https://pubmed.ncbi.nlm.nih.gov/advanced/). 
 
 ```{r}
 yrs <- 2010:2023
-pubmed_query <- paste0('("medical marijuana"[MeSH Terms]) AND (',
+pubmed_query <- paste0('("political ideology"[TiAb]) AND (', ## [MeSH Terms]
                        yrs, ':', yrs,  
                        '[pdat])')
 
-pmids <- lapply(pubmed_query, pubmedtk::pmed_search_pubmed)
+pmids <- lapply(pubmed_query, pubmedtk::search_pubmed)
 pmids <- pmids |> unlist() |> unique() |> sort()
 ```
 
@@ -70,166 +59,112 @@ pmids <- pmids |> unlist() |> unique() |> sort()
 ```{r eval=FALSE, include=FALSE}
 batch_size <- 199
 batches <- split(pmids, ceiling(seq_along(pmids) / batch_size))
-
+# 
 records <- pubmedtk:::.fetch_records(x = batches[[1]])
 x <- records[[1]]
+
+
+vv <- list(lapply(parsed_records, '[[', 2))
 ```
 
 
 
-### Get record-level data
+## Get record-level data
 
 ```{r}
-pubmed_data <-pmids |> pubmedtk::pmed_get_data(endpoint = 'pubmed') 
-pubmed_affs <- pmids |> pubmedtk::pmed_get_data(endpoint = 'affiliations')
-
-icites_data <- med_cannabis |> pubmedtk::pmed_get_data(endpoint = 'icites')
-pubtations_data <- med_cannabis |> pubmedtk::pmed_get_data(endpoint = 'pubtations')
-```
-
-
-
-
-### Extract full text articles
-
-> so this could be re-worked to be PMID-based as well -- with the download, etc happening under the hood as it were -- 
-
-```{r}
-pmclist <- pubmedtk::data_pmc_list()
-pmc_med_cannabis <- pmclist[PMID %in% med_cannabis]
-
-pubmed_data <- pmc_med_cannabis$fpath |> pubmedtk::pmed_get_data(task_type = 'pmc')
-```
-
-
-
-
-
-## Retrieve and parse abstract data 
-
-### Record details
-
-
-
-```{r warning=FALSE}
-med_cannabis_df0 <- pubmedtk::pmed_get_records2(pmids = med_cannabis[1:300], 
-                                              with_annotations = T,
-                                              verbose = F,
-                                              cores = 3) |>
-  data.table::rbindlist() |> filter(!is.na(abstract))
+recs_pubmed <-pmids |> pubmedtk::get_records(endpoint = 'pubmed_abstracts') 
+recs_affs <- pmids |> pubmedtk::get_records(endpoint = 'pubmed_affiliations')
+recs_icites <- pmids |> pubmedtk::get_records(endpoint = 'icites')
+recs_pubtations <- pmids |> pubmedtk::get_records(endpoint = 'pubtations')
 ```
 
 
 
 ```{r}
-n <- 1
-list(pmid = med_cannabis_df0$pmid[n],
-     year = med_cannabis_df0$year[n],
-     journal = med_cannabis_df0$journal[n],
-     articletitle = strwrap(med_cannabis_df0$articletitle[n], width = 60),
-     abstract = strwrap(med_cannabis_df0$abstract[n], width = 60)[1:10])
+pmclist <- pubmedtk::data_pmc_list(force_install = F)
+pmc_pmids <- pmclist[PMID %in% pmids]
+
+recs_pmc <- pmc_pmids$fpath |> pubmedtk::get_records(endpoint = 'pmc_fulltext')
 ```
 
 
 
 
-### MeSH Annotations
 
-> Annotations are included as a list-column (in ouput from `pmed_get_records2`), and can be easily extracted:
+### pubmed_abstracts
 
 ```{r}
-annotations <- data.table::rbindlist(med_cannabis_df0$annotations)
+pmid_eg <- 24781819
 ```
 
 
-
 ```{r}
-annotations |>
-  filter(!is.na(FORM)) |>
-  slice(1:10) |>
+recs_pubmed |> 
+  select(-annotations) |>
+  filter(pmid == pmid_eg) |>
+  mutate(abstract = stringr::str_sub(abstract, 1, 300) |>
+                     paste0("...")) |>
   knitr::kable()
 ```
 
 
+```{r}
+x1 <- recs_pubmed |> filter(pmid %in% pmc_pmids$PMID) 
+x2 <- recs_pubtations |> filter(pmid %in% pmc_pmids$PMID) 
+```
 
-### Affiliations
-
-The `pmed_get_affiliations` function extracts author and author affiliation information from PubMed records. This is functionally the same call as `pmed_get_records2` -- presented here as an independent function for simplicity in output. 
 
 ```{r}
-pubmedtk::pmed_get_affiliations(pmids = med_cannabis_df0$pmid) |>
-  bind_rows() |>
-  slice(1:10) |>
-  knitr::kable()
+recs_pubmed |> 
+  #select(-annotations) |>
+  filter(pmid == pmid_eg) |>
+  pull(annotations) |>
+  bind_cols()
+  #knitr::kable()
 ```
 
 
 
-## Citation data
-
-The `pmed_get_icites` function can be used to obtain citation data per PMID using NIH's Open Citation Collection and [iCite](https://icite.od.nih.gov/).  
-
-> Hutchins BI, Baker KL, Davis MT, Diwersy MA, Haque E, Harriman RM, et al. (2019) The NIH Open Citation Collection: A public access, broad coverage resource. PLoS Biol 17(10): e3000385. https://doi.org/10.1371/journal.pbio.3000385
-
-
-
-### Summary data
-
-The iCite API returns a host of descriptive/derived citation details per record.  
+### pubmed_affiliates
 
 ```{r}
-citations <- pubmedtk::pmed_get_icites(pmids = med_cannabis_df0$pmid)
+recs_affs |> 
+  filter(pmid == pmid_eg) |>
+  knitr::kable()
+```
 
-c0 <- citations |> select(-citation_net) |> slice(4)
+
+### icites
+
+```{r}
+citations <- recs_icites |> 
+  filter(pmid == pmid_eg)
+
+c0 <- citations |> select(-citation_net) 
 setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 ```
 
 
-### Network data
-
-> Referenced and cited-by PMIDs are returned by the function as a column-list of network edges. 
-
 ```{r}
-citations$citation_net[[1]] |> head()
+citations$citation_net[[1]] |> head() |> knitr::kable()
 ```
 
 
 
-## Biomedical concepts via the Pubtator Central API
 
-> Wei, C. H., Allot, A., Leaman, R., & Lu, Z. (2019). PubTator central: automated concept annotation for biomedical full text articles. Nucleic acids research, 47(W1), W587-W593.
+### pubtations
 
 ```{r}
-pubtations <- med_cannabis[1:10] |>
-  pubmedtk::pmed_get_entities(cores = 2) |>
-  data.table::rbindlist()
-
-pubtations |> na.omit() |> slice(1:20) |> knitr::kable()
+recs_pubtations |> 
+  filter(pmid == pmid_eg) |>
+  knitr::kable()
 ```
 
 
-
-## Full text from Open Acess PMC
-
-### Load list of Open Access PMC articles 
+### pmc_fulltext
 
 ```{r}
-pmclist <- pubmedtk::data_pmc_list()
-pmc_med_cannabis <- pmclist |> filter(PMID %in% med_cannabis)
-pmc_med_cannabis |> head() |> knitr::kable()
-```
-
-
-
-### Extract full text articles
-
-```{r}
-med_cannabis_fulltexts <- pmc_med_cannabis$fpath[1] |> 
-  pubmedtk::pmed_get_fulltext()
-  #pubmedtk::pmed_get_fulltext()
-
-samp <- med_cannabis_fulltexts |> 
-  filter(pmcid %in% pmc_med_cannabis$PMCID[1])
+samp <- recs_pmc |> filter(pmid == pmid_eg)
 
 lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
 ```

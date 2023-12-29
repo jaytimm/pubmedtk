@@ -33,6 +33,8 @@
                             formula = id ~ attribute,
                             value.var = 'varx')
   
+  sum1 <- sum1[order(as.numeric(id))]
+  
   # Select and reorder columns for the final output
   sum1 <- sum1[, c('pmid', 'year', 'journal', 'articletitle', 'abstract')]
   
