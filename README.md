@@ -12,20 +12,18 @@ endpoints, including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract
 records, [iCite](https://icite.od.nih.gov/) bibliometric data,
 [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity
 annotations, and full-text entries from [PubMed
-Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC).
-
-This unified interface simplifies the data retrieval process for
-end-users, who can interact with multiple PubMed services through a
-single R function rather than having to individually handle the
-different APIs and data formats of each service.
+Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC). This unified
+interface simplifies the data retrieval process, allowing users to
+interact with multiple PubMed services/APIs/output formats through a
+single R function.
 
 The package also includes MeSH ontology resources as simple data frames,
 including Descriptor Terms, Descriptor Tree Structures, Supplementary
 Concept Terms, and Pharmacological Actions; it also features
 descriptor-level word embeddings [(Noh & Kavuluru
 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969).
-Via the [mesh-extensions](https://github.com/jaytimm/mesh-extensions)
-Git project.
+Via the [mesh-resources](https://github.com/jaytimm/mesh-resources) Git
+project.
 
 ## Installation
 
@@ -224,62 +222,3 @@ lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
     ## [1] "General Discussion Perceptions of political group"     
     ## [2] "membership appear to be influenced by perceivers' own" 
     ## [3] "political leanings. First, we replicated past research"
-
-## MeSH extensions
-
-### Thesauri
-
-``` r
-mesh <- pubmedtk::data_mesh_thesuarus() 
-mesh |> head() |> knitr::kable()
-```
-
-| DescriptorUI | DescriptorName | ConceptUI | TermUI     | TermName                                                                                                                                                                                               | ConceptPreferredTermYN | IsPermutedTermYN | LexicalTag | RecordPreferredTermYN |
-|:---|:---|:--|:---|:---------------------------------------|:-----|:----|:---|:-----|
-| D000001      | Calcimycin     | M0000001  | T000002    | Calcimycin                                                                                                                                                                                             | Y                      | N                | NON        | Y                     |
-| D000001      | Calcimycin     | M0000001  | T001124965 | 4-Benzoxazolecarboxylic acid, 5-(methylamino)-2-((3,9,11-trimethyl-8-(1-methyl-2-oxo-2-(1H-pyrrol-2-yl)ethyl)-1,7-dioxaspiro(5.5)undec-2-yl)methyl)-, (6S-(6alpha(2S*,3S*),8beta(R\*),9beta,11alpha))- | N                      | N                | NON        | N                     |
-| D000001      | Calcimycin     | M0353609  | T000001    | A-23187                                                                                                                                                                                                | Y                      | N                | LAB        | N                     |
-| D000001      | Calcimycin     | M0353609  | T000001    | A 23187                                                                                                                                                                                                | N                      | Y                | LAB        | N                     |
-| D000001      | Calcimycin     | M0353609  | T000004    | A23187                                                                                                                                                                                                 | N                      | N                | LAB        | N                     |
-| D000001      | Calcimycin     | M0353609  | T000003    | Antibiotic A23187                                                                                                                                                                                      | N                      | N                | NON        | N                     |
-
-### Trees
-
-``` r
-pubmedtk::data_mesh_trees() |> head() |> knitr::kable()
-```
-
-| DescriptorUI | DescriptorName | tree_location           | code | cats                                  | mesh1                                     | mesh2                                   | tree1 | tree2   |
-|:-----|:-----|:--------|:--|:-------------|:--------------|:-------------|:--|:---|
-| D000001      | Calcimycin     | D03.633.100.221.173     | D    | Chemicals and Drugs                   | Heterocyclic Compounds                    | Heterocyclic Compounds, Fused-Ring      | D03   | D03.633 |
-| D000002      | Temefos        | D02.705.400.625.800     | D    | Chemicals and Drugs                   | Organic Chemicals                         | Organophosphorus Compounds              | D02   | D02.705 |
-| D000002      | Temefos        | D02.705.539.345.800     | D    | Chemicals and Drugs                   | Organic Chemicals                         | Organophosphorus Compounds              | D02   | D02.705 |
-| D000002      | Temefos        | D02.886.300.692.800     | D    | Chemicals and Drugs                   | Organic Chemicals                         | Sulfur Compounds                        | D02   | D02.886 |
-| D000003      | Abattoirs      | J01.576.423.200.700.100 | J    | Technology, Industry, and Agriculture | Technology, Industry, and Agriculture     | Industry                                | J01   | J01.576 |
-| D000003      | Abattoirs      | J03.540.020             | J    | Technology, Industry, and Agriculture | Non-Medical Public and Private Facilities | Manufacturing and Industrial Facilities | J03   | J03.540 |
-
-### Pharmacological Actions
-
-``` r
-pubmedtk::data_pharm_action() |> 
-  filter(DescriptorName == 'Rituximab') |>
-  knitr::kable()
-```
-
-| DescriptorUI | DescriptorName | PharmActionUI | PharmActionName                      |
-|:------------|:-------------|:------------|:--------------------------------|
-| D000069283   | Rituximab      | D000074322    | Antineoplastic Agents, Immunological |
-| D000069283   | Rituximab      | D007155       | Immunologic Factors                  |
-| D000069283   | Rituximab      | D018501       | Antirheumatic Agents                 |
-
-### Embeddings
-
-> Noh, J., & Kavuluru, R. (2021). Improved biomedical word embeddings in
-> the transformer era. Journal of Biomedical Informatics, 120, 103867.
-
-<https://www.sciencedirect.com/science/article/pii/S1532046421001969>
-
-<https://zenodo.org/record/4383195>
-
-Includes embeddings for the ~30K MeSH descriptors, as well as ~15K
-embeddings for Supplementary Concept Records (SCR).
