@@ -7,9 +7,10 @@ status](https://app.travis-ci.com/jaytimm/pubmedtk.svg?branch=main)](https://app
 
 # pubmedtk
 
-The package provides a single interface for accessing a range of PubMed
-endpoints, including [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract
-records, [iCite](https://icite.od.nih.gov/) bibliometric data,
+The package provides a single interface for accessing a range of
+NLM/PubMed online resources, including
+[PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records,
+[iCite](https://icite.od.nih.gov/) bibliometric data,
 [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity
 annotations, and full-text entries from [PubMed
 Central](https://www.ncbi.nlm.nih.gov/pmc/) (PMC). This unified
@@ -19,7 +20,7 @@ single R function.
 
 The package also includes MeSH ontology resources as simple data frames,
 including Descriptor Terms, Descriptor Tree Structures, Supplementary
-Concept Terms, and Pharmacological Actions; it also features
+Concept Terms, and Pharmacological Actions; it also includes
 descriptor-level word embeddings [(Noh & Kavuluru
 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969).
 Via the [mesh-resources](https://github.com/jaytimm/mesh-resources) Git
@@ -32,6 +33,8 @@ You can download the development version from GitHub with:
 ``` r
 devtools::install_github("jaytimm/pubmedtk")
 ```
+
+## Usage
 
 ## PubMed search
 
