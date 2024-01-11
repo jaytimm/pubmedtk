@@ -2,13 +2,19 @@
 % Please edit documentation in R/data_mesh_embeddings.R
 \name{data_mesh_embeddings}
 \alias{data_mesh_embeddings}
-\title{Load mesh embeddings and thesaurus from Git}
+\title{Download and Process Mesh and SCR Embeddings}
 \usage{
 data_mesh_embeddings()
 }
 \value{
-A matrix of mesh embeddings.
+A data frame containing the processed Mesh and SCR embeddings data.
 }
 \description{
-Load mesh embeddings and thesaurus from Git
+This function downloads Mesh and SCR embeddings data from the specified URLs and processes it for use.
+The data is saved locally in RDS format. If the files do not exist, they will be downloaded and processed.
+}
+\examples{
+# Example usage of the function
+data <- data_mesh_embeddings()
+
 }

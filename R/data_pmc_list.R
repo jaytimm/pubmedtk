@@ -1,44 +1,56 @@
-#' Download/load list of PMC full text articles.
+#' Download and Process PMC Open Access File List
 #'
-#' @return A data frame.
+#' This function downloads the PubMed Central (PMC) open access file list from the
+#' National Center for Biotechnology Information (NCBI) and processes it for use.
+#' The list is saved locally. If the file does not exist or if `force_install` is TRUE, 
+#' it will be downloaded and processed.
+#'
+#' @param force_install Logical, if TRUE, forces the re-download and processing of 
+#' the file even if it already exists locally. Default is FALSE.
+#' @return A data frame containing the processed PMC open access file list.
+#' @importFrom rappdirs user_data_dir
+#' @importFrom data.table fread
+#' @examples
+#' # Download and process the PMC file list
+#' pmc_list <- data_pmc_list(force_install = FALSE)
 #' @export
-#' @rdname data_pmc_list
-#' 
-#' 
-data_pmc_list <- function(force_install = F) {
+data_pmc_list <- function(force_install = FALSE) {
   
-  sf = 'https://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_file_list.txt'
+  # URL for the PMC open access file list
+  sf <- 'https://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_file_list.txt'
   
-  df = file.path(rappdirs::user_data_dir('pubmedr'), 
-                 'oa_file_list.rds')
+  # Local file path for storing the processed data
+  df <- file.path(rappdirs::user_data_dir('pubmedr'), 'oa_file_list.rds')
   
+  # Check if the file exists, and download and process it if it doesn't or if forced
   if (!file.exists(df) | force_install) {
+    # Create the directory if it doesn't exist
     if (!dir.exists(rappdirs::user_data_dir('pubmedr'))) {
-      dir.create(rappdirs::user_data_dir('pubmedr'), 
-                 recursive = TRUE)
+      dir.create(rappdirs::user_data_dir('pubmedr'), recursive = TRUE)
     }
     
     message('Downloading "pub/pmc/oa_file_list.txt" ...')
-    suppressWarnings(
+    suppressWarnings({
+      # Read the file using data.table's fread
       pmc <- data.table::fread(sf, sep = '\t')
-    )
-    
-    colnames(pmc) <- c('fpath', 
-                       'journal', 
-                       'PMCID', 
-                       'PMID', 
-                       'license_type')
-    
-    # pmc0 <- subset(pmc, nchar(PMID) > 2) 
-    
-    pmc[, PMID := gsub('^PMID:', '', PMID)]
-    pmc[, PMCID := gsub('^PMC', '', PMCID)]
-    pmc[pmc==''] <- NA
-    
-    setwd(rappdirs::user_data_dir('pubmedr'))
-    saveRDS(pmc, 'oa_file_list.rds')
+      
+      # Set column names
+      colnames(pmc) <- c('fpath', 'journal', 'PMCID', 'PMID', 'license_type')
+      
+      # Process PMCID and PMID columns
+      pmc[, PMID := gsub('^PMID:', '', PMID)]
+      pmc[, PMCID := gsub('^PMC', '', PMCID)]
+      
+      # Replace empty strings with NA
+      pmc[pmc==''] <- NA
+      
+      # Save the processed data as an RDS file
+      setwd(rappdirs::user_data_dir('pubmedr'))
+      saveRDS(pmc, 'oa_file_list.rds')
+    })
   }
   
+  # Read and return the processed RDS file
   pmc <- readRDS(df)
   return(pmc)
 }

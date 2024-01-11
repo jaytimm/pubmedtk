@@ -2,13 +2,24 @@
 % Please edit documentation in R/data_pharm_action.R
 \name{data_pharm_action}
 \alias{data_pharm_action}
-\title{Load pharmacological actions from Git}
+\title{Download and Load Pharmacological Actions Data}
 \usage{
-data_pharm_action()
+data_pharm_action(force_download = FALSE)
+}
+\arguments{
+\item{force_download}{A logical value indicating whether to force re-downloading 
+of the data even if it already exists locally. Default is FALSE.}
 }
 \value{
-A data frame.
+A data frame containing pharmacological actions data.
 }
 \description{
-Load pharmacological actions from Git
+This function downloads and loads pharmacological actions data from a specified URL.
+The data is stored locally in the user's data directory. If the data file does not 
+exist locally or if `force_download` is TRUE, it will be downloaded. The function 
+returns the data as a data frame.
+}
+\examples{
+# Download and load the pharmacological actions data
+pharm_action_data <- data_pharm_action(force_download = FALSE)
 }
