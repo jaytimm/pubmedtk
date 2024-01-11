@@ -4,7 +4,7 @@
 \alias{.get_pubtations}
 \title{Extract Records from PubMed's PubTator Tool}
 \usage{
-.get_pubtations(x)
+.get_pubtations(x, sleep)
 }
 \arguments{
 \item{x}{A vector of PubMed IDs for which annotations are to be retrieved from PubTator.}

@@ -4,7 +4,7 @@
 \alias{.get_records}
 \title{Get PubMed Records}
 \usage{
-.get_records(x)
+.get_records(x, sleep)
 }
 \arguments{
 \item{x}{A character vector with search terms or IDs for fetching records from PubMed.}

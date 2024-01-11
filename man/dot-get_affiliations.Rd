@@ -4,7 +4,7 @@
 \alias{.get_affiliations}
 \title{Internal: Extract Author Affiliations from PubMed Records}
 \usage{
-.get_affiliations(x)
+.get_affiliations(x, sleep)
 }
 \arguments{
 \item{x}{A character vector with search terms or IDs for fetching records from PubMed.}

@@ -4,7 +4,7 @@
 \alias{.get_icites}
 \title{Process and Structure Data from iCite}
 \usage{
-.get_icites(x)
+.get_icites(x, sleep)
 }
 \arguments{
 \item{x}{A vector of PubMed IDs for which data has been fetched from the iCite database.}

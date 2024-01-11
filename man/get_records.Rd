@@ -6,8 +6,9 @@
 \usage{
 get_records(
   pmids,
-  endpoint = c("pubtations", "icites", "affiliations", "pubmed", "pmc"),
+  endpoint = c("pubtations", "icites", "pubmed_affiliations", "pubmed_abstracts", "pmc"),
   cores = 3,
+  sleep = 1,
   ncbi_key = NULL
 )
 }
@@ -17,6 +18,8 @@ get_records(
 \item{endpoint}{A character vector specifying the type of data to retrieve ('pubtations', 'icites', 'affiliations', 'pubmed', 'pmc').}
 
 \item{cores}{Number of cores to use for parallel processing (default is 3).}
+
+\item{sleep}{Duration (in seconds) to pause after each batch}
 
 \item{ncbi_key}{(Optional) NCBI API key for authenticated access.}
 }

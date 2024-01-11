@@ -8,8 +8,8 @@
 #' @rdname search_pubmed
 #'
 #'
-search_pubmed <- function(x) { # max_n
-
+search_pubmed <- function(x) { 
+  
   ps <- rentrez::entrez_search(db = "pubmed",
                                term = x,
                                retmax = 0,
@@ -32,8 +32,7 @@ search_pubmed <- function(x) { # max_n
                                             WebEnv = ps$web_history$WebEnv)$ids
     }
     
-   unlist(idlist)
+    unlist(idlist)
     
   }
-  
-}
+  }

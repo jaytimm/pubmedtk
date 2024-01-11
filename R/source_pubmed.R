@@ -6,10 +6,10 @@
 #' @keywords internal
 
 
-.get_records <- function (x) { 
+.get_records <- function (x, sleep) { 
   
   # Fetch records using .fetch_records function and parse XML content
-  records <- .fetch_records(x)
+  records <- .fetch_records(x, sleep)
   
   # Process each record to extract basic information and annotations
   parsed_records <- lapply(records, function(x){

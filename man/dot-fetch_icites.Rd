@@ -4,7 +4,7 @@
 \alias{.fetch_icites}
 \title{Internal: Fetch Data from iCite Database}
 \usage{
-.fetch_icites(x)
+.fetch_icites(x, sleep)
 }
 \arguments{
 \item{x}{A vector of PubMed IDs for which data is to be fetched from the iCite database.}

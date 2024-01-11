@@ -8,7 +8,7 @@
 #' @keywords internal
 #' 
 
-.fetch_icites <- function(x){
+.fetch_icites <- function(x, sleep){
   
   # Construct the URL for the iCite API call, including the PubMed IDs (x)
   url0 <- httr::GET(paste0("https://icite.od.nih.gov/api/pubs?pmids=",
@@ -24,6 +24,7 @@
                   encoding = "UTF-8")),
     encoding = "UTF-8")
   
+  Sys.sleep(sleep)
   # Return the CSV content as a data.frame
   return(csv_)
 }
@@ -40,10 +41,10 @@
 #' @keywords internal
 #' 
 #' 
-.get_icites <- function(x){
+.get_icites <- function(x, sleep){
   
   # Fetch data from iCite using the PubMed IDs provided
-  pmiddf <- .fetch_icites(x)
+  pmiddf <- .fetch_icites(x, sleep)
   
   # Extract the PubMed IDs for reference
   gots <- pmiddf$pmid

@@ -4,7 +4,7 @@
 \alias{.fetch_records}
 \title{Fetch Batch of PubMed Records as XML}
 \usage{
-.fetch_records(x)
+.fetch_records(x, sleep)
 }
 \arguments{
 \item{x}{A vector of PubMed record identifiers to be fetched.}

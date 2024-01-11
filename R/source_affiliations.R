@@ -8,10 +8,10 @@
 #' @keywords internal
 #' 
 #' 
-.get_affiliations <- function (x) {
+.get_affiliations <- function (x, sleep) {
   
   # Fetch records from PubMed based on the input x
-  records <- .fetch_records(x)
+  records <- .fetch_records(x, sleep)
   
   # Process each PubMed record to extract author affiliations
   z <- lapply(records, function(g){

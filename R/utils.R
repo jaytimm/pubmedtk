@@ -7,7 +7,7 @@
 #' @keywords internal
 #' 
 #' 
-.fetch_records <- function(x){
+.fetch_records <- function(x, sleep){
   
   # Loop to retry fetching records, with a maximum of 15 attempts
   for (i in 1:15) {
@@ -23,7 +23,7 @@
     })
     
     # Wait for 5 seconds before the next attempt
-    Sys.sleep(5)
+    Sys.sleep(sleep)
     
     # Check if the fetch was successful, and if so, break the loop
     if (class(x1) != "try-error") {

@@ -7,13 +7,10 @@
 #' @importFrom data.table rbindlist
 #' @keywords internal
 #' 
-.get_pubtations <- function(x){
+.get_pubtations <- function(x, sleep){
   
   # Connect to PubTator API and retrieve data
   con <- url(paste0("https://www.ncbi.nlm.nih.gov/research/pubtator-api/publications/export/biocjson?pmids=", paste(x, collapse = ',')))
-  
-  # Introduce a random short delay to mitigate potential server overload
-  Sys.sleep(round(runif(1, min = 0, max = 2), digits = 1))
   
   # Read JSON data stream, handling errors with NA
   mydata <- tryCatch(jsonlite::stream_in(gzcon(con)), error = function(e) NA)  
@@ -82,6 +79,7 @@
   }
   
   data.table::setnames(jj0, "text", "entity")
+  Sys.sleep(sleep)
   
   # Return the processed annotations data
   return(jj0)
