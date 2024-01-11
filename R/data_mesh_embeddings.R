@@ -7,11 +7,12 @@
 #'
 #' @importFrom rappdirs user_data_dir
 #' @importFrom utils download.file
-#' @examples
-#' # Example usage of the function
-#' data <- data_mesh_embeddings()
-#'
 #' @export
+#' @examples
+#' \donttest{
+#' data <- data_mesh_embeddings()
+#' }
+#' 
 data_mesh_embeddings <- function() {
   
   # Define the URLs for Mesh and SCR embeddings data

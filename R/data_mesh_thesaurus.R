@@ -9,10 +9,12 @@
 #' @importFrom rappdirs user_data_dir
 #' @importFrom utils download.file
 #' @importFrom data.table rbindlist
-#' @examples
-#' # Download and combine the thesaurus data
-#' thesaurus_data <- data_mesh_thesuarus(force_download = FALSE)
 #' @export
+#' @examples
+#' \donttest{
+#' thesaurus_data <- data_mesh_thesuarus(force_download = FALSE)
+#' }
+
 data_mesh_thesuarus <- function(force_download = FALSE) {
   
   # URLs for the MeSH thesaurus and supplemental thesaurus data

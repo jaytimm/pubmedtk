@@ -11,8 +11,9 @@
 #' @importFrom rappdirs user_data_dir
 #' @importFrom utils download.file
 #' @examples
-#' # Download and load the pharmacological actions data
+#' \donttest{
 #' pharm_action_data <- data_pharm_action(force_download = FALSE)
+#' }
 #' @export
 data_pharm_action <- function(force_download = FALSE) {
   

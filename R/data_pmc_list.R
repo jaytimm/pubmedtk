@@ -11,8 +11,9 @@
 #' @importFrom rappdirs user_data_dir
 #' @importFrom data.table fread
 #' @examples
-#' # Download and process the PMC file list
+#' \donttest{
 #' pmc_list <- data_pmc_list(force_install = FALSE)
+#' }
 #' @export
 data_pmc_list <- function(force_install = FALSE) {
   

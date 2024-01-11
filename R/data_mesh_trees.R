@@ -9,10 +9,11 @@
 #' @return A data frame containing the MeSH Trees data.
 #' @importFrom rappdirs user_data_dir
 #' @importFrom utils download.file
-#' @examples
-#' # Download and load the MeSH Trees data
-#' mesh_trees_data <- data_mesh_trees(force_download = FALSE)
 #' @export
+#' @examples
+#' \donttest{
+#' mesh_trees_data <- data_mesh_trees(force_download = FALSE)
+#' }
 data_mesh_trees <- function(force_download = FALSE) {
   
   # Define the URL for the MeSH trees data

@@ -20,6 +20,7 @@ The list is saved locally. If the file does not exist or if `force_install` is T
 it will be downloaded and processed.
 }
 \examples{
-# Download and process the PMC file list
+\donttest{
 pmc_list <- data_pmc_list(force_install = FALSE)
+}
 }

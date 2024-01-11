@@ -20,6 +20,7 @@ exist locally or if `force_download` is TRUE, it will be downloaded. The functio
 returns the data as a data frame.
 }
 \examples{
-# Download and load the pharmacological actions data
+\donttest{
 pharm_action_data <- data_pharm_action(force_download = FALSE)
+}
 }

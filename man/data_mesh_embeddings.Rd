@@ -14,7 +14,8 @@ This function downloads Mesh and SCR embeddings data from the specified URLs and
 The data is saved locally in RDS format. If the files do not exist, they will be downloaded and processed.
 }
 \examples{
-# Example usage of the function
+\donttest{
 data <- data_mesh_embeddings()
+}
 
 }

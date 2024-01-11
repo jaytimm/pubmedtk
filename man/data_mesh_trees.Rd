@@ -19,6 +19,7 @@ from a specified URL. The data is stored locally for future use. If the data alr
 exists locally, the download can be skipped unless `force_download` is set to `TRUE`.
 }
 \examples{
-# Download and load the MeSH Trees data
+\donttest{
 mesh_trees_data <- data_mesh_trees(force_download = FALSE)
+}
 }

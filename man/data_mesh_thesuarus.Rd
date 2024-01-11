@@ -19,6 +19,7 @@ and a supplemental concept thesaurus for use in biomedical research and analysis
 The data is sourced from specified URLs and stored locally for subsequent use.
 }
 \examples{
-# Download and combine the thesaurus data
+\donttest{
 thesaurus_data <- data_mesh_thesuarus(force_download = FALSE)
+}
 }
