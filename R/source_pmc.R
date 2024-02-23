@@ -7,7 +7,7 @@
 #' @keywords internal
 #' 
 #' 
-.get_pmc <- function(x) {
+.get_pmc <- function(x, sleep) {
   
   # Initialize an empty list to store the scraped data
   flist <- list()
@@ -22,7 +22,8 @@
     tmp <- tempfile()
     
     # Try to download the file, handling errors gracefully
-    dd <- tryCatch(download.file(fn, destfile = tmp), error = function(e) 'error')  
+    dd <- tryCatch(download.file(fn, destfile = tmp), 
+                   error = function(e) 'error')  
     
     # If download is successful, proceed with extraction
     if(dd != 'error'){
@@ -70,6 +71,7 @@
         flist[[q]] <- df
       }
     }
+    Sys.sleep(sleep)
   }
   
   # Combine all data frames into one data.table and return

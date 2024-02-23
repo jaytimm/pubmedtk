@@ -4,7 +4,7 @@
 \alias{.get_pmc}
 \title{Scrape Full Text Entries from PubMed Central (PMC)}
 \usage{
-.get_pmc(x)
+.get_pmc(x, sleep)
 }
 \arguments{
 \item{x}{A vector of PMC identifiers for which full-text articles are to be retrieved.}
