@@ -61,42 +61,77 @@
 #' @keywords internal
 #' 
 .extract_basic <- function(g){
-  
+
   # Extract the PubMed ID (PMID) from the XML
   pm <- xml2::xml_find_all(g, ".//MedlineCitation/PMID") |> xml2::xml_text()
-  
+
   # Extract the journal title
   a1 <- xml2::xml_find_all(g, ".//Title") |> xml2::xml_text()
   a1a <- a1[1]  # In case there are multiple titles, use the first one
-  
+
   # Extract the article title
   a2 <- xml2::xml_find_all(g, ".//ArticleTitle") |> xml2::xml_text()
-  
+
   # Extract the publication year. If 'Year' is not available, use 'MedlineDate' as a fallback
   year <- xml2::xml_find_all(g, ".//PubDate/Year") |> xml2::xml_text()
-  if(length(year) == 0){ 
+  if(length(year) == 0){
     year <- xml2::xml_find_all(g, ".//PubDate/MedlineDate") |> xml2::xml_text()
   }
   # Clean up the year to remove any extra characters or ranges
   year <- gsub(" .+", "", year)
   year <- gsub("-.+", "", year)
-  
+
   # Extract the abstract text, combining multiple parts if necessary
   abstract <- xml2::xml_find_all(g, ".//Abstract/AbstractText") |> xml2::xml_text()
   if(length(abstract) > 1){
     abstract <- paste(abstract, collapse = ' ')}
   if(length(abstract) == 0){abstract <- NA}
-  
+
   # Construct the output with the extracted information
   out <- c('pmid' = pm,
            'journal' = a1a,
            'articletitle' = a2,
            'year' = year,
            'abstract' = abstract)
-  
+
   return(out)
 }
 
+# .extract_basic <- function(g) {
+#   # Extract the PubMed ID (PMID) from the XML
+#   pm_node <- xml2::xml_find_first(g, ".//MedlineCitation/PMID")
+#   pm <- if (!is.null(pm_node)) xml2::xml_text(pm_node) else NA
+#   
+#   # Extract the journal title
+#   journal_node <- xml2::xml_find_first(g, ".//Journal/Title")
+#   journal <- if (!is.null(journal_node)) xml2::xml_text(journal_node) else NA
+#   
+#   # Extract the article title
+#   article_title_node <- xml2::xml_find_first(g, ".//ArticleTitle")
+#   article_title <- if (!is.null(article_title_node)) xml2::xml_text(article_title_node) else NA
+#   
+#   # Extract the publication year
+#   year_node <- xml2::xml_find_first(g, ".//PubDate/Year")
+#   year <- if (!is.null(year_node) && !is.na(xml2::xml_text(year_node))) xml2::xml_text(year_node) else NA
+#   
+#   # Handle the abstract
+#   abstract_nodes <- xml2::xml_find_all(g, ".//Abstract/AbstractText")
+#   abstracts <- lapply(abstract_nodes, function(node) {
+#     section <- xml2::xml_attr(node, "Label")
+#     text <- xml2::xml_text(node)
+#     section <- if (!is.null(section) && section != "") section else "full"
+#     list(section = section, text = text)
+#   })
+#   
+#   # Combine all extracted information into a list
+#   list(
+#     pmid = pm,
+#     journal = journal,
+#     article_title = article_title,
+#     year = year,
+#     abstract = abstracts
+#   )
+# }
 
 
 

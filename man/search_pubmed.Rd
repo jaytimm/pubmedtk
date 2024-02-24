@@ -2,16 +2,41 @@
 % Please edit documentation in R/search_pubmed.R
 \name{search_pubmed}
 \alias{search_pubmed}
-\title{Perform basic PubMed search.}
+\title{Search PubMed with Optional Year Range Filtering}
 \usage{
-search_pubmed(x)
+search_pubmed(
+  x,
+  start_year = NULL,
+  end_year = NULL,
+  retmax = 9999,
+  use_pub_years = TRUE
+)
 }
 \arguments{
-\item{x}{Query term as character string}
+\item{x}{A character string specifying the search query.}
+
+\item{start_year}{(optional) An integer specifying the start year of the publication date range.}
+
+\item{end_year}{(optional) An integer specifying the end year of the publication date range.}
+
+\item{retmax}{An integer specifying the maximum number of records to retrieve (default 9999).}
+
+\item{use_pub_years}{A logical value; if TRUE, the search is filtered by publication years (default TRUE).}
 }
 \value{
-A vector of PMIDs
+A numeric vector of unique PubMed IDs.
 }
 \description{
-Perform basic PubMed search.
+This function searches the PubMed database for articles matching a given query.
+It optionally limits the search to a specified range of publication years and ensures that
+returned PubMed IDs are unique. This function requires the 'rentrez' package.
+}
+\examples{
+# Search without year range filtering
+search_pubmed("asthma", use_pub_years = FALSE)
+
+# Search with year range filtering
+search_pubmed("cancer", 2010, 2012)
+search_pubmed("diabetes", 2015, 2017, retmax = 5000)
+
 }

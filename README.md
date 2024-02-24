@@ -1,14 +1,10 @@
-<!-- badges: start -->
-
-[![Travis build
-status](https://app.travis-ci.com/jaytimm/pubmedtk.svg?branch=main)](https://app.travis-ci.com/github/jaytimm/pubmedtk)
-[![R-CMD-check](https://github.com/jaytimm/pubmedtk/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedtk/actions)
-<!-- badges: end -->
+[![R build
+status](https://github.com/jaytimm/pubmedtk/workflows/R-CMD-check/badge.svg)](https://github.com/jaytimm/pubmedtk/actions)
 
 # pubmedtk
 
 The package provides a single interface for accessing a range of
-NLM/PubMed online resources, including
+NLM/PubMed databases, including
 [PubMed](https://pubmed.ncbi.nlm.nih.gov/) abstract records,
 [iCite](https://icite.od.nih.gov/) bibliometric data,
 [PubTator](https://www.ncbi.nlm.nih.gov/research/pubtator/) named entity
@@ -23,8 +19,8 @@ including Descriptor Terms, Descriptor Tree Structures, Supplementary
 Concept Terms, and Pharmacological Actions; it also includes
 descriptor-level word embeddings [(Noh & Kavuluru
 2021)](https://www.sciencedirect.com/science/article/pii/S1532046421001969).
-Via the [mesh-resources](https://github.com/jaytimm/mesh-resources) Git
-project.
+Via the [mesh-resources](https://github.com/jaytimm/mesh-resources)
+library.
 
 ## Installation
 
@@ -48,38 +44,46 @@ Search syntax is the same as that implemented in standard [PubMed
 search](https://pubmed.ncbi.nlm.nih.gov/advanced/).
 
 ``` r
-yrs <- 2010:2023
-pubmed_query <- paste0('("political ideology"[TiAb]) AND (', 
-                       yrs, ':', yrs,  
-                       '[pdat])')
-## [MeSH Terms]
+pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
+                                 use_pub_years = F)
 
-pmids <- lapply(pubmed_query, pubmedtk::search_pubmed)
-pmids <- pmids |> unlist() |> unique() |> sort()
+# pmids <- pubmedtk::search_pubmed('immunity', 
+#                                  use_pub_years = T,
+#                                  start_year = 2022,
+#                                  end_year = 2024) 
 ```
 
 ## Get record-level data
 
 ``` r
 recs_pubmed <- pmids |> 
-  pubmedtk::get_records(endpoint = 'pubmed_abstracts') 
+  pubmedtk::get_records(endpoint = 'pubmed_abstracts', 
+                        cores = 5, 
+                        sleep = 1) 
 
 recs_affs <- pmids |> 
-  pubmedtk::get_records(endpoint = 'pubmed_affiliations')
+  pubmedtk::get_records(endpoint = 'pubmed_affiliations', 
+                        cores = 3, 
+                        sleep = 0.5)
 
 recs_icites <- pmids |> 
-  pubmedtk::get_records(endpoint = 'icites')
+  pubmedtk::get_records(endpoint = 'icites',
+                        cores = 1, 
+                        sleep = 0.25)
 
 recs_pubtations <- pmids |> 
   pubmedtk::get_records(endpoint = 'pubtations')
 ```
 
+> When the endpoint is PMC, the \`get_records() function takes a vector
+> of filepaths (from the PMC Open Access list) instead of PMIDs.
+
 ``` r
 pmclist <- pubmedtk::data_pmc_list(force_install = F)
 pmc_pmids <- pmclist[PMID %in% pmids]
 
-recs_pmc <- pmc_pmids$fpath |> 
-  pubmedtk::get_records(endpoint = 'pmc_fulltext')
+recs_pmc <- pmc_pmids$fpath[1:20] |> 
+  pubmedtk::get_records(endpoint = 'pmc_fulltext', cores = 2)
 ```
 
 ### `pubmed_abstracts`
@@ -154,15 +158,15 @@ setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
 | apt                         | 0.05                         |
 | is_clinical                 | No                           |
 | citation_count              | 5                            |
-| citations_per_year          | 0.5555556                    |
-| expected_citations_per_year | 2.113739                     |
-| field_citation_rate         | 3.840726                     |
+| citations_per_year          | 0.5                          |
+| expected_citations_per_year | 1.905748                     |
+| field_citation_rate         | 3.839488                     |
 | provisional                 | No                           |
 | x_coord                     | 0                            |
 | y_coord                     | 1                            |
 | cited_by_clin               |                              |
 | doi                         | 10.1371/journal.pone.0095431 |
-| last_modified               | 11/25/2023, 16:54:50         |
+| last_modified               | 01/28/2024, 12:30:27         |
 | ref_count                   | 16                           |
 
 ``` r

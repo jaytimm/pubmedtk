@@ -37,55 +37,14 @@ The package has two basic functions: `search_pubmed` and `get_records`. The form
 Search syntax is the same as that implemented in standard [PubMed search](https://pubmed.ncbi.nlm.nih.gov/advanced/). 
 
 
-```{r eval=FALSE, include=FALSE}
-ppm <- PubmedMTK::pmtk_search_pubmed('immunity')
-```
-
-
-
-
 ```{r}
-yrs <- 2010:2023
+pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
+                                 use_pub_years = F)
 
-pubmed_query <- paste0('("political ideology"[TiAb]) AND (',
-                       yrs, ':', yrs,
-                       '[pdat])')
-
-pmids <- lapply(pubmed_query, pubmedtk::search_pubmed)
-pmids <- pmids |> unlist() |> unique() |> sort() #|> sample(10000)
-```
-
-
-```{r eval=FALSE, include=FALSE}
-pubmed_query <- paste0('("immunity"[MeSH Terms]) AND (',
-                       yrs, ':', yrs,
-                       '[pdat])')
-
-# pubmed_query <- paste0('("medical marijuana"[MeSH Terms]) AND (', 
-#                        yrs, ':', yrs,  
-#                        '[pdat])')
-
-
-# x <- paste0('"marijuana"[TiAb]')
-# 
-# pubmed_query <- '"immunity"[MeSH Terms]'
-# 
-# pmids <- x |> pubmedtk::search_pubmed()
-
-
-#########
-```
-
-
-
-
-
-```{r eval=FALSE, include=FALSE}
-batch_size <- 199
-batches <- split(pmids, ceiling(seq_along(pmids) / batch_size))
-records <- pubmedtk:::.fetch_records(x = batches[[1]])
-x <- records[[1]]
-vv <- list(lapply(parsed_records, '[[', 2))
+# pmids <- pubmedtk::search_pubmed('immunity', 
+#                                  use_pub_years = T,
+#                                  start_year = 2022,
+#                                  end_year = 2024) 
 ```
 
 
@@ -119,14 +78,9 @@ recs_pubtations <- pmids |>
 pmclist <- pubmedtk::data_pmc_list(force_install = F)
 pmc_pmids <- pmclist[PMID %in% pmids]
 
-recs_pmc <- pmc_pmids$fpath |> 
-  pubmedtk::get_records(endpoint = 'pmc_fulltext', cores = 5)
+recs_pmc <- pmc_pmids$fpath[1:20] |> 
+  pubmedtk::get_records(endpoint = 'pmc_fulltext', cores = 2)
 ```
-```{r eval=FALSE, include=FALSE}
-recs_pubtations <- pmids[1:50] |> get_pmc()
-```
-
-
 
 
 

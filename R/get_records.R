@@ -28,7 +28,7 @@ get_records <- function(pmids,
   
   
   # Define batch size and the specific task function based on the chosen endpoint
-  batch_size <- if (endpoint == "pmc") {20} else if (endpoint == "pubtations") {99} else {199}
+  batch_size <- if (endpoint == "pmc") {5} else if (endpoint == "pubtations") {99} else {199}
   task_function <- switch(endpoint,
                           "icites" = .get_icites,
                           "pubtations" = .get_pubtations,
