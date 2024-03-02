@@ -26,8 +26,8 @@ data_pmc_list <- function(force_install = FALSE) {
   # Check if the file exists, and download and process it if it doesn't or if forced
   if (!file.exists(df) | force_install) {
     # Create the directory if it doesn't exist
-    if (!dir.exists(rappdirs::user_data_dir('pubmedr'))) {
-      dir.create(rappdirs::user_data_dir('pubmedr'), recursive = TRUE)
+    if (!dir.exists(rappdirs::user_data_dir('pubmedtk'))) {
+      dir.create(rappdirs::user_data_dir('pubmedtk'), recursive = TRUE)
     }
     
     message('Downloading "pub/pmc/oa_file_list.txt" ...')
@@ -46,7 +46,7 @@ data_pmc_list <- function(force_install = FALSE) {
       pmc[pmc==''] <- NA
       
       # Save the processed data as an RDS file
-      setwd(rappdirs::user_data_dir('pubmedr'))
+      setwd(rappdirs::user_data_dir('pubmedtk'))
       saveRDS(pmc, 'oa_file_list.rds')
     })
   }
