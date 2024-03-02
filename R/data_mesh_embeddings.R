@@ -20,12 +20,12 @@ data_mesh_embeddings <- function() {
   sf2 <- 'https://github.com/jaytimm/mesh-builds/blob/main/data/data_scr_embeddings.rds?raw=true'
   
   # Define local file paths for storing the processed data
-  df <- file.path(rappdirs::user_data_dir('pubmedr'), 'data_mesh_embeddings.rds')
-  df2 <- file.path(rappdirs::user_data_dir('pubmedr'), 'data_scr_embeddings.rds')
+  df <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_mesh_embeddings.rds')
+  df2 <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_scr_embeddings.rds')
   
   # Check if the directory for data storage exists, and create it if not
-  if (!dir.exists(rappdirs::user_data_dir('pubmedr'))) {
-    dir.create(rappdirs::user_data_dir('pubmedr'), recursive = TRUE)
+  if (!dir.exists(rappdirs::user_data_dir('pubmedtk'))) {
+    dir.create(rappdirs::user_data_dir('pubmedtk'), recursive = TRUE)
   }
   
   # Download and process Mesh embeddings data if it doesn't exist

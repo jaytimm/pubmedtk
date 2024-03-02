@@ -60,9 +60,16 @@
       jj[[i]] <- rbind(pb1$title, pb1$abstract)
     }
     
-    # Combine all annotations into a data.table
-    names(jj) <- mydata$id
-    jj0 <- jj |> data.table::rbindlist(idcol = 'pmid')
+    
+    if (!all(sapply(jj, is.data.frame))) {
+      return(NA)  
+    } else {
+
+      names(jj) <- mydata$id
+      jj0 <- jj |> data.table::rbindlist(idcol = 'pmid')
+      # ... rest of the processing ...
+    }
+    
     
     # Clean and format location data
     jj0$locations <- jj0$locations |> as.character()
@@ -78,7 +85,6 @@
     jj0[, locations := NULL]
   }
   
-  data.table::setnames(jj0, "text", "entity")
   Sys.sleep(sleep)
   
   # Return the processed annotations data

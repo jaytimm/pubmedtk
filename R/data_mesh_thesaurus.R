@@ -22,14 +22,14 @@ data_mesh_thesuarus <- function(force_download = FALSE) {
   sf2 <- 'https://github.com/jaytimm/mesh-builds/blob/main/data/data_scr_thesaurus.rds?raw=true'
   
   # Local file paths for storing the downloaded data
-  df <- file.path(rappdirs::user_data_dir('pubmedr'), 'data_mesh_thesuarus.rds')
-  df2 <- file.path(rappdirs::user_data_dir('pubmedr'), 'data_scr_thesuarus.rds')
+  df <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_mesh_thesuarus.rds')
+  df2 <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_scr_thesuarus.rds')
   
   # Check for the existence of the files or force download
   if (!file.exists(df) | force_download) {
     # Create the directory if it doesn't exist
-    if (!dir.exists(rappdirs::user_data_dir('pubmedr'))) {
-      dir.create(rappdirs::user_data_dir('pubmedr'), recursive = TRUE)
+    if (!dir.exists(rappdirs::user_data_dir('pubmedtk'))) {
+      dir.create(rappdirs::user_data_dir('pubmedtk'), recursive = TRUE)
     }
     
     # Download the MeSH thesaurus data

@@ -20,13 +20,13 @@ data_mesh_trees <- function(force_download = FALSE) {
   sf <- 'https://github.com/jaytimm/mesh-builds/blob/main/data/data_mesh_trees.rds?raw=true'
   
   # Determine the local file path for storing the data
-  df <- file.path(rappdirs::user_data_dir('pubmedr'), 'data_mesh_trees.rds')
+  df <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_mesh_trees.rds')
   
   # Check if the file exists or if forced download is requested
   if (!file.exists(df) | force_download) {
     # Create the directory if it doesn't exist
-    if (!dir.exists(rappdirs::user_data_dir('pubmedr'))) {
-      dir.create(rappdirs::user_data_dir('pubmedr'), recursive = TRUE)
+    if (!dir.exists(rappdirs::user_data_dir('pubmedtk'))) {
+      dir.create(rappdirs::user_data_dir('pubmedtk'), recursive = TRUE)
     }
     
     # Download the MeSH trees data

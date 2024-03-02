@@ -60,7 +60,8 @@ get_records <- function(pmids,
     results <- lapply(batches, function(batch) task_function(batch, sleep))
   }
   
+  df_only_list <- results[sapply(results, is.data.frame)]
   # Combine results from all batches into a single data.table
-  combined_results <- data.table::rbindlist(results)
+  combined_results <- data.table::rbindlist(df_only_list)
   return(combined_results)
 }

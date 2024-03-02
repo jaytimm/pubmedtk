@@ -7,8 +7,7 @@
 #' @keywords internal
 #' 
 #' 
-.fetch_records <- function(x, sleep){
-  
+.fetch_records <- function(x, sleep) {
   # Loop to retry fetching records, with a maximum of 15 attempts
   for (i in 1:15) {
     # Display the current attempt number
@@ -16,17 +15,19 @@
     
     # Try fetching records using rentrez::entrez_fetch
     x1 <- try({
-      rentrez::entrez_fetch(db = "pubmed",
-                            id = x,
-                            rettype = "xml",
-                            parsed = FALSE)
+      rentrez::entrez_fetch(
+        db = "pubmed",
+        id = x,
+        rettype = "xml",
+        parsed = FALSE
+      )
     })
     
     # Wait for 5 seconds before the next attempt
     Sys.sleep(sleep)
     
-    # Check if the fetch was successful, and if so, break the loop
-    if (class(x1) != "try-error") {
+    # Check if the fetch was successful using inherits(), and if so, break the loop
+    if (!inherits(x1, "try-error")) {
       break
     }
   }
@@ -35,7 +36,6 @@
   doc <- xml2::read_xml(x1)
   xml2::xml_find_all(doc, "//PubmedArticle")
 }
-
 
 
 

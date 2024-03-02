@@ -21,13 +21,13 @@ data_pharm_action <- function(force_download = FALSE) {
   sf <- 'https://github.com/jaytimm/mesh-builds/blob/main/data/data_pharm_action.rds?raw=true'
   
   # Local file path for storing the data
-  df <- file.path(rappdirs::user_data_dir('pubmedr'), 'data_pharm_action.rds')
+  df <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_pharm_action.rds')
   
   # Check if the data file exists, and download it if it doesn't or if forced
   if (!file.exists(df) | force_download) {
     # Create the directory if it doesn't exist
-    if (!dir.exists(rappdirs::user_data_dir('pubmedr'))) {
-      dir.create(rappdirs::user_data_dir('pubmedr'), recursive = TRUE)
+    if (!dir.exists(rappdirs::user_data_dir('pubmedtk'))) {
+      dir.create(rappdirs::user_data_dir('pubmedtk'), recursive = TRUE)
     }
     
     # Download the pharmacological actions data

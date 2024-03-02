@@ -83,10 +83,12 @@
 
   # Extract the abstract text, combining multiple parts if necessary
   abstract <- xml2::xml_find_all(g, ".//Abstract/AbstractText") |> xml2::xml_text()
+  
   if(length(abstract) > 1){
     abstract <- paste(abstract, collapse = ' ')}
   if(length(abstract) == 0){abstract <- NA}
 
+  abstract <- .reformat_abstract(abstract)
   # Construct the output with the extracted information
   out <- c('pmid' = pm,
            'journal' = a1a,
@@ -96,42 +98,6 @@
 
   return(out)
 }
-
-# .extract_basic <- function(g) {
-#   # Extract the PubMed ID (PMID) from the XML
-#   pm_node <- xml2::xml_find_first(g, ".//MedlineCitation/PMID")
-#   pm <- if (!is.null(pm_node)) xml2::xml_text(pm_node) else NA
-#   
-#   # Extract the journal title
-#   journal_node <- xml2::xml_find_first(g, ".//Journal/Title")
-#   journal <- if (!is.null(journal_node)) xml2::xml_text(journal_node) else NA
-#   
-#   # Extract the article title
-#   article_title_node <- xml2::xml_find_first(g, ".//ArticleTitle")
-#   article_title <- if (!is.null(article_title_node)) xml2::xml_text(article_title_node) else NA
-#   
-#   # Extract the publication year
-#   year_node <- xml2::xml_find_first(g, ".//PubDate/Year")
-#   year <- if (!is.null(year_node) && !is.na(xml2::xml_text(year_node))) xml2::xml_text(year_node) else NA
-#   
-#   # Handle the abstract
-#   abstract_nodes <- xml2::xml_find_all(g, ".//Abstract/AbstractText")
-#   abstracts <- lapply(abstract_nodes, function(node) {
-#     section <- xml2::xml_attr(node, "Label")
-#     text <- xml2::xml_text(node)
-#     section <- if (!is.null(section) && section != "") section else "full"
-#     list(section = section, text = text)
-#   })
-#   
-#   # Combine all extracted information into a list
-#   list(
-#     pmid = pm,
-#     journal = journal,
-#     article_title = article_title,
-#     year = year,
-#     abstract = abstracts
-#   )
-# }
 
 
 
@@ -166,4 +132,48 @@
   
   # Return the combined annotations data frame
   return(df0)
+}
+
+
+
+#' Reformat Abstract Text
+#'
+#' Internal function to reformat an abstract by inserting newlines before each section title.
+#' It handles abstracts with or without section titles and trims whitespace from each section.
+#' Returns NA if the input is NA.
+#'
+#' @param abstract A character string representing the abstract text.
+#'
+#' @return A character string of the reformatted abstract with newlines before each section title, or NA if the input is NA.
+#'
+#' @keywords internal
+#' @noRd
+#'
+#' @examples
+#' abstract_with_sections <- "Introduction: This is the introduction. Methods: Details about methods. Results: Results are discussed here. Conclusion: Final thoughts."
+#' abstract_without_sections <- "This is an abstract without distinct sections. It continues as a single paragraph without any specific titles."
+#' reformat_abstract(abstract_with_sections)
+#' reformat_abstract(abstract_without_sections)
+#' reformat_abstract(NA)
+
+.reformat_abstract <- function(abstract) {
+  if (is.na(abstract)) {
+    return(NA)
+  }
+  
+  if (!is.character(abstract)) {
+    stop("Abstract must be a character string.", call. = FALSE)
+  }
+  
+  # Regular expression to match section titles (e.g., "Methodology and Results:")
+  # This pattern matches 1-3 words, each word starting with an uppercase letter or all words being uppercase
+  pattern_title <- "(^|\\.\\s+)(([A-Z][a-z]*|[A-Z]+)(\\s([A-Z][a-z]*|[A-Z]+)){0,2}):"
+  
+  # Use the pattern to insert a newline before each title and split the abstract into sections
+  split_abstract <- strsplit(gsub(pattern_title, "\n\\2:", abstract), "\n")[[1]]
+  
+  # Combine the sections back into a single string
+  formatted_abstract <- paste(split_abstract, collapse = "\n")
+  
+  return(formatted_abstract)
 }

@@ -38,8 +38,9 @@ Search syntax is the same as that implemented in standard [PubMed search](https:
 
 
 ```{r}
-pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
-                                 use_pub_years = F)
+pmids <- pubmedtk::search_pubmed('ethnobotany', use_pub_years = F)
+# pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
+#                                  use_pub_years = F)
 
 # pmids <- pubmedtk::search_pubmed('immunity', 
 #                                  use_pub_years = T,
@@ -55,7 +56,13 @@ pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
 recs_pubmed <- pmids |> 
   pubmedtk::get_records(endpoint = 'pubmed_abstracts', 
                         cores = 5, 
-                        sleep = 1) 
+                        sleep = 1) |>
+  filter(!is.na(abstract)) |>
+  rename(doc_id = pmid, text = abstract) 
+
+recs_pubmed1 <- recs_pubmed|>
+  textpress::nlp_split_paragraphs() 
+  textpress::nlp_split_sentences(by = c('doc_id', 'paragraph_id'))
 
 recs_affs <- pmids |> 
   pubmedtk::get_records(endpoint = 'pubmed_affiliations', 
