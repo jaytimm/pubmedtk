@@ -4,6 +4,7 @@
 #' @param x A vector of PMC identifiers for which full-text articles are to be retrieved.
 #' @return A data.table with columns for document ID, PMC identifier, section titles, and text content of each section.
 #' @importFrom xml2 read_xml xml_children xml_find_first xml_text
+#' @importFrom utils untar
 #' @keywords internal
 #' 
 #' 
@@ -29,7 +30,7 @@
     if(dd != 'error'){
       
       # Find XML files in the downloaded content
-      xmls <- grep('xml$', untar(tmp, list = TRUE), value = TRUE)
+      xmls <- grep('xml$', utils::untar(tmp, list = TRUE), value = TRUE)
       
       # Extract the XML files to a temporary directory
       untar(tmp, files = xmls, exdir = tempdir())
