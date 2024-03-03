@@ -38,9 +38,8 @@ Search syntax is the same as that implemented in standard [PubMed search](https:
 
 
 ```{r}
-pmids <- pubmedtk::search_pubmed('ethnobotany', use_pub_years = F)
-# pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
-#                                  use_pub_years = F)
+pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
+                                 use_pub_years = F)
 
 # pmids <- pubmedtk::search_pubmed('immunity', 
 #                                  use_pub_years = T,
@@ -53,28 +52,22 @@ pmids <- pubmedtk::search_pubmed('ethnobotany', use_pub_years = F)
 ## Get record-level data
 
 ```{r}
-recs_pubmed <- pmids |> 
+pubmed <- pmids |> 
   pubmedtk::get_records(endpoint = 'pubmed_abstracts', 
-                        cores = 5, 
-                        sleep = 1) |>
-  filter(!is.na(abstract)) |>
-  rename(doc_id = pmid, text = abstract) 
+                        cores = 3, 
+                        sleep = 1) 
 
-recs_pubmed1 <- recs_pubmed|>
-  textpress::nlp_split_paragraphs() 
-  textpress::nlp_split_sentences(by = c('doc_id', 'paragraph_id'))
-
-recs_affs <- pmids |> 
+affiliationss <- pmids |> 
   pubmedtk::get_records(endpoint = 'pubmed_affiliations', 
                         cores = 3, 
                         sleep = 0.5)
 
-recs_icites <- pmids |> 
+icites <- pmids |> 
   pubmedtk::get_records(endpoint = 'icites',
-                        cores = 1, 
+                        cores = 4, 
                         sleep = 0.25)
 
-recs_pubtations <- pmids |> 
+pubtations <- pmids |> 
   pubmedtk::get_records(endpoint = 'pubtations')
 ```
 
@@ -85,87 +78,8 @@ recs_pubtations <- pmids |>
 pmclist <- pubmedtk::data_pmc_list(force_install = F)
 pmc_pmids <- pmclist[PMID %in% pmids]
 
-recs_pmc <- pmc_pmids$fpath[1:20] |> 
+pmc_fulltext <- pmc_pmids$fpath[1:5] |> 
   pubmedtk::get_records(endpoint = 'pmc_fulltext', cores = 2)
 ```
 
-
-
-### `pubmed_abstracts`
-
-```{r}
-pmid_eg <- 24781819
-```
-
-
-```{r}
-recs_pubmed |> 
-  select(-annotations) |>
-  filter(pmid == pmid_eg) |>
-  mutate(abstract = stringr::str_sub(abstract, 1, 150) |>
-                     paste0("...")) |>
-  knitr::kable()
-```
-
-
-```{r eval=FALSE, include=FALSE}
-x1 <- recs_pubmed |> filter(pmid %in% pmc_pmids$PMID) 
-x2 <- recs_pubtations |> filter(pmid %in% pmc_pmids$PMID) 
-```
-
-
-```{r}
-recs_pubmed |> 
-  #select(-annotations) |>
-  filter(pmid == pmid_eg) |>
-  pull(annotations) |>
-  bind_cols() |>
-  knitr::kable()
-```
-
-
-
-### `pubmed_affiliates`
-
-```{r}
-recs_affs |> 
-  filter(pmid == pmid_eg) |>
-  knitr::kable()
-```
-
-
-### `icites`
-
-```{r}
-citations <- recs_icites |> 
-  filter(pmid == pmid_eg)
-
-c0 <- citations |> select(-citation_net) 
-setNames(data.frame(t(c0[,-1])), c0[,1]) |> knitr::kable()
-```
-
-
-```{r}
-citations$citation_net[[1]] |> head() |> knitr::kable()
-```
-
-
-
-
-### `pubtations`
-
-```{r}
-recs_pubtations |> 
-  filter(pmid == pmid_eg) |>
-  knitr::kable()
-```
-
-
-### `pmc_fulltext`
-
-```{r}
-samp <- recs_pmc |> filter(pmid == pmid_eg)
-
-lapply(samp$text, function(x){strwrap(x, width = 60)[1:3]})
-```
 
