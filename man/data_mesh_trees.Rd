@@ -20,6 +20,9 @@ exists locally, the download can be skipped unless `force_download` is set to `T
 }
 \examples{
 \donttest{
-mesh_trees_data <- data_mesh_trees(force_download = FALSE)
+if (interactive()) {
+  # Code that downloads data or performs other interactive-only operations
+  data <- data_mesh_embeddings()
+}
 }
 }

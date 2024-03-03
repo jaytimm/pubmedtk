@@ -10,8 +10,12 @@
 #' @export
 #' @examples
 #' \donttest{
-#' data <- data_mesh_embeddings()
+#' if (interactive()) {
+#'   # Code that downloads data or performs other interactive-only operations
+#'   data <- data_mesh_embeddings()
 #' }
+#' }
+
 #' 
 data_mesh_embeddings <- function() {
   

@@ -12,8 +12,12 @@
 #' @export
 #' @examples
 #' \donttest{
-#' thesaurus_data <- data_mesh_thesuarus(force_download = FALSE)
+#' if (interactive()) {
+#'   # Code that downloads data or performs other interactive-only operations
+#'   data <- data_mesh_embeddings()
 #' }
+#' }
+
 
 data_mesh_thesuarus <- function(force_download = FALSE) {
   

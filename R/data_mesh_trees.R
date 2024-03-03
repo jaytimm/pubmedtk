@@ -12,8 +12,12 @@
 #' @export
 #' @examples
 #' \donttest{
-#' mesh_trees_data <- data_mesh_trees(force_download = FALSE)
+#' if (interactive()) {
+#'   # Code that downloads data or performs other interactive-only operations
+#'   data <- data_mesh_embeddings()
 #' }
+#' }
+
 data_mesh_trees <- function(force_download = FALSE) {
   
   # Define the URL for the MeSH trees data

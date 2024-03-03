@@ -15,7 +15,10 @@ The data is saved locally in RDS format. If the files do not exist, they will be
 }
 \examples{
 \donttest{
-data <- data_mesh_embeddings()
+if (interactive()) {
+  # Code that downloads data or performs other interactive-only operations
+  data <- data_mesh_embeddings()
+}
 }
 
 }

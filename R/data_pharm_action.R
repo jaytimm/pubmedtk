@@ -12,8 +12,12 @@
 #' @importFrom utils download.file
 #' @examples
 #' \donttest{
-#' pharm_action_data <- data_pharm_action(force_download = FALSE)
+#' if (interactive()) {
+#'   # Code that downloads data or performs other interactive-only operations
+#'   data <- data_mesh_embeddings()
 #' }
+#' }
+
 #' @export
 data_pharm_action <- function(force_download = FALSE) {
   

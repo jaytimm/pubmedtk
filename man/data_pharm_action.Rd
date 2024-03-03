@@ -21,6 +21,9 @@ returns the data as a data frame.
 }
 \examples{
 \donttest{
-pharm_action_data <- data_pharm_action(force_download = FALSE)
+if (interactive()) {
+  # Code that downloads data or performs other interactive-only operations
+  data <- data_mesh_embeddings()
+}
 }
 }

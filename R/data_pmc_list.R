@@ -12,8 +12,12 @@
 #' @importFrom data.table fread
 #' @examples
 #' \donttest{
-#' pmc_list <- data_pmc_list(force_install = FALSE)
+#' if (interactive()) {
+#'   # Code that downloads data or performs other interactive-only operations
+#'   data <- data_mesh_embeddings()
 #' }
+#' }
+
 #' @export
 data_pmc_list <- function(force_install = FALSE) {
   
