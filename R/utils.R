@@ -5,14 +5,14 @@
 #' @return A character string with XML content of PubMed records, or an error object in case of failure.
 #' @importFrom rentrez entrez_fetch
 #' @keywords internal
-#' 
-#' 
+#'
+#'
 .fetch_records <- function(x, sleep) {
   # Loop to retry fetching records, with a maximum of 15 attempts
   for (i in 1:15) {
     # Display the current attempt number
     message(i)
-    
+
     # Try fetching records using rentrez::entrez_fetch
     x1 <- try({
       rentrez::entrez_fetch(
@@ -22,16 +22,16 @@
         parsed = FALSE
       )
     })
-    
+
     # Wait for 5 seconds before the next attempt
     Sys.sleep(sleep)
-    
+
     # Check if the fetch was successful using inherits(), and if so, break the loop
     if (!inherits(x1, "try-error")) {
       break
     }
   }
-  
+
   # Return the fetched XML content or an error object
   doc <- xml2::read_xml(x1)
   xml2::xml_find_all(doc, "//PubmedArticle")
@@ -45,10 +45,9 @@
 #' @param x A vector that may contain missing or invalid values represented in various formats.
 #' @return A vector with standardized missing values represented as `NA`.
 #' @keywords internal
-#' 
-#' 
+#'
+#'
 .clean_nas <- function(x) {
-  
   # Replace specific character representations of missing data with NA
-  ifelse(x %in% c(' ', 'NA', 'n/a', 'n/a.') | is.na(x), NA, x) 
+  ifelse(x %in% c(" ", "NA", "n/a", "n/a.") | is.na(x), NA, x)
 }

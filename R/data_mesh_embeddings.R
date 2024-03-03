@@ -16,56 +16,61 @@
 #' }
 #' }
 
-#' 
+#'
 data_mesh_embeddings <- function() {
-  
   # Define the URLs for Mesh and SCR embeddings data
-  sf <- 'https://github.com/jaytimm/mesh-builds/blob/main/data/data_mesh_embeddings.rds?raw=true'
-  sf2 <- 'https://github.com/jaytimm/mesh-builds/blob/main/data/data_scr_embeddings.rds?raw=true'
-  
+  sf <- "https://github.com/jaytimm/mesh-builds/blob/main/data/data_mesh_embeddings.rds?raw=true"
+  sf2 <- "https://github.com/jaytimm/mesh-builds/blob/main/data/data_scr_embeddings.rds?raw=true"
+
   # Define local file paths for storing the processed data
-  df <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_mesh_embeddings.rds')
-  df2 <- file.path(rappdirs::user_data_dir('pubmedtk'), 'data_scr_embeddings.rds')
-  
+  df <- file.path(rappdirs::user_data_dir("pubmedtk"), "data_mesh_embeddings.rds")
+  df2 <- file.path(rappdirs::user_data_dir("pubmedtk"), "data_scr_embeddings.rds")
+
   # Check if the directory for data storage exists, and create it if not
-  if (!dir.exists(rappdirs::user_data_dir('pubmedtk'))) {
-    dir.create(rappdirs::user_data_dir('pubmedtk'), recursive = TRUE)
+  if (!dir.exists(rappdirs::user_data_dir("pubmedtk"))) {
+    dir.create(rappdirs::user_data_dir("pubmedtk"), recursive = TRUE)
   }
-  
+
   # Download and process Mesh embeddings data if it doesn't exist
   if (!file.exists(df)) {
-    message('Downloading the Mesh embeddings ...')
-    out <- tryCatch({
-      utils::download.file(sf, df)
-    }, error = function(e) paste("Error"))
-    
-    if (out == 'Error') {
-      message('Download not completed ... Try options(timeout = 600)')
+    message("Downloading the Mesh embeddings ...")
+    out <- tryCatch(
+      {
+        utils::download.file(sf, df)
+      },
+      error = function(e) paste("Error")
+    )
+
+    if (out == "Error") {
+      message("Download not completed ... Try options(timeout = 600)")
       file.remove(df)
     }
   }
-  
+
   # Download and process SCR embeddings data if it doesn't exist
   if (!file.exists(df2)) {
-    message('Downloading the SCR embeddings ...')
-    out <- tryCatch({
-      utils::download.file(sf2, df2)
-    }, error = function(e) paste("Error"))
-    
-    if (out == 'Error') {
-      message('Download not completed ... Try options(timeout = 600)')
+    message("Downloading the SCR embeddings ...")
+    out <- tryCatch(
+      {
+        utils::download.file(sf2, df2)
+      },
+      error = function(e) paste("Error")
+    )
+
+    if (out == "Error") {
+      message("Download not completed ... Try options(timeout = 600)")
       file.remove(df2)
     }
   }
-  
+
   # If both files exist, read and combine them
   if (all(file.exists(df), file.exists(df2))) {
     a1 <- readRDS(df)
     a2 <- readRDS(df2)
-    
+
     result <- rbind(a1, a2)
     return(result)
   }
-  
+
   return(NULL)
 }

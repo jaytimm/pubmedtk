@@ -39,12 +39,13 @@ Search syntax is the same as that implemented in standard [PubMed search](https:
 
 ```{r}
 pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
-                                 use_pub_years = F)
+  use_pub_years = F
+)
 
-# pmids <- pubmedtk::search_pubmed('immunity', 
+# pmids <- pubmedtk::search_pubmed('immunity',
 #                                  use_pub_years = T,
 #                                  start_year = 2022,
-#                                  end_year = 2024) 
+#                                  end_year = 2024)
 ```
 
 
@@ -52,23 +53,29 @@ pmids <- pubmedtk::search_pubmed('("political ideology"[TiAb])',
 ## Get record-level data
 
 ```{r}
-pubmed <- pmids |> 
-  pubmedtk::get_records(endpoint = 'pubmed_abstracts', 
-                        cores = 3, 
-                        sleep = 1) 
+pubmed <- pmids |>
+  pubmedtk::get_records(
+    endpoint = "pubmed_abstracts",
+    cores = 3,
+    sleep = 1
+  )
 
-affiliationss <- pmids |> 
-  pubmedtk::get_records(endpoint = 'pubmed_affiliations', 
-                        cores = 3, 
-                        sleep = 0.5)
+affiliationss <- pmids |>
+  pubmedtk::get_records(
+    endpoint = "pubmed_affiliations",
+    cores = 3,
+    sleep = 0.5
+  )
 
-icites <- pmids |> 
-  pubmedtk::get_records(endpoint = 'icites',
-                        cores = 4, 
-                        sleep = 0.25)
+icites <- pmids |>
+  pubmedtk::get_records(
+    endpoint = "icites",
+    cores = 4,
+    sleep = 0.25
+  )
 
-pubtations <- pmids |> 
-  pubmedtk::get_records(endpoint = 'pubtations')
+pubtations <- pmids |>
+  pubmedtk::get_records(endpoint = "pubtations")
 ```
 
 
@@ -78,8 +85,8 @@ pubtations <- pmids |>
 pmclist <- pubmedtk::data_pmc_list(force_install = F)
 pmc_pmids <- pmclist[PMID %in% pmids]
 
-pmc_fulltext <- pmc_pmids$fpath[1:5] |> 
-  pubmedtk::get_records(endpoint = 'pmc_fulltext', cores = 2)
+pmc_fulltext <- pmc_pmids$fpath[1:5] |>
+  pubmedtk::get_records(endpoint = "pmc_fulltext", cores = 2)
 ```
 
 
